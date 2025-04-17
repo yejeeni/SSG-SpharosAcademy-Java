@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* 
+        문서 내의 box라는 요소의 직계 자식(h1, div)의 폰트 색을 빨간색으로 할 예정.
+        1. 아이디가 붙어있는 선택자는 #을 앞에 붙어야 한다.
+        2. 직계 자식은 '>'으로 가리킨다. (#선택자 > 자식)
+        */
+        #box > h1{
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="box"> <!-- div(division, 화면 분할) -->
+        <h1>제목1</h1> <!-- h1은 위 div(id="box")의 자식이고, 아래 div를 형제로 갖는다.-->
+        <div>
+            <h1>제목2</h1>
+        </div>
+    </div>
+</body>
+</html>

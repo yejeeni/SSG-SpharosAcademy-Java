@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 폼</title>
+
+    <!-- CSS의 3가지 적용 방법 중, 내부 CSS는 style 태그 안에 CSS 코드를 작성하는 방식으로, 가장 보편적인 적용 방법
+    <style>
+        td{
+            font-size: 9px;
+            color: red;
+        }
+        input{
+            background-color: yellow;
+        }
+    </style> -->
+
+    <!-- 외부 CSS는 style의 재사용성을 높이기 위해, 여러 문서에 걸쳐서 사용되는 CSS는 공통의 파일로 저장해놓고 링크시킨다 -->
+    <link rel="stylesheet" href="./css/style.css">
+
+</head>
+<body>
+    <table width="500px" border="1px" align="center"> <!-- align="center" : 요소를 중앙에 정렬 -->
+        <tr>
+            <td colspan="2" align="center">회원 가입</td>
+        </tr>
+        <tr>
+            <td style="font-size: 9px;">ID</td> <!-- 인라인 CSS 방식 -->
+            <td><input type="text" placeholder="아이디를 입력하세요"></td>
+        </tr>
+        <tr>
+            <td>Password</td>
+            <!-- input type을 password로 하면 입력칸이 비밀번호 형식으로 바뀐다. -->
+            <!-- maxlength를 지정하여 입력 글자 수를 제한할 수 있다. -->
+            <td><input type="password" placeholder="비밀번호를 입력하세요" maxlength="8"></td>
+        </tr>
+        <tr>
+            <td>이름</td>
+            <td><input type="text" placeholder="이름을 입력하세요"></td>
+        </tr>
+        <tr>
+            <td>이메일</td>
+            <td>
+                <input type="text" placeholder="메일 아이디를 입력하세요">
+                @
+                <select>
+                    <option value="">naver</option>
+                    <option value="">daum</option>
+                    <option value="">google</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>메일 수신 여부</td>
+            <td>
+                <!-- radio: 라디오 버튼. 같은 name의 요소 중 하나만 선택할 수 있다. -->
+                <input type="radio" name="receive">예
+                <input type="radio" name="receive">아니오
+            </td>
+        </tr>
+        <tr>
+            <td>보유 기술</td>
+            <td>
+                <input type="checkbox">Java
+                <input type="checkbox">MySQL
+                <input type="checkbox">Spring
+                <input type="checkbox">Linux
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center">
+                <button>가입하기</button>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* #선택자 자식(사이에 띄어쓰기 포함) 이라고 하면, 선택자의 지정 자식의 자식까지 모두 포함된다. */
+        #box div{
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="box">
+        <h1>제목1</h1>
+        <p>자식 문단</p>
+        <div>
+            분할
+            <p>손자 문단</p>
+        </div>
+    </div>
+</body>
+</html>
