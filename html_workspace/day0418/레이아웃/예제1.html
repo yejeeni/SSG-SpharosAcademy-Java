@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #wrapper{
+            width: 1000px;
+            /* 너비는 제한을 두어도 되지만, 높이는 컨텐츠 양에 좌우되므로 제한을 두면 안 됨 */
+            margin: auto;
+        }
+        #header{
+            background-color: darkgreen;
+            height: 100px;
+        }
+        #content{
+            background-color:lightgray;
+            height: 500px;
+        }
+        #footer{
+            background-color: darkgoldenrod;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 각각의 div를 별도로 조정하면 코드 중복이 발생하고 유지보수성이 떨어지므로, 바깥에 부모 요소로 컨테이너를 하나 둔다 -->
+    <div id="wrapper">
+        <div id="header">헤더 영역</div>
+        <div id="content">컨텐츠 영역</div>
+        <div id="footer">푸터 영역</div>
+    </div>
+</body>
+</html>

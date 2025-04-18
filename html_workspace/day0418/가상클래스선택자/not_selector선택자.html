@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* 누군가를 제외시킬 때 not selector 사용 */
+        li:not(.active){ /* <- active를 제외 */
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <ol>
+        <li class="active">활성 자식</li>
+        <li>비활성 자식</li>
+        <li>비활성 자식</li>
+    </ol>
+</body>
+</html>

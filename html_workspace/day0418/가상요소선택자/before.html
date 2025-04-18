@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        p::before{
+            content: "[p::before로 생성된 문장]";
+            color: red;
+        }
+        p::after{
+            content: "[p::after로 생성된 문장]";
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+    
+    <p>이 문장은 ::before 예제임</p>
+    
+</body>
+</html>
