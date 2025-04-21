@@ -1,0 +1,19 @@
+<script>
+    // 더하기 연산자는 연결자로써의 기능도 있음
+    // 연산 대상에 문자열이 포함돼있을 경우
+    let x = 5;
+    let y = '사과';
+    let z = x + y;
+    // x는 숫자이고 y는 문자열이므로 연산이 불가능한데, 이런 경우 숫자 5를 "5"로 바꾸어, 문자열을 합침
+    // 이때의 + 연산자는 연결자라고 지칭
+    // "5" + "사과" = "5사과"
+
+    console.log(z);
+    
+    let fileName = "photo"; // 파일명
+    let n = 5;
+    let extName =".jpg"; // 확장자
+    
+    console.log(fileName + 5 + extName);
+
+</script>

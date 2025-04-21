@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        // 개발자가 프로그램을 실행하면 브라우저 내의 js엔진이 위에서부터 순서대로 코드를 순차 수행
+        
+        let n = 1; // 전역변수 n
+        // 함수 정의
+        function test(){
+            // 이 함수를 호출할 때마다 숫자가 1씩 증가하는 줄넘기 횟수 출력해보기
+            n++;
+            console.log("줄넘기 카운트 " + n);
+        }
+    </script>
+</head>
+<body>
+    <!-- onClick은 html에서 지원하는 이벤트 핸들러. JS가 아니므로 대소문자 가리지 않음. -->
+    <button onclick="test();">눌러봐</button>
+</body>
+</html>

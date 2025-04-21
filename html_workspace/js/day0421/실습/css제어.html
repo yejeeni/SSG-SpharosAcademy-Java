@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #wrapper{
+            width: 900px;
+            height: 800px;
+            margin: auto;
+        }
+        #aside{
+            width: 200px;
+            height: 800px;
+            background-color:lightgray;
+            float: left;
+            text-align: center;
+        }
+        #aside > div{
+            height: 10rem;
+            padding: 10%;
+            border-radius: 50%;
+            background-color: blanchedalmond;
+        }
+        #section{
+            width: 700px;
+            height: 800px;
+            background-color: beige;
+            float: left;
+            display: flex;
+            justify-content: center; /* 가로 */
+            align-items: center; /* 세로 */
+        }
+        #pic{
+            width: 300px;
+            height: 350px;
+            opacity: 1;
+            /* transform: rotate(25deg); */
+        }
+        img{
+            width: 45px;
+        }
+    </style>
+    <script>
+        /* 너비 */
+        let width = 300;
+        function setWidthIncrease(){
+            // 현재 이미지에 적용된 CSS 중 width의 크기를 증가
+            // -> 문서 내 pic이라 불리는 요소의 스타일 중, width를 증가
+            width += 100;
+            document.querySelector("#pic").style.width = width + "px";
+        }
+        function setWidthDecrease(){
+            width -= 100;
+            document.querySelector("#pic").style.width = width + "px";
+        }
+
+        /* 높이 */
+        let height = 300;
+        function setHeightIncrease(){
+            height += 100;
+            document.querySelector("#pic").style.height = height + "px";
+        }
+        function setHeightDecrease(){
+            height -= 100;
+            document.querySelector("#pic").style.height = height + "px";
+        }
+
+        /* 투명도 */
+        let opacity = 1
+        function setOpecityIncrease(){
+            // 문서 내의 pic 요소의 스타일 중 투명도 값을 증가
+            opacity += 0.2
+            document.querySelector("#pic").style.opacity = opacity;
+        }
+        function setOpecityDecrease(){
+            opacity -= 0.2
+            document.querySelector("#pic").style.opacity = opacity;
+        }
+
+        /* 각도 */
+        let rotate = 0;
+        function setRotateRight(){
+            rotate += 10
+            document.querySelector("#pic").style.transform = "rotate(" + rotate + "deg"; 
+        }
+        function setRotateLeft(){
+            rotate -= 10
+            document.querySelector("#pic").style.transform = "rotate(" + rotate + "deg"; 
+        }
+
+    </script>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="aside">
+            <div>
+                <p>너비</p>
+                <br>
+                <img src="../../../images/warior/plus_btn.png" alt="" onclick="setWidthIncrease()">
+                <img src="../../../images/warior/minus_btn.png" alt="" onclick="setWidthDecrease()">
+            </div>
+            <div>
+                <p>높이</p>
+                <br>
+                <img src="../../../images/warior/plus_btn.png" alt="" onclick="setHeightIncrease()">
+                <img src="../../../images/warior/minus_btn.png" alt="" onclick="setHeightDecrease()">
+            </div>
+            <div>
+                <p>투명도</p>
+                <br>
+                <img src="../../../images/warior/plus_btn.png" alt="" onclick="setOpecityDecrease()">
+                <img src="../../../images/warior/minus_btn.png" alt="" onclick="setOpecityIncrease()">
+            </div>
+            <div>
+                <p>각도</p>
+                <br>
+                <img src="../../../images/warior/plus_btn.png" alt="" onclick="setRotateRight()">
+                <img src="../../../images/warior/minus_btn.png" alt="" onclick="setRotateLeft()">
+            </div>
+        </div>
+        <div id="section">
+            <img id="pic" src="../../../images/warior/warior.png" alt="">
+        </div>
+    </div>
+</body>
+</html>

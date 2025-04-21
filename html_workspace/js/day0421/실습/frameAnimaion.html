@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        // 버튼을 누를 때마다 현재 보고 있는 이미지의 이름 끝자리 숫자를 증가시킴
+        
+        let n = 1;
+
+        function next(){
+            // html 문서 내의 이미지가 보유한 src 속성의 값을 내가 원하는 경로로 교체
+            document.querySelector("img").src="../../../images/hero/image" + n + ".png"; // html 문서의.img의.src 값
+            n++;
+            if (n > 18){
+                n = 1;
+            } 
+        }
+    </script>
+</head>
+<body>
+    <button onclick="next()">다음 프레임</button>
+    <img src="../../../images/hero/image1.png" alt="">
+</body>
+</html>
