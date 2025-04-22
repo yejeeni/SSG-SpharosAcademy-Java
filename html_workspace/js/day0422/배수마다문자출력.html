@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #num{
+            font-size: 200px;
+            font-weight: bold;
+            color: brown;
+        }
+    </style>
+    <script>
+        let cnt = 0;
+        // 문서 내 num요소와 요소 사이의 텍스트를 동적으로 변경
+        function count() {
+            cnt++;
+            let num = document.getElementById("num");
+            // num.innerText = "hello";
+            num.innerText = (cnt % 5 == 0) ? "사과" : cnt;
+            // num.innerText = cnt;
+        }
+    </script>
+</head>
+<body>
+    <button onclick="count()">카운터 증가</button>
+
+    <div id="num">
+        0
+    </div>
+</body>
+</html>

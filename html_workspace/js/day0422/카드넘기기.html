@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* a태그를 버튼처럼 보이게 */
+        a{
+            background-color: brown;
+            width: 120px;
+            height: 70px;
+            /* display로 inline과 block을 합한 속성으로 변경. 인라인 속성은 유지하여 다른 태그 요소와 공존이 가능하며, 너비, 높이, 마진 등이 적용 가능 */
+            display: inline-block;
+            border-radius: 10px;
+            line-height: 70px;
+            text-align: center;
+            text-decoration: none;
+            color: yellow;
+        }
+        a:hover{
+            background-color: palevioletred;
+        }
+    </style>
+    <script>
+        // 현재 보고 있는 카드의 다음 사진이 나오도록 src 교체
+        let cnt = 1;
+        function next(){
+            cnt++;
+            let card = document.querySelector("#card");
+            card.src = "../../images/card/h" + cnt + ".jpg";
+        }
+    </script>
+</head>
+<body>
+    <!-- 3마다 조커 -->
+     
+    <a href="javascript:next()">다음 카드</a>
+    <div>
+        <img id="card" src="../../images/card/h1.jpg" alt="">
+    </div>
+</body>
+</html>

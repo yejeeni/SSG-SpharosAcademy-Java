@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #wrapper{
+            width: 900px;
+            height: 600px;
+            background-color: beige;
+        }
+        #aside{
+            width: 200px;
+            height: 100%;
+            background-color: orange;
+            float: left;
+        }
+        #joypad{
+            margin: auto;
+        }
+        #section{
+            width: 700px;
+            height: 100%;
+            background-color: lightgray;
+            float: left;
+            position: relative;
+            background-image: url(../../images/plane/bg.jpg);
+        }
+        button{
+            width: 50px;
+            height: 40px;
+            background-color: lightblue;
+            border-radius: 10px;
+        }
+        #hero{
+            width: 40px;
+            position: absolute; /* 자신의 부모 요소를 기준으로 배치 */
+            left: 200px;
+            top: 100px;
+        }
+    </style>
+    <script>
+        let x = 200;     
+        let y = 100;   
+        
+        // 문서 내 hero 요소의 css 중 position 값 중 left값을 증가
+        function moveRight(){
+            let hero = document.querySelector("#hero");
+            x += 10
+            hero.style.left = x + "px";
+        }
+        function moveLeft(){
+            let hero = document.querySelector("#hero");
+            x -= 10
+            hero.style.left = x + "px";
+        }
+        function moveTop(){
+            let hero = document.querySelector("#hero");
+            y -= 10
+            hero.style.top = y + "px";
+        }
+        function moveDown(){
+            let hero = document.querySelector("#hero");
+            y += 10
+            hero.style.top = y + "px";
+        }
+    </script>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="aside">
+            <table id="joypad">
+                <tr>
+                    <td></td>
+                    <td><button onclick="moveTop()">상</button></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><button onclick="moveLeft()">좌</button></td>
+                    <td><button onclick="moveDown()">하</button></td>
+                    <td><button onclick="moveRight()">우</button></td>
+                </tr>
+            </table>
+        </div>
+        <div id="section">
+            <img id="hero" src="../../images/plane/plane.png" alt="">
+        </div>
+    </div>
+</body>
+</html>

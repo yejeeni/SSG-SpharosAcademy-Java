@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function init() {
+            let box = document.getElementById("box");
+            box.innerText = "김예진";
+        }
+    </script>
+</head>
+<body onload="init()">
+    <div id="box"></div>
+    <button ondblclick="alert()" onmouseover="alert('올렸어?')" onmouseout="alert('내렸어?')">저를 클릭하세요</button>
+
+    <select onchange="alert('다른 것으로 바꿨어?')">
+        <!-- option 사이의 텍스트는 유저가 보게 되는 디자인적 텍스트이고, 실제 서버에 전송할 데이터는 value 속성에 넣어야 함 -->
+        <option value="google.com">google</option>
+        <option value="naver.com">naver</option>
+        <option value="daum.net">daum</option>
+    </select>
+    
+    <input type="text" onchange="alert('다른 값을 넣었어?')">
+</body>
+</html>

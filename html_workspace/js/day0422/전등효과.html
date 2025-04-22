@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #wrapper{
+            width: 900px;
+            height: 600px;
+            background-color: beige;
+            margin: auto;
+        }
+        #aside{
+            width: 100px;
+            height: 100%;
+            background-color: orange;
+            float: left;
+        }
+        #section{
+            width: 800px;
+            height: 100%;
+            float: left;
+            background-color: gray;
+            position: relative; /* 자식 중 하나라도 absolute, relative가 적용되어있어, 부모가 기준을 마련해야 하므로 부모도 두 포지션 중 하나라도 적용돼있어야 함*/
+        }
+        #dark{
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            /* 부모인 section을 기준으로 위치를 결정하는 absolute로 지정 */
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            opacity: 0.8;
+        }
+        #section img{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+        }
+    </style>
+    <script>
+        let flag = false;
+
+        // 문서 내 dark 요소에 적용된 css 중, opacity의 값을 변경
+        function onoff(){
+           flag = !flag;
+           let img = document.querySelector("img"); 
+           let light = (flag) ? "on" : "off";
+           img.src = "../../images/light/switch_" + light + ".png"
+
+           let dark = document.querySelector("#dark");
+           let op = (flag) ? 0 : 0.8;
+           dark.style.opacity = op;
+
+        }
+    </script>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="aside">
+            스위치<br>
+            <img src="../../images/light/switch_off.png" alt="" onclick="onoff()">
+        </div>
+        <div id="section">
+            <img src="../../images/light/room.jpg" alt="">
+            <div id="dark"></div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #wrapper{
+            width: 800px;
+            height: 650px;
+        }
+        #aside{
+            width: 200px;
+            height: 650px;
+            background-color: antiquewhite;
+            float: left;
+        }
+        #section{
+            width: 600px;
+            height: 650px;
+            background-color: aqua;
+            float: left;
+        }
+        img{
+            width: 50px;
+        }
+        /* 가상클래스 선택자 */
+        img:hover{
+            border: 3px solid red;
+            border-radius: 50%;
+        }
+    </style>
+    <script>
+        // 문서 내 pic이라는 아이디를 갖는 요소에 적용된 css 중, opacity의 값을 0에 가깝도록 음수값을 누적
+        let op = 1; // 전역변수로 선언해야 프로그램이 끝날 때까지 값이 유지 가능
+        function setOpa(){
+            let pic = document.querySelector("#pic");
+            op -= 0.1
+            pic.style.opacity = op;
+            console.log(op);
+        }
+    </script>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="aside">
+            <div>
+                투명도<br>
+                <img src="../../images/warior/plus_btn.png" alt="" >
+                <img src="../../images/warior/minus_btn.png" alt="" onclick="setOpa()">
+            </div>
+        </div>
+        <div id="section">
+            <img id="pic" src="../../images/warior/warior.png" alt="">
+        </div>
+    </div>
+</body>
+</html>
