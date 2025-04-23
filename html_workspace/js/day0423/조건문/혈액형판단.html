@@ -1,0 +1,17 @@
+<script>
+    let bd = prompt("본인의 혈액형을 대문자로 입력하세요.");
+    let msg = "";
+
+    if (bd == 'A'){
+        msg = "세심하시네요";
+    } else if (bd == 'B'){
+        msg = "고집쟁이네요";
+    } else if (bd == 'C'){
+        msg = "오지라퍼시네요";
+    } else if (bd == 'AB'){
+        msg = "결정장애시네요";
+    } else{
+        msg = "잘못 입력하셨습니다.";
+    }
+    document.writeln(msg);
+</script>

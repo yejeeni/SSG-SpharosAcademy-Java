@@ -1,0 +1,219 @@
+<script>
+    for (let i=0; i<10; i++){
+        document.write("* ");
+    }
+    document.write("<br>");
+    console.log("----------");
+
+    for(let i=2; i<=10; i=i+2){
+        console.log(i);
+    }
+    console.log("----------");
+
+    let i = 1;
+    for(;i<=5;){
+        console.log(i);
+        i++;
+    }
+    console.log("----------");
+
+    for(let i=1; i<=96; i++){
+        document.write("*");
+        if ((i % 10) == 0){
+            document.write("<br>");
+        }
+    }
+    document.write("<br>");
+    console.log("----------");
+
+    for(let i=0; i<5; i++){
+        document.write("☆☆☆☆★<br>");
+    }    
+    document.write("<br>");console.log("----------");
+
+    for(let i=0; i<10; i++){
+        document.write(i+"회반복<br>");
+    }    
+    document.write("<br>");console.log("----------");
+
+    for(let i=0; i<10; i+=2){
+        document.write(i+"회반복<br>");
+    }    
+    document.write("<br>");console.log("----------");
+
+    for(let i=1; i<=10; i++){
+        if (i % 2 != 0){
+            document.writeln(i + "<br>");
+        } else{
+            document.writeln("짝수<br>");
+        }
+    }    
+    document.write("<br>");console.log("----------");
+
+    for(let i=1; i<=10; i++){
+        if (i % 3 != 0){
+            document.writeln(i + "회 반복<br>");
+        } else{
+            document.writeln("★<br>");
+        }
+    }    
+    document.write("<br>");console.log("----------");
+    
+    for(let i=1; i<=19; i++){
+        if (i % 5 == 0){
+            document.write("★ ");
+        } else{
+            document.write("☆ ");
+        }
+    }    
+    document.write("<br><br>");console.log("----------");
+
+    for(let i=105; i<=108; i++){
+        document.write(i + "<br>");
+    }    
+    document.write("<br><br>");console.log("----------");
+
+    for(let i=1; i<10; i++){
+        document.write("3*" + i + "=" + 3*i + "<br>");
+    }    
+    document.write("<br><br>");console.log("----------");
+
+    for(let i=1; i<10; i++){
+        document.write("3*" + i + "=" + 3*i + "<br>");
+    }    
+    document.write("<br><br>");console.log("----------");
+
+    // let input = prompt('구구단 몇 단?');
+    // for(let i=1; i<10; i++){
+    //     document.writeln(input + "*" + i + "=" + input*i + "<br>");
+    // }
+    // document.write("<br><br>");console.log("----------");
+
+    for(let i=1; i<10; i++){
+        let num = 3 * i;
+        document.writeln(num + "=" + "3*" + i + "<br>");
+    }
+    document.write("<br><br>");console.log("----------");
+
+    let j = 2;
+    for(let i=1; i<9; i++){
+        document.writeln(i + "*" + j + "=" + i * j + "<br>");
+        j++;
+    }
+    document.write("<br><br>");console.log("----------");
+    
+    for(let i=9; i>0; i--){
+        document.write("5*" + i + "=" + 5*i + "<br>");
+    }    
+    document.write("<br><br>");
+
+    // document.writeln("☆ ☆ ☆ ☆ ☆ ★ ★ ★ ★ ★");
+
+    for(let i=0;i<10;i++){
+        if (i<5){
+            document.writeln("☆ ");
+        } else{
+            document.writeln("★ ");
+        }
+    }
+    document.write("<br><br>");
+
+    for(let i=0; i<5; i++){
+        i++;
+        k = ((i%2) == 0)? "★":"☆";
+        console.log(i);
+    }
+    document.write("<br><br>");
+
+    // let n = prompt('숫자 입력');
+    // for(n; n>0; n--){
+    //     if (n == 1){
+    //         document.writeln(n);
+    //     } else{
+    //         document.writeln(n + ",");
+    //     }
+    // }
+    // document.write("<br><br>");
+
+    // let n = prompt('숫자 입력');
+    // n -= 1;
+    // let cnt = 0;
+    // while(cnt < 3){
+    //     document.writeln(n);
+    //     cnt++;
+    //     n++;
+    // }
+
+    // let c = prompt('문자');
+    // let n = prompt('숫자');
+    // for(let i=0; i<n; i++){
+    //     document.writeln(c);
+    // }
+
+    // let n = prompt('숫자 입력');
+    // for(let i=1; i<=100; i++){
+    //     if (i%n == 0){
+    //         document.writeln("*<br>");
+    //     } else{
+    //         document.writeln("*");
+    //     }
+    // }
+
+    // let n = prompt('숫자 입력');
+    // for(let i=0; i<n; i++){
+    //     for (let j=0; j<n; j++){
+    //         document.writeln("*");
+    //     }
+    //     document.writeln("<br>");
+    // }
+
+    row = 3;
+    col = 5;
+    document.write('<table border="1", width="300px", height="250px">');
+    for (let i = 0; i < row; i++) {
+            document.write('<tr>');
+        for (let j = 0; j < col; j++)  {
+            document.write('<td>');
+            document.write(i + ", " + j);
+            document.write('</td>');
+        }
+        document.write('</tr>')
+    }
+    document.write('</table>');
+    document.write("<br><br>");
+
+    for(let i=1; i<=4; i++){
+        for(let j=1; j<=5; j++){
+            document.writeln("*");
+        }
+        document.writeln("<br>");
+    }
+    document.write("<br><br>");
+
+    // row = prompt('tr');
+    // col = prompt('td');
+    // document.write('<table border="1"');
+    // for (let i = 0; i < row; i++) {
+    //         document.write('<tr>');
+    //     for (let j = 0; j < col; j++)  {
+    //         document.write('<td>');
+    //         document.write(i + ", " + j);
+    //         document.write('</td>');
+    //     }
+    //     document.write('</tr>')
+    // }
+    // document.write('</table>');
+    // document.write("<br><br>");
+
+
+    for(let i=1; i<=5; i++){
+        for(let j=1; j<=5; j++){
+            if (j % 5 != 0){
+                document.writeln("☆");
+            } else{
+                document.writeln("★<br>");
+            }
+        }
+    }
+
+</script>

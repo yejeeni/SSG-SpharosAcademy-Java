@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function init() {
+            let img;
+            let src;
+            let fruit;
+            img = document.createElement("img"); 
+
+            let input = prompt("사과, 바나나, 망고, 체리, 자두 중 하나를 고르세요.");
+
+            switch (input){
+                case '사과': fruit = "apple"; break;
+                case '바나나': fruit = "banana"; break;
+                case '망고': fruit = "mango"; break;
+                case '체리': fruit = "apple"; break;
+                case '자두': fruit = "plum"; break;
+                default: fruit = false; 
+            }
+            
+            if (!fruit){
+                alert("잘못 입력하셨습니다.");
+            } else{
+                img.src = "../../../../images/fruit/" + fruit + ".png";
+                main = document.getElementById("main");
+                main.appendChild(img);
+            }
+
+        }
+
+    </script>
+</head>
+<body onload="init()">
+    <div id="main">
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<script>
+    // switch-case: else if와 동일
+
+    let bd = prompt("혈액형을 입력하세요");
+    
+    switch(bd){ // 소괄호 안에는 문자, 숫자, 논리값만
+        case "A": 
+        document.writeln("A네요"); 
+            break;
+        case "B": document.writeln("B네요"); 
+            break; 
+        case "AB": document.writeln("AB네요"); 
+            break;
+        case "O": document.writeln("O네요"); 
+            break;
+        // default: case에 지정된 조건 외의 모든 경우
+        default:
+            document.writeln("잘못된 입력입니다.");
+    }
+</script>

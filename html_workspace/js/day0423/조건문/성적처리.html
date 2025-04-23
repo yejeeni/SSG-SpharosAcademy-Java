@@ -1,0 +1,20 @@
+<script>
+
+    // 판단 대상이 단일 조건일 때는 if문
+    // 판단 대상이 2가지만으로 분류될 때는 if-else, 삼항연산자
+    // 판단 대상이 3가지 이상일 경우 else if문
+
+    let n = prompt('점수를 입력하세요.');
+
+    if (n >= 90){
+        document.writeln("A학점");
+    } else if(n >= 80){
+        document.writeln("B학점");
+    } else if(n >= 70){
+        document.writeln("C학점");
+    } else if(n >= 60){
+        document.writeln("D학점");
+    } else{
+        document.writeln("F학점");
+    }
+</script>

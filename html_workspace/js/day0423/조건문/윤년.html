@@ -1,0 +1,9 @@
+<script>
+    let year = prompt('연도를 입력하세요.'); // 사용자로부터 입력을 받음
+
+    if (year % 4 == 0 && year % 100 != 0|| year % 400 == 0) {
+        document.write("입력한 해의 2월은 29일까지입니다."); // html문서에 지정한 문자열을 출력
+    } else{
+        document.write("입력한 해의 2월은 28일까지입니다.");
+    }
+</script>

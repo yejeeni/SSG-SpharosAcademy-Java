@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function showInput(){
+            let n = prompt("과일을 선택하세요.\n1.사과 2.바나나 3.체리 4.망고 5.자두");
+            // prompt는 문자열 입력을 염두해둔 메시지 창이므로, 사용자가 숫자를 넣으려 해도 내부적으로 문자로 이해
+            // parseInt(문자) : 문자를 정수로 변환
+            n = parseInt(n);
+
+            let img = document.querySelector("img");
+
+            // else if로 처리
+            // if(n == 1){
+            //     img.src = "../../../../images/fruit/apple.png";
+            // } else if(n == 2){
+            //     img.src = "../../../../images/fruit/banana.png";
+            // } else if(n == 3){
+            //     img.src = "../../../../images/fruit/cherry.png";
+            // } else if(n == 4){
+            //     img.src = "../../../../images/fruit/mango.png";
+            // } else if(n == 5){
+            //     img.src = "../../../../images/fruit/plum.png";
+            // } else{
+            //     alert("1부터 5 사이의 과일 번호를 입력하세요.");
+            // }
+            
+            // switch로 처리
+            let filename;
+            switch(n){
+                case 1:
+                    filename = "apple.png";
+                    break;
+                case 2:
+                    filename = "banana.png";
+                    break;
+                case 3:
+                    filename = "cherry.png";
+                    break;
+                case 4:
+                    filename = "mango.png";
+                    break;
+                case 5:
+                    filename = "plum.png";
+                    break;
+                default:
+                    alert("번호에 맞게 입력하세요.");
+            }
+            
+            // 조건 판단이 끝난 후에는 파일명 정보만 있으므로, 파일명 앞에 경로도 추가
+            filename = "../../../../images/fruit/" + filename;
+            img.src = filename;
+        }
+    </script>
+</head>
+<body>
+    <button onclick="showInput()">프롬프트 띄우기</button>
+    <img src="" alt="">
+</body>
+</html>

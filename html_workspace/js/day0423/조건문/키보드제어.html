@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #stage{
+            width: 1000px;
+            height: 576px;
+            background-image: url(../../images/plane/bg.jpg);
+            background-position: 0px 0px; /* x축, y축*/
+            margin: auto;
+            position: relative; /* 자식 요소의 포지션 적용을 위함 */
+        }
+    </style>
+    <script>
+        let stage;
+        let img;
+        let bgX = 0; /* 배경의 x, y값을 누적시킬 전역변수*/
+        let bgY = 0;
+        let plX = 300;
+        let plY = 200;
+
+        // js로 css의 배경 제어
+        /* stage div에 적용된 배경 이미지 포지션의 left값을 감소시켜 애니메이션 효과 적용 */
+        function bgEffect(){ 
+            // stage를 문서 load와 동시에 전역변수에 받아 놓았으므로 활용
+            bgX -= 5;
+            stage.style.backgroundPosition = bgX + "px 0px";
+        }
+
+        function init(){
+            // 이전까지는 img를 body태그에 직접 작성해서 존재시켰으나, 이번에는 자바스크립트에서 동적으로 이미지를 생성하여 화면에 부착
+            // 기존에 없었던 요소를 생성할 때는 createElement(), 문서에 이미 존재하는 요소를 가져올 때는 getElementByID(), querySelector() 이용
+            img = document.createElement("img"); 
+            img.src = "../../images/plane/plane.png";
+            img.style.width = "45px"; // 프로그래밍으로 css 제어
+            img.style.position = "absolute"; // 부모를 기준으로 한 위치 지정
+            img.style.left = 300 + "px";
+            img.style.top = 200 + "px";
+
+            // 생성된 이미지를 어느 부모 밑에 부착할지 결정
+            stage = document.getElementById("stage");
+            stage.appendChild(img); // 매개변수 img를 자식으로 
+            
+            // 사람 대신 컴퓨터(JS)가 우리가 정의해놓은 함수를 호출하는 기능을 이용하여, 자동 배경 효과 구현
+            setInterval("bgEffect()", 30);
+        }
+
+        function moveLeft(){
+            if (plX <= 0){
+                    plX = 0
+                } else{ 
+                    plX -= 10;
+                }
+            img.style.left = plX + "px";
+        }
+        function moveRight(){
+            if (plX >= 1000 - 45){
+                    plX = 1000 - 45;    
+                } else{
+                    plX += 10;
+                }
+                img.style.left = plX + "px"; // 전역변수 img의 left값을 증가
+        }
+        function moveUp() {
+            if (plY <= 0){
+                    plY = 0;
+                } else{
+                    plY -= 10;
+                }
+                img.style.top = plY + "px";
+        }
+        function moveDown() {
+            if (plY >= 576 - 30.5) {
+                    ply = 576 - 30.5;
+                } else {
+                    plY += 10;
+                }
+                img.style.top = plY + "px";
+        }
+
+        /* 사용자가 누르는 방향키의 아스키코드를 얻어와서, 좌측키면 left 감소, 우측키면 left 증가, 상단키면 top 감소, 하단키면 top 증가 */
+        function move(){
+            // console.log(event); // 사용자가 일으킨 이벤트 정보 확인
+            let key = event.keyCode;
+            
+            switch(key) {
+                case 37: 
+                moveLeft();
+                break;
+                case 39: 
+                moveRight();
+                break;
+                case 38: 
+                moveUp();
+                break;
+                case 40: 
+                moveDown();
+                break;
+            }
+            
+            // if(key == 37){ // 좌측키
+            //     if (plX <= 0){
+            //         plX = 0
+            //     } else{ 
+            //         plX -= 10;
+            //     }
+            //     img.style.left = plX + "px";
+            // } else if(key == 39){ // 우측키
+            //     if (plX >= 1000 - 45){
+            //         plX = 1000 - 45;    
+            //     } else{
+            //         plX += 10;
+            //     }
+            //     img.style.left = plX + "px"; // 전역변수 img의 left값을 증가
+            // } else if(key == 38){ // 상단키;
+            //     if (plY <= 0){
+            //         plY = 0;
+            //     } else{
+            //         plY -= 10;
+            //     }
+            //     img.style.top = plY + "px";
+            // } else if(key == 40){ // 하단키;
+            //     if (plY >= 576 - 30.5) {
+            //         ply = 576 - 30.5;
+            //     } else {
+            //         plY += 10;
+            //     }
+            //     img.style.top = plY + "px";
+            // }
+        }
+        </script>
+</head>
+<body onload="init()" onkeydown="move()"> <!-- onload에 문서 로드가 완료되면 호출할 함수 지정 -->
+    <div id="stage">
+        
+    </div>
+</body>
+</html>
