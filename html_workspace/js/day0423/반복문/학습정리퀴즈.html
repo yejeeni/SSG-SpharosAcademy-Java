@@ -26,13 +26,17 @@
     document.write("<br>");
     console.log("----------");
 
-    for(let i=0; i<5; i++){
-        document.write("☆☆☆☆★<br>");
+    for(let i=1; i<=25; i++){
+        if (i%5 == 0){
+            document.writeln("★<br>");
+        } else{
+            document.write("☆");
+        }
     }    
     document.write("<br>");console.log("----------");
 
     for(let i=0; i<10; i++){
-        document.write(i+"회반복<br>");
+        document.write(`${i}회반복<br>`);
     }    
     document.write("<br>");console.log("----------");
 
@@ -57,6 +61,10 @@
             document.writeln("★<br>");
         }
     }    
+    for(let i=1; i<=10; i++){
+        (i%3 != 0)? document.writeln(i + "회 반복<br>") : document.writeln("★<br>");
+    }    
+
     document.write("<br>");console.log("----------");
     
     for(let i=1; i<=19; i++){
@@ -84,8 +92,9 @@
     document.write("<br><br>");console.log("----------");
 
     // let input = prompt('구구단 몇 단?');
+    // input = parseInt(input);
     // for(let i=1; i<10; i++){
-    //     document.writeln(input + "*" + i + "=" + input*i + "<br>");
+    //     document.writeln(`${input}*${i}=${input*i}<br>`);
     // }
     // document.write("<br><br>");console.log("----------");
 
@@ -125,6 +134,7 @@
     }
     document.write("<br><br>");
 
+    // document.write("23번<br>");
     // let n = prompt('숫자 입력');
     // for(n; n>0; n--){
     //     if (n == 1){
@@ -144,8 +154,9 @@
     //     n++;
     // }
 
+    // document.writeln("25번");
     // let c = prompt('문자');
-    // let n = prompt('숫자');
+    // let n = parseInt(prompt('숫자'));
     // for(let i=0; i<n; i++){
     //     document.writeln(c);
     // }
@@ -214,6 +225,30 @@
                 document.writeln("★<br>");
             }
         }
-    }
+    } document.write("<br><br>");
+
+    for(let i=2; i<=9; i++){
+        for(let j=2; j<=9; j++){
+            document.writeln(j + "*1=" + j);
+        }
+        document.writeln("<br>");
+    } document.write("<br><br>");
+
+    for(let i=1; i<=9; i++){
+        for(let j=2; j<=9; j++){
+            document.writeln(`${j}*1=${j} `);
+        }
+        document.writeln("<br>");
+    }document.write("<br><br>");
+
+
+    for(let i=2; i<=9; i++){
+        for(let j=2; j<=9; j++){
+            document.writeln(`${i}*${j}=${i * j}`)
+                // i + "*" + j + "=" + i * j);
+        }
+        document.writeln("<br>");
+    } 
+    document.write("<br><br>");
 
 </script>

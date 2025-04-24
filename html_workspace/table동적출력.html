@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        let f = prompt("몇 층까지?");
+        let r = prompt("몇 호까지?");
+
+        // 문서에 동적으로 지정된 문자열을 출력
+        document.writeln("<table border='1px'>");
+        
+        for(let i=1; i<=f; i++){
+            document.writeln("<tr>");
+            for(let j=1; j<=r; j++){
+                document.writeln(`<td>${i}0${j}호</td>`);
+            }
+            document.writeln("</tr>");
+        }
+        document.writeln("</table>");
+    </script>
+</head>
+<body>
+    <!-- <table border="1px">
+        <tr>
+            <td>201</td>
+            <td>202</td>
+            <td>203</td>
+        </tr>
+        <tr>
+            <td>101</td>
+            <td>102</td>
+            <td>103</td>
+        </tr>
+    </table> -->
+</body>
+</html>

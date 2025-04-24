@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #wrapper{
+            width: 700px;
+            height: 600px;
+        }
+        #header{
+            width: 100%;
+            height: 80px;
+            background-color: gray;
+        }
+        #content{
+            width: 100%;
+            height: 520px;
+            background-color:beige;
+        }
+        #header div{
+            width: 100px;
+            height: 80px;
+            float: left;
+        }
+        #header div:hover{
+            box-sizing: border-box;
+            border: 2px solid black;
+        }
+        #header div:nth-child(1){background-color: red;}
+        #header div:nth-child(2){background-color: orange;}
+        #header div:nth-child(3){background-color: yellow;}
+        #header div:nth-child(4){background-color: green;}
+        #header div:nth-child(5){background-color: lightblue;}
+        #header div:nth-child(6){background-color: blue;}
+        #header div:nth-child(7){background-color: purple;}
+    </style>
+    <script>
+        function setColor(color){ // 매개변수 c의 값은 호출자가 결정
+            // 문서 내 content 아이디를 갖는 요소의 배경색 변경
+            let content = document.getElementById("content");
+            content.style.backgroundColor = color;
+        }
+        function removeColor(){
+            let content = document.getElementById("content");
+            content.style.backgroundColor = null;
+        }
+    </script>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="header">
+            <div onclick="setColor('red')"></div>
+            <div onclick="setColor('orange')"></div>
+            <div onclick="setColor('yellow')"></div>
+            <div onclick="setColor('green')"></div>
+            <div onclick="setColor('lightblue')"></div>
+            <div onclick="setColor('blue')"></div>
+            <div onclick="setColor('purple')"></div>
+        </div>
+        <div id="content" onclick="removeColor()">
+        </div>
+    </div>
+</body>
+</html>
