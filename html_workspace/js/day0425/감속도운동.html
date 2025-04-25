@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        let div;
+        let a = 0.1; // 비율계수(기울기). 숫자가 높을수록 프레임이 낮은 것처럼 움직임
+        let targetX = 800; // 목표 지점
+
+        // 이동할 위치 = 현재위치 + 계수 * (목표위치 - 현재위치)
+        // x = x + a * (target - x)
+        function move(){
+            div.style.left = parseInt(div.style.left) + a * (targetX - parseInt(div.style.left)) + "px";
+            setTimeout("move()", 10);
+        }
+
+        function createRect(){
+            div = document.createElement("div");
+            div.style.backgroundColor = "red";
+            div.style.width = 50+"px";
+            div.style.height = 50+"px";
+            div.style.position = "absolute";
+            div.style.left = 0+"px";
+            div.style.top = 100+"px";
+            document.body.appendChild(div);
+        }
+
+        // 프로그램 가동과 동시에 물체 생성
+        addEventListener("load", function(){
+            createRect(); // 물체 생성 함수 호출
+        });
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

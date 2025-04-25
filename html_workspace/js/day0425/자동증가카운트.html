@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        input{
+            width: 300px;
+            height: 300px;
+            font-size: 200px;
+            font-weight: bold;
+            color: red;
+            text-align: right;
+        }
+    </style>
+    <script>
+        let n = 0;
+
+        // 1씩 증가시키는 카운트 함수
+        function setCount(){
+            ++n;
+            // 증가된 데이터를 화면에 출력
+            document.querySelector("input").value = n;
+            setTimeout(setCount, 100);
+        }
+
+        addEventListener("load", function(){
+            let bt = document.querySelector("button");
+            // 버튼에 클릭 이벤트 연결
+            bt.addEventListener("click", function(){
+                this.disabled = true; // 버튼을 비활성화
+                setCount();
+            });
+        });
+    </script>
+</head>
+<body>
+    <button>카운트 시작</button>
+    <br>
+    <input type="text">
+</body>
+</html>

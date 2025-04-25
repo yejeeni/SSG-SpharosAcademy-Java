@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+    </style>
+    <script>
+        addEventListener("mousemove", function(){
+            // 사용자가 일으킨 모든 이벤트는 event 객체가 수집
+            let x = event.clientX; // 마우스의 x좌표
+            let y = event.clientY; // 마우스의 y좌표
+            // console.log(`x: ${x}, y: ${y}`);
+        })
+    </script>
+</head>
+<body>
+    <div id="wrapper">
+        <div></div>
+    </div>
+</body>
+</html>

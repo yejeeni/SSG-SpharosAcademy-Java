@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            margin: 0px;
+        }
+        #wrapper{
+            width: 850px;
+            height: 550px;
+        }
+        #aside{
+            width: 150px;
+            height: 100%;
+            background-color: #ececec;
+            float: left;
+            overflow: scroll;
+        }
+        #content{
+            width: 700px;
+            height: 100%;
+            background-color: #e2ded8;
+            float: left;
+            position: relative;
+        }
+        </style>
+    <script>
+        // 프로그램에서 자주 사용될 가능성이 있는 요소들은 다른 함수 영역(scope)에서도 접근할 수 있도록, 초기화 작업시 전역변수화
+        let content;
+        let aside;
+        let img;
+        let flag = false;
+        
+        function createFood(){
+            img = document.createElement("img");
+            img.src = "../../images/food/burger.png";
+            img.style.width = 70+"px";
+            img.style.position = "absolute"; // 부모를 기준으로 위치 선정
+            img.style.left = "50px";
+            img.style.top = "50px";
+            // 음식 움직임의 기준은 flag 변수이므로, 클릭 시마다 flag의 값을 변경
+            img.addEventListener("click", function(){
+                flag = !flag;
+                if (flag){
+                    this.style.border = "1px solid red";
+                    // this.style.padding = "0px";
+                    this.style.borderRadius = "30%";
+                } else{
+                    this.style.border = "none";
+                }
+            })
+            
+            content.appendChild(img);
+        }
+        
+        function createDish(){
+            let dish = document.createElement("div");
+            dish.style.width = 150+"px";
+            dish.style.height = 150+"px";
+            dish.style.position = "absolute"; 
+            dish.style.backgroundColor = 'white';
+            dish.style.border = "1px solid black";
+            dish.style.boxShadow = "0 0 0 20px #ececec inset";
+            dish.style.borderRadius = "50%";
+            dish.style.left = "450px";
+            dish.style.top = "200px";
+            
+            // 안쪽의 검은 테두리를 표현할 div
+            let innerRing = document.createElement("div");
+            innerRing.style.width = "100px";       // 살짝 작게
+            innerRing.style.height = "100px";
+            innerRing.style.border = "5px solid #e2ded8";  // 얇은 검정 테두리
+            innerRing.style.borderRadius = "50%";
+            innerRing.style.margin = "auto";
+            innerRing.style.position = "absolute";
+            innerRing.style.top = "50%";
+            innerRing.style.left = "50%";
+            innerRing.style.transform = "translate(-50%, -50%)";
+            innerRing.style.backgroundColor = "transparent";  // 안쪽 투명
+            
+            dish.appendChild(innerRing); // 접시 안에 링 넣기
+            // content = document.getElementById("content");
+            content.appendChild(dish);
+        }
+        
+        function init(){
+            content = document.getElementById("content");
+            aside = document.getElementById("aside");
+            createDish();
+            createFood(); // 음식 등장
+            
+            // 문서 전체를 대상으로 마우스 이벤트 연결
+            document.body.addEventListener("mousemove", function(){
+                // 마우스에 의한 x, y 좌표를 음식의 좌표와 일치시키면 따라다니는 효과를 낼 수 있음
+                let x = event.clientX;
+                let y = event.clientY;
+                
+                // 아래 조건식은 flag에 따라 수행 여부가 결정됨
+                if (flag){
+                    if (25 <= x && x <= 750-70 && y >= 25 && y <= 550-50){
+                        img.style.left = (x-30)+"px";
+                        img.style.top = (y-30)+"px";
+                    }
+                }
+                
+                // aside 영역에 좌표 출력
+                aside.innerHTML = aside.innerHTML + `x=${x}, y=${y}<br>`;
+            });
+        }
+        
+        // 문서가 로드된 이후에 작업 진행
+        addEventListener("load", function(){
+            init();
+        });        
+    </script>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="content"></div>
+        <div id="aside"></div>
+    </div>
+</body>
+</html>

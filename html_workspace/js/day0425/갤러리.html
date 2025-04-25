@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #wrapper{
+            width: 700px;
+            height: 550px;
+            margin: auto;
+        }
+        #aside{
+            width: 120px;
+            height: 100%;
+            background-color:darkolivegreen;
+            float: left;
+            text-align: center; /* 내부 컨텐츠 중앙 정렬 */
+            overflow: scroll; /* 현재 영역을 넘기는 컨텐츠가 생기면 스크롤 생성 */
+        }
+        #section{
+            width: 580px;
+            height: 100%;
+            background-color: bisque;
+            float: left;
+        }
+        #section img{
+            width: 100%;
+            text-align: center;
+        }
+        #aside img{
+            width: 90%;
+            margin-top: 5%;
+        }
+    </style>
+    <script>
+        function createThumb(){
+            // 정적코드 방식으로 태그로 이미지를 일일이 작성하지 않고, 프로그램 실행 시 동적으로 이미지를 생성하여 aside의 자식으로 부착
+            for(let i=1; i<=9; i++){
+                // 이미지 생성
+                let img = document.createElement("img");
+                img.src = `../../images/geographic/animal${i}.jpg`;
+                // 이미지에 클릭 이벤트 연결
+                img.addEventListener("click", function(){
+                    // 우측의 content영역에 지금 누른 썸네일 이미지가 큰 이미지로 나오도록
+                    // console.log(this.src);
+                    document.querySelector('#section img').src = this.src; // 현재 코드 블럭에서 this = img
+                });
+                // img를 aside의 자식으로 부착
+                let aside = document.getElementById("aside");
+                aside.appendChild(img);
+            }
+        }
+        /* 이벤트 핸들러 구현을 태그에 직접 작성하는 방법도 있지만, js의 프로그래밍적 방법을 이벤트를 연결하는 방법도 있음 */
+        // addEventListener() 메서드의 두번째 매개변수 값으로는 함수가 올 수 있는데, 이 함수는 해당 이벤트 발생시에만 호출되어 재사용성이 없으므로
+        // 이름 없는 익명함수로 처리 
+        addEventListener("load", function(){ // addEventListener 앞에 대상이 없는데, 기본적으로 window가 되어있음
+            createThumb(); // 썸네일 생성 함수 호출
+        });
+    </script>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="aside"></div>
+        <div id="section"><img></div>
+    </div>
+</body>
+</html>
