@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body{margin: 0px;}
+    #wrapper{
+        height: 900px;
+        background-image: url("../../../images/firefly/night.jpg");
+        background-size: 100% 100%;
+    }
+</style>
+<script src="../../lib/common.js"></script>
+<script>
+    // console.log("랜덤값 ", getRandom(5));
+
+    let targetX = 600, targetY = 700;
+    let a = 0.1;
+    let img;
+    let count = 0; // 반딧불 위치를 언제 바꿀지 결정짓는 변수
+
+    function init(){
+        img = document.createElement("img");
+        img.src = "../../../images/firefly/bug.png";
+        img.style.width = 40+"px";
+        img.style.position = "absolute";
+        img.style.left = 150+"px";
+        img.style.top = 150+"px";
+        
+        document.getElementById("wrapper").appendChild(img);
+    }
+    function move(){
+        img.style.left = parseFloat(img.style.left) + a * (targetX - parseFloat(img.style.left)) + "px";
+        img.style.top = parseFloat(img.style.top) + a * (targetY - parseFloat(img.style.top)) + "px";
+    }
+    function setPos(){
+        targetX = getRandom(11) * 100; // 화면 너비 (0~1000)
+        targetY = getRandom(10) * 100; // 화면 높이 (0~900)
+    }
+    function gameLoop(){
+        count++;
+        // console.log(count);
+        if (count % 80 == 0){
+            setPos();
+        }
+        move();
+    }
+    addEventListener("load", function(){
+        init();
+        let wrapper = document.getElementById("wrapper");
+        wrapper.addEventListener("mousedown", function(){
+            targetX = event.clientX;
+            targetY = event.clientY;
+        })
+        setInterval("gameLoop()", 80);
+    });
+</script>
+<body>
+    <div id="wrapper">
+    </div>
+</body>
+</html>

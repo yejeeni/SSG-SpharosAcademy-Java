@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            margin: 0px;
+        }
+        #wrapper{
+            width: 100%;
+            height: 600px;
+            background-color:bisque;
+            position: relative;
+        }
+    </style>
+    <script>
+        let img;
+        let a = 0.1; // 비율계수
+        let targetX = 650; // 목표지점 x좌표
+        let targetY = 500;
+
+        function createPic(){
+            img = document.createElement("img");
+            img.src = "../../images/1654368_character_eat_game_leisure_packman_icon.png";
+            img.style.width = 40+"px";
+            img.style.position = "absolute";
+            img.style.left = 200+"px";
+            img.style.top = 150+"px";
+    
+            document.getElementById("wrapper").appendChild(img);
+        }
+        // 목표 지점에 부드럽게 다가가는 감속도 운동으로 구현
+        function move(){
+            // 이동 지점 = 현재 지점 + 비율계수 * (목표 지점 - 현재 지점)
+            img.style.left = parseFloat(img.style.left) + a * (targetX - parseFloat(img.style.left)) + "px";
+            img.style.top = parseFloat(img.style.top) + a * (targetY - parseFloat(img.style.top)) + "px";
+        }
+        function gameLoop(){
+            // console.log("gameLoop() called..");
+            move();
+        }
+        addEventListener("load", function(){
+            createPic();
+            // 마우스 이벤트 연결
+            document.getElementById("wrapper").addEventListener("mousemove", function(){
+                targetX = event.clientX - 20;
+                targetY = event.clientY - 20;
+            });
+            setInterval("gameLoop()", 10);
+        });
+    </script>
+</head>
+<body>
+    <div id="wrapper">
+    </div>
+</body>
+</html>

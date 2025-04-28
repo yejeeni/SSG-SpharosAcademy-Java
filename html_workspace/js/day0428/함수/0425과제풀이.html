@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #stage{
+            width: 700px;
+            height: 400px;
+            background-color: beige;
+            position: relative;
+        }
+    </style>
+    <script>
+        let rect;
+        let x = 0; // rect의 위치를 결정할 전역변수
+        let flag = true; // 방향을 결정하는 변수
+        let autoFlag = false; // 자동호출 여부 결정
+        
+        // 자바스크립트는 2가지 플랫폼으로 개발 가능
+        // 1. 브라우저 기반 JS. 최상위: window
+        // 2. Node.js 기반 JS. 최상위: global
+        function crateRect(){
+            rect = document.createElement("div");
+            rect.style.width = 30+"px";
+            rect.style.height = 30+"px";
+            rect.style.background = "red";
+            rect.style.borderRadius = 50+"%";
+            rect.style.position = "absolute";
+            rect.style.left = 0+"px";
+            rect.style.top = 100+"px";
+
+            let stage = document.getElementById("stage");
+            stage.appendChild(rect);
+        }
+        function move(){
+            // 문서 내 rect라는 요소에 적용된 css 중 left 값을 증가시키다가, 일정 시점에 도달하면 방향을 바꿈
+            if (flag){
+                x += 5;
+            } else{
+                x -= 5;
+            }
+            rect.style.left = x+"px";
+
+            // 우측 경계벽을 만나거나 좌측 시작점을 만나는 경우 방향이 뒤집혀야 함
+            if (x >= 700 || x <= 0){
+                flag = !flag;
+            }
+        }
+        function auto(){
+            // console.log("오토");
+            if (autoFlag){
+                move();
+            } else{
+
+            }
+        }
+        addEventListener("load", function(){
+            // 사각형 생성
+            crateRect();
+
+            // 각 버튼들에 이벤트 연결
+            document.querySelector("button:nth-child(1)").addEventListener("click", function(){
+                move();
+            });
+            document.querySelector("button:nth-child(2)").addEventListener("click", function(){
+                autoFlag = true;
+                auto();
+            });
+            document.querySelector("button:nth-child(3)").addEventListener("click", function(){
+                autoFlag = false;
+            });
+
+            // 멈추지 않는 루프를 하나 실행. 
+            // setTimeout은 지정된 시간이 흐르고나서 함수를 호출한 뒤 자동 소멸하지만, setInterval은 지정된 시간 간격으로 함수를 계속 호출
+            setInterval("auto()", 10);
+        })
+    </script>
+</head>
+<body>
+    <button>수동</button>
+    <button>자동</button>
+    <button>정지</button>
+    <div id="stage"></div>
+</body>
+</html>
