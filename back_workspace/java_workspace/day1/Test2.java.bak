@@ -1,0 +1,24 @@
+/* 변수와 자료형 */
+class Test2{
+	// 자바의 실행부. 이 함수가 없다면 java.exe의 대상이 될 수 없어 실행될 수 없음.
+	public static void main(String arg[]){
+		// 기본 자료형: 문자, 숫자, 논리
+		
+		// 자바의 문자는 문자와 문자열로 구분
+		// 자바의 문자 자료형 char
+		char a = "a"; // 한 글자를 문자형이라고 함
+		String str = "hello world"; // 두 글자 이상의 문자 집합을 문자열이라고 함
+		
+		// 자바의 논리값은 js 및 다른 언어와 동일
+		// 단, 다른 언어와 달리 자바는 1이 true, 0이 false로 취급되지 않음
+		boolean b = true;
+		
+		// 숫자형은 크게 정수, 실수로 구분
+		// 정수: 용량에 따라 byte < short < int < long
+		// 실수: float <  double
+		int x = 75;
+		float y = 5.6f; // 자바에서는 소수점만 적으면 무조건 double로 취급하므로, float 형을 쓰려면 숫자 뒤에 f 추가 필요
+		
+		System.out.println(str);
+	}
+}
