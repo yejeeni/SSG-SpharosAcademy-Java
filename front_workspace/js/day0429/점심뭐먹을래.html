@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../lib/common.js"></script>
+    <script>
+        addEventListener("load", function(){
+            let foodArray = ["부대찌개", "김치찌개", "쌀국수", "마라탕", "초밥", "샤브샤브", "삼겹살", "항정살", "갈비", "순대국밥"];
+            document.writeln(`오늘 점심은 ${foodArray[getRandom(foodArray.length - 1)]}`);
+        });
+    </script>
+</head>
+<body>
+    <div>
+    </div>
+</body>
+</html>

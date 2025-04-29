@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #wrapper{
+            margin: auto;
+            width: 500px;
+            height: 340px;
+        }
+        #mask{
+            width: 100%;
+            height: 340px;
+            background-color: yellow;
+            /* margin: auto; */
+            position: relative; /* static에 left와 top 지원*/
+            border: 4px solid red;
+            overflow: hidden;
+        }
+        #footer div:hover{
+            background-color: blue;
+        }
+    </style>
+    <script>
+        let imgArray = [
+            "img0.jpg",
+            "img1.jpg",
+            "img2.jpg",
+            "img3.jpg",
+            "img4.jpg",
+            "img5.jpg",
+            "img6.jpg"
+        ]
+
+        let box;
+
+        // 이미지를 7개 생성하고, 7개 이미지를 담게될 바깥쪽 부모인 box를 생성하여 mask의 자식요소로 부착
+        function createImg(){
+            box = document.createElement("div");
+            box.style.backgroundColor = "green";
+            box.style.width = 500 * imgArray.length + "px";
+            box.style.height = 340+"px";
+            box.style.position = "absolute";
+            box.style.left = 0+"px"; // 자바스크립트에서 제어하기 전에 초기화해서 css와 호환이 안 되는 것을 방지!!
+            
+            // box 안에 이미지 배열 수만큼의 슈렉을 생성하여 자식으로 부착
+            for (let i=0; i<imgArray.length; i++){
+                let img = document.createElement("img");
+                img.src = "../../images/shurek/" + imgArray[i];
+                img.style.position = "absolute"; // 부모인 box를 기준으로 배치
+                img.style.left = 500 * i +"px";
+                box.append(img);
+    
+                let mask = document.getElementById("mask");
+                mask.appendChild(box); // 이미지박스를 자식으로 추가
+            }           
+        }
+
+        let a = 0.1;
+        // 사용자가 선택한 인덱스의 슈렉 이미지를 box값에 위치시키기
+        function move(){
+            // console.log(box.style.left);
+            // box.style.left = -500 * n + "px";
+            box.style.left = parseFloat(box.style.left) + a * (-500 * n - parseFloat(box.style.left)) + "px";
+           
+        }
+
+        let n = 0; // 사용자가 현재 보고 있는 사진의 인덱스를 저장
+        function createControl(){
+            for (let i=0; i<imgArray.length; i++){
+                let dot = document.createElement("div");
+                dot.style.backgroundColor = "lightgray";
+                dot.style.width = 30+"px";
+                dot.style.height = 30+"px";
+                dot.style.margin = 1+"px";
+                dot.style.display = "flex";
+                dot.style.borderRadius = 50+"%";
+                dot.style.justifyContent = "center";
+                dot.style.alignItems = "center";
+                dot.textContent = i;
+                dot.addEventListener("mouseover", function(){
+                    // console.log(i+ "번째 사진을 보고싶어");
+                    n = i;
+                    move(n);
+                });
+                dot.addEventListener("mousemove", function(){
+                    dot.style.backgroundColor = "blue";
+                });
+                dot.addEventListener("mouseout", function(){
+                    dot.style.backgroundColor = "lightgray";
+                });
+
+                let footer = document.getElementById("footer");
+                footer.appendChild(dot);
+            }
+        }
+
+        function createFooter(){
+            let footer = document.getElementById("footer");
+            footer.style.display = "flex";
+            footer.style.width = 100+"%";
+            footer.style.justifyContent = "center";
+            footer.style.alignItems = "center";
+            footer.style.backgroundColor = "beige";
+        }
+
+        function gameLoop(){
+            move();
+        }
+
+        addEventListener("load", function(){
+            createImg(); // 이미지들 생성
+            createFooter();
+            createControl();
+            setInterval("gameLoop()", 10);
+        });
+
+        
+    </script>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="mask"></div>
+        <div id="footer"></div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #wrapper{
+            width: 400px;
+            height: 550px;
+            margin: auto;
+            background-color: gainsboro;
+        }
+        #content{
+            width: 100%;
+            height: 250px;
+            background-color: green;
+            box-shadow: 0 0 0 2px black inset;
+            text-align: center;
+            font-size: 100px;
+            font-weight: bold;
+            line-height: 200px;
+        }
+        #input_area{
+            width: 100%;
+            height: 100px;
+            background-color: greenyellow;
+            box-shadow: 0 0 0 2px black inset;
+            text-align: center;
+        }
+        #input_area input{
+            width: 98%;
+            height: 100%;
+            border: 0px;
+            font-size: 50px;
+            text-align: center;
+        }
+        #feedback{
+            width: 100%;
+            height: 150px;
+            background-color: lightcyan;
+            box-shadow: 0 0 0 2px black inset;
+            font-size: 100px;
+            text-align: center;
+        }
+        #score{
+            width: 100%;
+            height: 50px;
+            background-color:blanchedalmond;
+            box-shadow: 0 0 0 2px black inset;
+            font-size: 50px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 50px;
+        }
+        @keyframes shine {
+            0%   { color: #ffd700; text-shadow: 0 0 5px #ffd700; }
+            50%  { color: #ffffff; text-shadow: 0 0 20px #ffff00, 0 0 30px #ffa500; }
+            100% { color: #ffd700; text-shadow: 0 0 5px #ffd700; }
+        }
+        .glow-text {
+            animation: shine 1s infinite alternate;
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        let wordArray = ["삼겹살", "항정살", "가브리살", "우둔살", "치마살", "등심살", "안심살", "토시살", "도가니살", "보섭살"];
+        let content;
+        let input;
+        let feedback;
+        let score;
+        let n = 0;
+        let num = 0; // 점수를 누적할 전역변수
+        
+        // 점수 계산 및 출력
+        function printScore(){
+            score.innerText = num;
+        }
+
+        // 게임에 이용할 단어 출력 함수
+        function printWord(){
+            content.innerText = wordArray[n];
+        }
+
+        // 다음 단어 출력
+        function next(){
+            if (n < wordArray.length - 1){
+                n++;
+                printWord();
+            } else{
+                content.innerText = "끝";
+                feedback.innerText = num + "점!";
+                feedback.classList.add("glow-text");
+                score.innerText = "대단합니다!!";
+                score.classList.add("glow-text");
+            }
+        }
+
+        function init(){
+            content = document.getElementById("content");
+            input = document.querySelector("#input_area input");
+            feedback = document.getElementById("feedback");
+            score = document.getElementById("score");
+
+            // 텍스트 박스(컴포넌트)에 키보드 이벤트 연결
+            input.addEventListener("keyup", function(e){
+                // content.innerText = wordArray[0];
+                // console.log(e);
+                if (e.keyCode == 13){ // 엔터를 입력한 경우
+                    // 일치할 때만 다음 단어로
+                    if (content.innerText == input.value) {
+                        num += 10;
+                        printScore();
+
+                        feedback.innerText = "정답";
+                        feedback.classList.add("glow-text");
+                    } else{
+                        feedback.innerText = "오답";
+                        feedback.classList.remove("glow-text");
+                    }
+                    next();
+                    input.value = "";
+                    console.log(n);
+                }
+            });
+        
+            printWord();
+            printScore();
+        };
+
+        addEventListener("load", function(){
+            init();            
+        });
+
+        </script>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="content"></div>
+        <div id="input_area">
+            <input type="text">
+        </div>
+        <div id="feedback"></div>
+        <div id="score"></div>
+    </div>
+</body>
+</html>
