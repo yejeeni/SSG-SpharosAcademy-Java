@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #wrapper{
+            width: 1000px;
+            height: 600px;
+            background-color: antiquewhite;
+            margin: auto;
+        }
+        #aside1{
+            width: 200px;
+            height: 600px;
+            background-color: orange;
+            float: left;
+            text-align: center;
+        }
+        #aside2{
+            width: 200px;
+            height: 600px;
+            background-color: orange;
+            float: right;
+            text-align: center;
+        }
+        #section{
+            width: 600px;
+            height: 600px;
+            float: left;
+        }
+        #header{
+            width: 600px;
+            height: 50px;
+            background-color: bisque;
+            
+        }
+        #content{
+            width: 600px;
+            height: 550px;
+            text-align: center;
+        }
+        form input{
+            height: 35px;
+            margin: 2px;
+            border: 1px solid lightcyan;
+            border-radius: 3px;
+        }
+        table{
+            border-collapse: collapse;
+        }
+    </style>
+    <script>
+        /*
+        * @수정사항: 여기 del, edit의 컨펌을 밑에 이벤트 리스너로 보내는 게 나을 듯
+        *           검색기능추가: 멤버 열 별로 조건을 select box로, 오른쪽에는 검색어 입력란을
+        */
+
+        let content; // 회원 목록이 table로 출력될 영역
+        let memberArray = [];
+        let currentIdx = -1; // 선택한 회원의 인덱스 (초기값 -1)
+
+        /* 사원 1명에 대한 모든 정보를 가져와서 우측 영역에 출력*/
+        function getDetail(index){
+            // index: memberArray 배열의 행
+            currentIdx = index;
+            form2.empno.value = memberArray[index][0];
+            form2.ename.value = memberArray[index][1];
+            form2.sal.value = memberArray[index][2];
+            form2.comm.value = memberArray[index][3];
+        }
+
+        /* 선택한 사원의 정보 삭제 */
+        function del(){
+            if (confirm("삭제하시겠습니까?")){
+                if (currentIdx != -1){
+                    memberArray.splice(currentIdx, 1);               
+                    printTable();
+                                
+                    currentIdx = -1;
+                    form2.reset();
+                } else{
+                    alert("사원을 선택해주세요.");
+                }
+            }
+        }
+
+        /* 선택한 사원의 정보 수정*/
+        function edit(){
+            if (confirm("수정하시겠습니까?")){
+                if (currentIdx != -1){
+                    memberArray[currentIdx][0] = form2.empno.value;
+                    memberArray[currentIdx][1] = form2.ename.value;
+                    memberArray[currentIdx][2] = form2.sal.value;
+                    memberArray[currentIdx][3] = form2.comm.value;
+                    printTable();
+
+                    currentIdx = -1;
+                    form2.reset();
+                } else{
+                    alert("사원을 선택해주세요.");
+                }
+            }
+        }
+
+        function search(){
+            let searchKey = document.getElementById("searchWord");
+            
+        }
+        
+        /* 동적으로 테이블을 출력 */
+        function printTable(){
+            let tag = "<table border='1px' width='100%'>";
+            
+            tag = tag + "<tr>";
+            tag = tag + "<td>NO</td>";
+            tag = tag + "<td>EMPNO</td>";
+            tag = tag + "<td>ENAME</td>";
+            tag = tag + "<td>SAL</td>";
+            tag = tag + "<td>COMM</td>";
+            tag = tag + "</tr>";
+
+            // 데이터가 출력될 tr 영역
+            for (let i=0; i<memberArray.length; i++){
+                tag = tag + `<tr text-align='center' onClick=\"getDetail(${i})\" onMouseOver=\"this.style.background='skyblue'\" onMouseOut=\"this.style.background=''\">`;
+                tag = tag + `<td>${i+1}</td>`;
+                for (let j=0; j<memberArray[i].length; j++){
+                    tag = tag + `<td>${memberArray[i][j]}</td>`;
+                }
+                tag = tag + "</tr>";
+            }
+
+            // 통계 출력 (td 5개를 합함)
+            tag = tag+"<tr>";
+            tag = tag+`<td colspan='5' align='right'>Total ${memberArray.length}명</td>`;
+            tag = tag+"</tr>";
+            tag = tag+"</table>";
+            tag = tag + "</table>";
+            
+            content.innerHTML = tag;
+        }
+        /* 메모리 상의 데이터베이스(2차원배열)에 사원 한 명 등록하기 */
+        function regist(){
+            // 사원 1명은 하나의 배열에 담을 수 있으므로, 1차원 배열 생성
+            let member = new Array();
+            member.push(form1.empno.value); // form1의 empno의 값을 배열에 저장
+            member.push(form1.ename.value);
+            member.push(form1.sal.value);
+            member.push(form1.comm.value);
+
+            // 위에서 생성된 member 배열을 memberArray 배열에 2차원 배열로 추가
+            memberArray.push(member);
+
+            // alert("등록되었습니다.");
+
+            // 등록폼에 입력한 데이터를 초기화
+            form1.reset();
+        }
+        function init(){
+            content = document.getElementById("content");
+        }
+        addEventListener("load", function(){
+            init();
+            printTable();
+            // 문서 로드 시, 커서를 입력칸 좌측 최상단에 
+            // form1.empno.focus();
+            // 등록 버튼에 클릭 이벤트 연결
+            let bt_regist = document.querySelector("#aside1 input[type='button']");
+            bt_regist.addEventListener("click", function(){
+                regist(); // 회원 등록
+                printTable();
+            });
+            let bt_del = document.querySelector("#aside2 input[name='bt_del']");
+            bt_del.addEventListener("click", function(){
+                del(); 
+            });
+            let bt_edit = document.querySelector("#aside2 input[name='bt_edit']");
+            bt_edit.addEventListener("click", function(){
+                edit();
+            });
+            let bt_search = document.querySelector("#header input[name='bt_search']");
+            bt_search.addEventListener("click", function(){
+                search();
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="aside1">
+            <!-- form 태그는 제출 양식을 작성하기 위한 태그이며 눈에 보이지 않음 -->
+             <form action="" name="form1">
+                <input type="text" name="empno" placeholder="사원번호 입력">
+                <input type="text" name="ename" placeholder="사원명 입력">
+                <input type="text" name="sal" placeholder="급여 입력">
+                <input type="text" name="comm" placeholder="커미션 입력">
+                <input type="button" value="사원등록">
+             </form>
+        </div>
+        <div id="section">
+            <div id="header">
+                <select name="searchKey" id="">
+                    <option value="empno">사원번호</option>
+                    <option value="ename">사원명</option>
+                    <option value="sal">급여</option>
+                    <option value="comm">커미션</option>
+                </select>
+                <input type="text" id="searchWord">
+                <input type="button" name="bt_search" value="검색">
+            </div>
+            <div id="content"></div>
+        </div>
+        <div id="aside2">
+            <form action="" name="form2">
+                <input type="text" name="empno" placeholder="사원번호 입력">
+                <input type="text" name="ename" placeholder="사원명 입력">
+                <input type="text" name="sal" placeholder="급여 입력">
+                <input type="text" name="comm" placeholder="커미션 입력">
+                <input type="button" name="bt_edit" value="수정">
+                <input type="button" name="bt_del" value="삭제">
+             </form>
+        </div>
+    </div>
+</body>
+</html>

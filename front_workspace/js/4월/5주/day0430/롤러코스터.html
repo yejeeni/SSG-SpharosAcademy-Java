@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            margin: 0px;
+        }
+        #wrapper{
+            width: 100%;
+            height: 800px;
+        }
+        #content{
+            width: 90%;
+            height: 100%;
+            float: left;
+            background-image: url(../../../../images/롤러코스터/배경.png);
+            background-size: 100% 800px;
+            position: relative;
+        }
+        #aside{
+            width: 10%;
+            height: 100%;
+            background-color:coral;
+            float: left;
+        }
+    </style>
+    <script>
+        let img;
+        let content;
+        let aside;
+        let posArray = [];
+        let index = 0; // 전체 2차원 배열의 어떤 행에 접근할지 결정하는 변수
+        let flag = false;
+
+        function createHero(){
+            img = document.createElement("img");
+            img.src = "../../../../images/롤러코스터/소닉.png";
+            img.style.width = 50+"px";
+            img.style.position = "absolute";
+            img.style.left = 100+"px";
+            img.style.top = 300+"px";
+            
+            content.appendChild(img);
+        }
+        // 점의 좌표를 우측 영역에 출력하기
+        function printDot(x, y){
+            aside.innerHTML = aside.innerHTML+`${x}, ${y}<br>`;
+        }
+        // span 태그를 생성하여 점으로 표현하고 content에 부착
+        function createDot(x, y){
+            let span = document.createElement("span");
+            span.style.backgroundColor = "yellow";
+            span.style.borderRadius = "50%";
+            span.style.display = "inline-block"; // inline의 공존 능력과 block의 질량 특징을 가짐
+            span.style.width = "15px";
+            span.style.height = "15px";
+            span.style.position = "absolute";
+            span.style.left = x+"px";
+            span.style.top = y+"px";
+
+            content.appendChild(span);
+        }
+        // 2차원 배열은 메모리상의 데이터베이스와 같음
+        function insertDot(x, y){
+            // x, y축을 담는 배열 생성
+            let pos = [x, y];
+            posArray.push(pos);
+        }
+        // 캐릭터 움직이기
+        function move(){
+            if (flag){
+                if (index >= posArray.length){
+                    index = 0;
+                }
+                // posArray에 쌓인 순서대로 이동
+                img.style.left = posArray[index][0]+"px";
+                img.style.top = posArray[index][1]+"px";
+                index++;
+            }
+        }
+        function init(){
+            content = document.getElementById("content");
+            aside = document.getElementById("aside");
+            
+            createHero(); // 주인공 등장
+            
+            // content에 이벤트 연결
+            content.addEventListener("mousedown", function(){
+                let x = event.clientX;
+                let y = event.clientY;
+                createDot(x, y);
+                insertDot(x, y); // 점의 정보 저장
+                printDot(x, y);
+            });
+            btn.addEventListener("click", function(){
+                flag = !flag;
+            });
+        }
+        addEventListener("load", function(){
+            init();
+            setInterval("move()", 100);
+        });
+    </script>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="content">
+            <button id="btn">시작/정지</button>
+        </div>
+        <div id="aside"></div>
+    </div>
+</body>
+</html>

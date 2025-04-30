@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #stage{
+            width: 1200px;
+            height: 800px;
+            background-image: url(../../../../images/gamemap/꼬마검객/BG.png);
+            background-size: 1200px 800px;
+            margin: auto;
+            position: relative;
+        }
+    </style>
+    <script>
+        let stage;
+        const tree = 1; // 나무는 1의 값을 가짐
+        const stone = 2; // 벽돌
+        const crate = 3; // 박스
+        // stage에 올려질 물체의 좌표를 결정할 2차원배열의 표
+        let map = [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0],
+            [0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0],
+            [0, 0, 0, 0, 0, 0, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 2, 0, 0],
+            [0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0]
+        ];
+
+        // 게임에 등장할 객체들을 화면에 생성 및 부착하기 위한 함수
+        function createObject(){
+            for (let i = 0; i < map.length; i++) {
+                for (let j = 0; j < map[i].length; j++) {
+                    let img = document.createElement("img");
+                    img.style.width = "50px";
+                    img.style.height = "50px";
+                    img.style.position = "absolute";
+                    img.style.left = 50 * j + "px";
+                    img.style.top = 50 * i + "px";
+
+                    // 조건 판단 대상이 여러개이고, 대상이 단순한 문자,숫자,논리값이면 코드를 짧게 하려면 swhich문을 사용할 수도 있음
+                    // switch(map[i][j]){
+                    //     case tree: src="../../../../images/gamemap/Objects/Tree.png"; brea;
+                    //     case stone ...
+                    // }
+                    
+                    if (map[i][j] == tree) {
+                        img.src = "../../../../images/gamemap/Objects/Tree.png";
+                        stage.appendChild(img);
+                    } else if (map[i][j] == stone) {
+                        img.src = "../../../../images/gamemap/Objects/stone.png";
+                        stage.appendChild(img);
+                    } else if (map[i][j] == crate) {
+                        img.src = "../../../../images/gamemap/Objects/Crate.png";
+                        stage.appendChild(img);
+                    }
+                }
+            }
+        }
+        function init(){
+            stage = document.getElementById("stage");
+            createObject();
+        }
+        addEventListener("load", function(){
+            init();
+        });
+    </script>
+</head>
+<body>
+    <div id="stage">
+    </div>
+</body>
+</html>

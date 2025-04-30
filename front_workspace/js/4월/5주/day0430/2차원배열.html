@@ -1,0 +1,17 @@
+<script>
+    let fruit = ["딸기", "복숭아", "체리"];
+    let car = ["bmw", "benz", "audi"];
+    let food = ["햄버거", "피자", "치킨"];
+
+    let box = []; // 값을 할당하지 않은 채 선언한 배열
+    box.push(fruit);
+    box.push(car);
+    box.push(food);
+
+    for (let i=0; i<box.length; i++){
+        for (let j=0; j<box[i].length; j++){
+            document.writeln(box[i][j]);
+        }
+        document.writeln("<br>");
+    }
+</script>
