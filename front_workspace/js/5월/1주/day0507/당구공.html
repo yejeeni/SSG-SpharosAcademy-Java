@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./js/Ball.js"></script>
+    <script src="../../../lib/common.js"></script>
+    <style>
+        #wrapper{
+            width: 600px;
+            height: 600px;
+            margin: auto;
+            background-color: rgb(115, 156, 106);
+            position: relative;
+            overflow: hidden;
+        }
+    </style>
+    <script>
+        let ballArray = [];
+        let colorArray = ["red", "orange", "yellow", "green", "blue", "navy", "purple"];
+
+        function gameLoop(){
+            for(let i=0; i<ballArray.length; i++){
+                ballArray[i].move();
+            }
+        }
+        function fire(){
+            // Ball 클래스로부터 인스턴스 생성
+            let speed = getRandom(10);
+            let color = colorArray[getRandom(6)];
+            let position1 = getRandom(600);
+            let position2 = getRandom(600);
+            
+            let ball = new Ball(document.getElementById("wrapper"), position1, position2, 40, 40, speed, speed, color);
+            ballArray.push(ball);
+        }
+        addEventListener("load", function(){
+            // 키보드 이벤트 구현
+
+            // 사용자가 이벤트를 일으키면 이벤트 객체가 생성되어 addEventListner의 두 번째 매개변수로 전달됨
+            addEventListener("keydown", function(e){
+                // console.log(e.keyCode);
+                if(e.keyCode == 32){
+                    fire();
+                }
+            });
+            setInterval(gameLoop, 10);
+        });
+    </script>
+</head>
+<body>
+    <div id="wrapper"></div>
+</body>
+</html>

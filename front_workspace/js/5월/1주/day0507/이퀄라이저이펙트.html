@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src = "js/Rect.js"></script>
+    <script src="../../../lib/common.js"></script>
+    <script>
+        let width = 50; //막대 하나 너비
+        let height = 400; //막대 하나 높이
+        let count = 10; // 생성할 막대 수
+        let colorArray = ["red", "orange", "yellow", "green", "blue", "navy", "purple"];
+        
+        // JS에서는 함수를 일급시민으로 취급함. 일급시민이란 어떤 대상을 일반 데이터처럼 취급할 수 있는 것. JS에서는 함수를 변수에 담거나, 매개변수로 전달하거나, 리턴이 가능
+        // function test(){} : 함수 선언문
+        // let test = function(){} : 함수 표현식. 
+        // let test = ()=> {console.log("call", this)}; : 람다 사용
+
+        let test = ()=> {
+            // 람다 내에서의 this는 상위 스코프(영역) 객체를 가리킴. 현재 상위는 윈도우 
+            console.log("call", this);
+        };
+
+        //원하는 수만큼의 막대를 만들어서 부모에 부착하되, 부모의 크기는 자식의 크기와 수에 비례하여 동적으로 결정
+        let init = function(){
+            let wrapper = document.createElement("div");
+            wrapper.style.width = (width * count) + "px";
+            wrapper.style.height = height + "px";
+
+            wrapper.style.margin = "auto";
+            wrapper.style.position = "relative";
+            wrapper.style.backgroundColor = "lightgray";
+            wrapper.style.transform = "scaleX(-1)";
+
+            document.body.appendChild(wrapper);
+
+            for(let i = 0; i< count; i++){
+                let bg = colorArray[getRandom(colorArray.length-1)];
+                new Rect(wrapper, i*width, 0, width, height, bg);
+            }
+        }
+        addEventListener('load',function(){
+            init();
+        })
+    </script>
+</head>
+<style>
+    
+</style>
+<body>
+    
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+    </style>
+    <script>
+        /*
+            OOP가 나오기 이전 시대의 절차지향 언어(ex, C)로도 현실을 반영할 수 있었음
+            절차지향 언어의 최대 기술은 함수였으나, 함수만으로는 현실을 반영할 때 코드 중복이 발생
+            객체지향 언어는 현실의 사물을 반영할 때, 상태는 변수로, 동작이나 상태의 변경은 함수로 표현하는데, 이 두 조합이 곧 사물임을 깨닫게 되어 탄생
+        */
+
+        let arrList = []; // 화살을 담을 배열
+
+        // 화살을 생성하는 class
+        class Arrow{
+            // 클래스가 보유한 변수는 앞에 this를 명시하고, 생성자 내에 작성
+            constructor(){
+                this.span;
+                this.x = 0;
+                this.velX = 5; // 화살의 속도
+                
+                // 문서에 요소를 생성하여 left값을 계속 증가시키기
+                this.span = document.createElement("span");// inline이므로 너비, 높이, 마진, 패딩 불가
+                this.span.innerText = "→";
+                this.span.style.position = "absolute"; 
+                this.span.style.left = 0+"px";
+                this.span.style.top = 100+"px";
+                this.span.style.fontSize = 20+"px";
+                this.span.style.color = "red";
+    
+                document.body.appendChild(this.span);
+            }
+
+            // move 메서드. 객체지향 언어에서, 객체가 보유한 함수는 메서드(객체의 상태나 움직임에 대한 방식)라고 부름 
+            move(){
+                this.x += this.velX;
+                this.span.style.left = this.x+"px";
+            }  
+        }
+        function gameLoop(){
+            for(let i=0; i<arrList.length; i++){
+                arrList[i].move();
+            }
+            // console.log("gameLoop called...");
+        }
+        addEventListener("load", function(){
+            setInterval(gameLoop, 10);
+        });
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

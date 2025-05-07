@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+    </style>
+    <script>
+
+        let span_arr = [];
+        let x_arr = [0, 0, 0, 0, 0];
+        let velX_arr = [1, 3, 5, 7, 9]; // 화살의 속도
+        
+        function arrow(left, top, size, color){
+            // 문서에 요소를 생성하여 left값을 계속 증가시키기
+            let span = document.createElement("span");// inline이므로 너비, 높이, 마진, 패딩 불가
+            span.innerText = "→";
+            span.style.position = "absolute"; 
+            span.style.left = left+"px";
+            span.style.top = top+"px";
+            span.style.fontSize = size+"px";
+            span.style.color = color;
+
+            span_arr.push(span); // 배열에 화살 추가
+            document.body.appendChild(span);
+        }
+
+        function move(i){
+            x_arr[i] += velX_arr[i];
+            span_arr[i].style.left = x_arr[i]+"px";
+        }
+        addEventListener("load", function(){
+            arrow(0, 10, 10, "red");
+            arrow(10, 50, 20, "blue");   
+            arrow(20, 100, 30, "yellow");
+            arrow(30, 150, 40, "orange");
+            arrow(40, 200, 50, "green");
+            
+            for (let i=0; i<5; i++){
+                setInterval(function(){
+                    move(i);
+                }, 10);
+            }
+        });
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
