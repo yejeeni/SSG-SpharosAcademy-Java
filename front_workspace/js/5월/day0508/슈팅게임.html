@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./js/Hero.js"></script>
+    <script src="./js/Bullet.js"></script>
+    <style>
+        #stage{
+            width: 1920px;
+            height: 576px;
+            background-image: url("../../../images/plane/bg.jpg");
+            background-size: 1500px 576px;
+            margin: auto;
+            position: relative;
+            overflow: hidden;
+        }
+    </style>
+    <script>
+        let bgX = 0;
+        let hero;
+        let bulletArray = []; // 총알 배열. 동적 배열로, java.util.List와 동일
+        let spacePressed = false;
+        
+        // stage의 배경의 left 값을 감소
+        function bgEffect(){
+            let stage = document.getElementById("stage");
+            stage.style.backgroundPosition = `${bgX--}px 0px`;
+        }
+        // 주인공 생성
+        function createHero(){
+            hero = new Hero(document.getElementById("stage"), 10, 10, 150, 150, 0, 0);
+        }
+        // 총알 생성. 누를 때마다 총알을 생성시켜서, 이름을 주는 대신 배열에 담기
+        function fire(){
+            bulletArray.push(new Bullet(document.getElementById("stage"), (hero.x+hero.width*0.6), (hero.y+hero.height*0.4), 10, 10, 10, 0));
+        }
+        let lastFireTime = 0;
+        const fireInterval = 100; // ms
+
+        function gameLoop(){
+            bgEffect();
+            hero.move();
+            let now = Date.now();
+            if (spacePressed && now - lastFireTime > fireInterval) {
+                fire();
+                lastFireTime = now;
+            }
+            for (let i=0; i<bulletArray.length; i++){
+                bulletArray[i].move();
+            }
+        }
+
+        /* js 함수 정의 유형 3가지
+        1. 선언적 방법 function test(){}
+        2. 표현식 let test = function(){}
+        3. 람다 let test = ()=>{} . 여기서 람다는 this를 보유할 수 없음. 람다에서 사용되는 this는 상위 스코프(영역)을 가리킴
+        */
+        addEventListener("load", ()=>{
+            // console.log(this); // 람다는 자체 this를 가질 수 없어, 상위 스코프인 전역 영역 window가 출력됨. window는 js의 최상위 객체
+            createHero();
+
+            // 키보드 이벤트 연결
+            addEventListener("keydown", (e)=>{
+                switch(e.keyCode){
+                    // 좌
+                    case 37: hero.velX = -5; break;
+                    // 상
+                    case 38: hero.velY = -5; break;
+                    // 우
+                    case 39: hero.velX = 5; break;
+                    // 하
+                    case 40: hero.velY = 5; break;
+                    // 스페이스바
+                    case 32: spacePressed = true; break;
+                    // esc
+                    case 23: ; break;
+                }
+            });
+            addEventListener("keyup", (e)=>{
+                switch(e.keyCode){
+                    // 좌
+                    case 37: hero.velX = 0; break;
+                    // 상
+                    case 38: hero.velY = 0; break;
+                    // 우
+                    case 39: hero.velX = 0; break;
+                    // 하
+                    case 40: hero.velY = 0; break;
+                    case 32: spacePressed = false; break;
+                }
+            });
+
+            setInterval(gameLoop, 10);
+        });
+    </script>
+</head>
+<body>
+    <div id="stage"></div>
+</body>
+</html>
