@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    #wrapper{
+        background-color: yellow;
+        margin: auto;
+    }
+    #header{
+        height: 50px;
+        background-color: green;
+        text-align: center;
+        line-height: 50px;
+        color: white;
+    }
+    #header h2{
+        display: inline-block;
+        margin: 0px;
+    }
+    #header a{
+        text-decoration: none;
+        /* margin값으로 두 개를 명시하면, 첫 번재 요소는 top bottom, 두 번째 요소는 left right */
+        margin: 0px 50px;
+    }
+    #days{
+        background-color: chartreuse;
+        height: 40px;
+        /* text-align: center; */
+        line-height: 40px;
+        color: white;
+    }
+    #section{
+        display: flex;
+        flex-wrap: wrap;
+        background-color: greenyellow;
+    }
+</style>
+<script src="../../lib/common.js"></script>
+<script src="./Cell.js"></script>
+<script>
+    let cellWidth = 100; // 달력 셀의 너비
+    let cellHeight = 100; // 셀의 높이
+    let border = 1; // 셀의 두께
+
+    // 다음, 이전 버튼 누를 때마다 연, 월을 호출할 것이므로 매개변수로
+    let currentYear;
+    let currentMonth;
+
+    let cellArray = []; // 셀을 담을 배열
+
+    // 현재 날짜 얻어오기
+    function getCurrentDate(){
+        let d = new Date();
+        currentYear = d.getFullYear();
+        currentMonth = d.getMonth();
+    }
+
+    // 헤더 영역에 현재 보고 있는 날짜의 연, 월 출력
+    function printTitle(yy, mm){ 
+        let d = new Date(yy, mm);
+        let currentYear = d.getFullYear();
+        let currentMonth = d.getMonth();
+
+        let h2 = document.querySelector("#header h2");
+        h2.innerText = `${currentYear}.${currentMonth+1}`;
+    }
+
+    function createCell(){
+        let wrapper = document.getElementById("wrapper");
+    
+        wrapper.style.width = cellWidth * 7 + border * 14 + 5 + "px";
+        wrapper.style.height = cellHeight * 6 + border * 12 + 50 + 40 + 10 + "px";
+        
+        // 요일 영역 출력
+        for(let i=0; i<7; i++){
+            let cell = new Cell(document.getElementById("days"), cellWidth, 40, "navy", 1, "gray", convertDay(i, "eng"));
+        }
+
+        // let count = 0; // 셀의 인덱스
+        // let n = 0; // 달력에 입력할 실제 일
+        for(let i=0; i<6; i++){ // 주
+            for(let j=0; j<7; j++){ // 일
+                let cell = new Cell(document.getElementById("section"), 100, 100, "skyblue", 1, "navy", "");
+                // if (count >= getStartDay(currentYear, currentMonth)){
+                    //     n++; // 달력에 출력할 월의 시작 요일을 만나면 n++
+                    //     cell.div.innerText = n;
+                    // }
+                    // count++;
+                cellArray.push(cell);
+            }
+        }
+    }
+
+    // 이미 생성된 셀에 날짜를 출력
+    // 다음, 이전 버튼을 누르면 기존 날짜는 지우고 새롭게 출력
+    function printDate(){
+        let idx = 0; // 셀의 인덱스
+        let n = 0; // 달력의 일
+        for(let i=0; i<6; i++){
+            for(let j=0; j<7; j++){
+                let cell = cellArray[idx]; // cellArray의 idx번 원소
+                if (idx >= getStartDay(currentYear, currentMonth) && n < getLastDate(currentYear, currentMonth)){
+                    n++;
+                    cell.div.innerText = n;
+                }
+                idx++;
+            }
+        }
+    }
+
+    // 셀에 작성된 날짜 삭제
+    function clearDate(){
+        let idx = 0; // 셀의 인덱스
+
+        for(let i=0; i<6; i++){
+            for(let j=0; j<7; j++){
+                cellArray[idx++].div.innerText = "";
+            }
+        }
+    }
+
+    // addEventListener은 비동기 방식, 두 번째 매개변수는 콜백함수
+    /* 아래 이벤트리스너의 두 번째 매개변수로 들어가야 하는 함수는 호출이 아닌 정의를 해야 함. 
+    이 함수는 코드에서 호출하는 게 아니라, 브라우저가 load 이벤트 발생 시 거꾸로 호출해주는 역할을 하므로 콜백함수라 부른다. */
+    addEventListener("load", function(){
+        getCurrentDate();
+        
+        // 현재 날짜를 제목에 출력
+        createCell();
+        printTitle(currentYear, currentMonth);
+
+        // 현재 보고 있는 월의 시작 요일
+        getStartDay(currentYear, currentMonth);
+
+        printDate();
+        
+        // 달력의 제목을 이전, 다음 버튼을 누를 때마다 변경
+        let bt_prev =  document.querySelector("#header :nth-child(1)");
+        let bt_next =  document.querySelector("#header :nth-child(3)");
+    
+        bt_prev.addEventListener("click", function(){
+            currentMonth--;
+            printTitle(currentYear, currentMonth);
+            clearDate();
+            printDate(currentYear, currentMonth);
+        });
+        bt_next.addEventListener("click", function(){
+            currentMonth++;
+            printTitle(currentYear, currentMonth);
+            clearDate();
+            printDate(currentYear, currentMonth);
+        })
+    });
+</script>
+<body>
+    <div id="wrapper">
+        <div id="header">
+            <a href="#">이전</a>
+            <h2></h2>
+            <a href="#">다음</a>
+        </div>
+        <div id="days"></div>
+        <div id="section"></div>
+    </div>
+</body>
+</html>

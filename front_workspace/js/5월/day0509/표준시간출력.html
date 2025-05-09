@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    #day{
+        font-size: 80px;
+        color: red;
+        background-color: azure;
+        width: 360px;
+        height: 120px;
+        display: inline-block;
+        text-align: center;
+    }
+    #hour, #min, #sec{
+        font-size: 80px;
+        color: red;
+        background-color: azure;
+        width: 120px;
+        border: 2px solid green;
+        border-radius: 3px;
+        height: 120px;
+        display: inline-block;
+        text-align: center;
+    }
+</style>
+<script src="../../lib/common.js"></script>
+<script>
+    // 표현식에 의한 함수 정의. 함수를 데이터처럼 변수로 받을 수 있다. (일급시민 취급)
+    let showTime = function(){
+        let d = new Date();
+        let dayName = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+
+        let h = d.getHours(); // 시간 추출
+        let hour = document.getElementById("hour");
+        hour.innerText = zeroString(h);
+
+        let m = d.getMinutes();
+        let min = document.getElementById("min");
+        min.innerText = zeroString(m);
+
+        let s = d.getSeconds();
+        let sec = document.getElementById("sec");
+        // sec.innerText = String(s).padStart(2, "0");
+        sec.innerText = zeroString(s);
+
+        let day = document.getElementById("day");
+        day.innerText = dayName[d.getDay()];
+    }
+    addEventListener("load", ()=>{
+        setInterval(showTime, 1000)
+    })
+</script>
+<body>
+    <div id="day"></div>
+    <div id="hour"></div>
+    <div id="min"></div>
+    <div id="sec"></div>
+</body>
+</html>
