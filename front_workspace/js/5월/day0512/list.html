@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script>
+    // alert("나를 생성시킨 오프너의 변수 값은" + window.opener.x);
+    
+    // let storeList = [];
+
+    // store = {
+    //     store_name: "김천",
+    //     tel: "0-00-000",
+    //     pos:"37.50980, 127.0556"
+    // };
+    // store2 = {
+    //     store_name: "김천2",
+    //     tel: "0-00-000",
+    //     pos:"37.50680, 127.0596"
+    // };
+    // store3 = {
+    //     store_name: "김천3",
+    //     tel: "0-00-000",
+    //     pos:"37.50580, 127.0656"
+    // };
+
+    // storeList.push(store);
+    // storeList.push(store2);
+    // storeList.push(store3);
+
+    let n = window.opener.storeList.length;
+
+    let cnt = 1
+    // 등록 시 누적된 맛집들의 리스트를 테이블로 동적 출력
+    function printTable(){
+        let tag = "<table width='100%', border='1px'>";
+        tag += "<tr>";
+        tag += "<td>No</td>";
+        tag += "<td>상호명</td>";
+        tag += "<td>연락처</td>";
+        tag += "<td>위도경도</td>";
+        tag += "<td>대표사진</td>";
+        tag += "</tr>"
+        
+        for (let i=0; i<n; i++){
+            let store = window.opener.storeList[i];
+            tag += "<tr>";
+            tag += `<td>${cnt++}</td>`;
+            tag += `<td>${store.store_name}</td>`;
+            tag += `<td>${store.tel}</td>`;
+            tag += `<td>${store.pos}</td>`;
+            tag += "<td>대표사진</td>";
+            tag += "</tr>"
+        }
+
+        tag += "</table>";
+        document.body.innerHTML = tag;
+    }
+    addEventListener("load", function(){
+        printTable();
+    })
+</script>
+<body>
+    
+</body>
+</html>
