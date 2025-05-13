@@ -1,0 +1,50 @@
+[
+  {
+    "store_name": "무월식탁 파르나스점",
+    "tel": "02-3453-2322",
+    "pos": "37.51083, 127.06047",
+    "icon": "../../../images/map/basket.png"
+  },
+  {
+    "store_name": "스시츠카무 파르나스몰점",
+    "tel": "02-3453-2777",
+    "pos": "37.51085, 127.06031",
+    "icon": "../../../images/map/basket.png"
+  },
+  {
+    "store_name": "케르반 코엑스몰점",
+    "tel": "02-6002-6290",
+    "pos": "37.51125, 127.05947",
+    "icon": "../../../images/map/basket.png"
+  },
+  {
+    "store_name": "파파야리프 코엑스점",
+    "tel": "02-6002-6648",
+    "pos": "37.51120, 127.05939",
+    "icon": "../../../images/map/basket.png"
+  },
+  {
+    "store_name": "딤딤섬 파르나스몰점",
+    "tel": "02-3453-0520",
+    "pos": "37.51088, 127.06020",
+    "icon": "../../../images/map/basket.png"
+  },
+  {
+    "store_name": "사이드쇼 코엑스점",
+    "tel": "02-551-2393",
+    "pos": "37.51118, 127.05977",
+    "icon": "../../../images/map/basket.png"
+  },
+  {
+    "store_name": "허머스키친",
+    "tel": "0507-1416-1044",
+    "pos": "37.51102, 127.05983",
+    "icon": "../../../images/map/basket.png"
+  },
+  {
+    "store_name": "바이킹스워프 코엑스점",
+    "tel": "02-3452-6650",
+    "pos": "37.51115, 127.05971",
+    "icon": "../../../images/map/basket.png"
+  }
+]

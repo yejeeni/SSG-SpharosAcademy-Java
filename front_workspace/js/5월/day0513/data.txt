@@ -1,0 +1,9 @@
+#JSON(JavaScript Object Notion)
+ 데이터를 표현함에 있어 js 객체 표기법을 본뜬 문자열
+
+{
+    "store_name": "맛집고기",
+    "tel": "010-1234-5678",
+    "pos": "37.5665,126.9780",
+    "icon": "../../../images/map/basket.png"
+}

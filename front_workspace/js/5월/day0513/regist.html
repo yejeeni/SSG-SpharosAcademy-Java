@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            margin: 0px;
+        }
+        #header{
+            width: 100%;
+            background-color: antiquewhite;
+            line-height: 40px;
+        }
+        #header input[type="file"]{
+            width: 70%;
+        }
+        #content{
+            height: 500px;
+            background-color: aquamarine;
+        }
+        #footer{
+            height: 50px;
+            background-color: aqua;
+            line-height: 50px;
+        }
+        </style>
+</head>
+<script>
+    let cnt = 1
+    let obj;
+
+    // 등록 시 누적된 맛집들의 리스트를 테이블로 동적 출력
+    function printTable(obj){
+        // console.log("printTable() obj", obj);
+        let tag = "<table width='100%', border='1px'>";
+        tag += "<tr>";
+        tag += "<td>No</td>";
+        tag += "<td>상호명</td>";
+        tag += "<td>연락처</td>";
+        tag += "<td>위도경도</td>";
+        tag += "<td>대표사진</td>";
+        tag += "</tr>"
+        
+        for (let i=0; i<obj.length; i++){
+            let store = obj[i];
+            // console.log("obj 원소", obj[i]);
+            tag += "<tr>";
+            tag += `<td>${cnt++}</td>`;
+            tag += `<td>${store.store_name}</td>`;
+            tag += `<td>${store.tel}</td>`;
+            tag += `<td>${store.pos}</td>`;
+            tag += "<td>대표사진</td>";
+            tag += "</tr>"
+        }
+        tag += "</table>";
+
+        document.getElementById("content").innerHTML = tag;
+    }
+
+    // 사용자가 선택한 정보를 알고 있는 이벤트 객체를 전달받아서, 맛집목록 텍스트파일을 읽어들임
+    function loadData(e){
+        console.log(e);
+        let file = e.target.files[0]; // 사용자가 선택한 txt 파일
+
+        // 파일 읽기
+        // 콘솔에 a - c - b 로 찍힘. 비동기 방식
+        let reader = new FileReader();
+        // console.log("a");
+        reader.onload = function(data){
+            // console.log("b");
+            obj = JSON.parse(data.target.result); // data.target.result: 읽어들인 JSON형태의 문자열. 객체가 아니므로 사용하기 위해선 파싱하여 JS 객체로 만들어야 함
+            console.log("파싱결과 ", obj);
+
+            printTable(obj);
+        }
+        reader.readAsText(file);
+        // console.log("c");
+    }
+
+    // 지도를 보유한 부모 창에 현재 내가 보유한 리스트를 이용해서 마커 출력
+    function showIcons(){
+        window.opener.registAll(obj);
+        window.close();
+    }
+
+    addEventListener("load", function(){
+        // printTable();
+        document.querySelector("#header input[type='file']").addEventListener("change", function(e){
+            loadData(e);
+        });
+        document.querySelector("#footer button").addEventListener("click", function(){
+            showIcons();
+        })
+    });
+</script>
+<body>
+    <div id="header">
+        <input type="file">
+    </div>
+    <div id="content">table</div>
+    <div id="footer">
+        <button>지도에 적용</button>
+    </div>
+</body>
+</html>
