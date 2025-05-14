@@ -49,3 +49,22 @@ function convertDay(n, lang) {
 
     return day; 
 }
+
+/**
+ * 오브젝트 충돌 검사 함수
+ */
+function collisionCheck(me, target){
+    // 나에 대한 수치
+    let me_x = parseInt(me.style.left);
+    let me_y = parseInt(me.style.top);
+    let me_width = parseInt(me.style.width);
+    let me_height = parseInt(me.style.height);
+
+    // 상대의 수치
+    let target_x = parseInt(target.style.left);
+    let target_y = parseInt(target.style.top);
+    let target_width = parseInt(target.style.width);
+    let target_height = parseInt(target.style.height);
+
+    return !((me_x + me_width < target_x) || (me_x > target_x + target_width) || (me_y + me_height < target_y) || (me_y > target_y + target_height));
+}

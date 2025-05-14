@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            margin: 0px;
+        }
+        #box1, #box2{
+            width: 100px;
+            height: 100px;
+        }
+        #box1{
+            background-color: red;
+        }
+        #box2{
+            background-color: blue;
+        }
+    </style>
+    <script src="../../lib/common.js"></script>
+    <script>
+        let box1, box2;
+
+        function init(){
+            box1 = document.getElementById("box1");
+            box2 = document.getElementById("box2");
+
+            box1.style.position = "absolute";
+            box1.style.left = 100+"px";
+            box1.style.top = 200+"px";
+            box1.style.width = 100+"px";
+            box1.style.height = 100+"px";
+
+            box2.style.position = "absolute";
+            box2.style.left = 500+"px";
+            box2.style.top = 200+"px";
+            box2.style.width = 100+"px";
+            box2.style.height = 100+"px";
+        }
+        addEventListener("load", function(){
+            init();
+            addEventListener("mousemove", function(e){
+                box1.style.left = e.clientX+"px";
+                box1.style.top = e.clientY+"px";
+
+                // 마우스를 움직이는 동안 충돌체크
+                let result = collisionCheck(box1, box2);
+                console.log(result);
+                if (result){
+                    box2.style.backgroundColor = "yellow";
+                } else{
+                    box2.style.backgroundColor = "blue";
+                }
+            });
+
+        });
+    </script>
+</head>
+<body>
+    <div id="box1"></div>
+    <div id="box2"></div>
+</body>
+</html>

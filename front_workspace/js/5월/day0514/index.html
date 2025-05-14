@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0px;
+        }
+        #stage {
+            width: 1500px;
+            height: 576px;
+            margin: auto;
+            background-image: url(../../../images/plane/bg.jpg);
+            background-size: 1500px 576px;
+            position: relative;
+            overflow: hidden;
+        }
+        #score{
+            position: absolute;
+            left: 30px;
+            top: 0px;
+            color: yellow;
+            font-weight: bold;
+            font-size: 27px;
+            width: 100px;
+            height: 40px;
+            line-height: 40px;
+        }
+    </style>
+    <script src="../../lib/common.js"></script>
+    <script src="./js/GameObject.js"></script>
+    <script src="./js/Hero.js"></script>
+    <script src="./js/Enemy.js"></script>
+    <script src="./js/Bullet.js"></script>
+    <script>
+        let bgX = 0;
+        let st; // 루프가 있는 상태에서 다시 루프를 시도하면, 기존 루프는 제거하고 새 루프를 사용
+        let hero;
+        let bulletArray = [];
+        let enemyArray = [];
+        let total = 0; // 점수
+
+        // 점수를 계산하고 출력하는 함수
+        function setScore(n){
+            total += n;
+            document.getElementById("score").innerText = total;
+        }
+
+        function bgEffect() {
+            let stage = document.getElementById("stage");
+            stage.style.backgroundPosition = `${bgX--}px 0px`;
+        }
+
+        function gameLoop() {
+            bgEffect();
+
+            // hero의 tick(), render() 무한 호출
+            hero.tick();
+            hero.render();
+
+            // 화면에 등장하는 모든 총알을 대상으로 tick(), render()
+            // 총알은 여러 개이므로 반복문으로 위 함수를 호출하려면 배열로 관리
+            for (let i=0; i<bulletArray.length; i++){
+                bulletArray[i].tick();
+                bulletArray[i].render();
+            }
+
+            // 적군 움직이기
+            for (let i=0; i<enemyArray.length; i++){
+                enemyArray[i].tick();
+                enemyArray[i].render();
+            }
+        }
+
+        function setLoop() {
+            // 아직 루프가 없는 경우에만 새로운 루프 시작
+            if (st == undefined) {
+                st = setInterval(gameLoop, 10);
+            } else {
+                clearInterval(st);
+                st = undefined;
+            }
+        }
+
+        function fire(){
+            let bullet = new Bullet(document.getElementById('stage'), "../../../images/plane/ball.png", hero.x, hero.y+25, 30, 10, 7, 0);
+            bulletArray.push(bullet);
+        }
+
+        function handleMove(e) {
+            switch (e.keyCode) {
+                // 좌
+                case 37: hero.velX = -5; break;
+                // 우
+                case 39: hero.velX = 5; break;
+                // 상
+                case 38: hero.velY = -5; break;
+                // 하
+                case 40: hero.velY = 5; break;
+                // 총알 발사
+                case 32: fire(); break;
+                // pause 여부
+                case 27: setLoop(); break;
+            }
+        }
+
+        function handleStop(e) {
+            switch (e.keyCode) {
+                // 좌
+                case 37: hero.velX = 0; break;
+                // 우
+                case 39: hero.velX = 0; break;
+                // 상
+                case 38: hero.velY = 0; break;
+                // 하
+                case 40: hero.velY = 0; break;
+            }
+        }
+
+        function createHero() {
+            hero = new Hero(document.getElementById('stage'), "../../../images/plane/plane.png", 100, 250, 50, 50, 0, 0);
+        }
+
+        // 적군은 여러 마리고, 각 적군마다 tick, render을 호출해야 하므로 배열로 받음
+        function createEnemy() {
+            enemyArray.push(new Enemy(document.getElementById('stage'), `../../../images/plane/e${getRandom(5)}.png`, 1200, 100*getRandom(5), 50, 50, -5, 0));
+            
+        }
+
+        function createRandomEnemy(){
+            setInterval(createEnemy, 1000);
+        }
+
+        function init() {
+            createHero();
+            createRandomEnemy();
+
+            // 키보드 이벤트 구현
+            addEventListener("keydown", function (e) {
+                handleMove(e);
+            });
+            addEventListener("keyup", function (e) {
+                handleStop(e);
+            });
+            setScore(0);
+        }
+
+        addEventListener("load", function () {
+            init();
+        });
+    </script>
+</head>
+
+<body>
+    <div id="stage">
+        <div id="score">100</div>
+    </div>
+</body>
+
+</html>
