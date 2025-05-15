@@ -7,6 +7,13 @@ function getRandom(n){
 }
 
 /**
+ * 지정한 범위 내의 랜덤한 정수값을 반환하는 함수
+ */
+function getRandomByRange(min, max){
+    return min + parseInt(Math.random()*(max - min + 1));
+}
+
+/**
  * 한 자리 수 정수 n에 대한 0 처리
  */
 function zeroString(n) {
