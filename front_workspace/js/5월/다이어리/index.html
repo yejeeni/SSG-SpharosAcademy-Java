@@ -32,19 +32,34 @@
             let d = new Date(year, month + 1, 0); // 다음달로 갔다가, 날짜를 0으로 만들어 바로 이전 월의 마지막 일로
             return d.getDate();
         }
+
+        /* 달력과 다이어리 포스팅의 날짜를 비교하여 랜더링 처리 */
+        function checkData(cell, date) {
+            // 다이어리에 등록된 데이터와 현재 날짜와 비교하여 같은 경우, 다이어리에 포스팅이 있는 날짜이므로 해당 날짜의 다이어리 내용 출력
+            for (let k = 0; k < diaryArray.length; k++) {
+                let diary = diaryArray[k]; // 다이어리 한 건
+                if (diary.year == currentYear && diary.month == currentMonth && diary.date == date) {
+                    // 다이어리 제목, 아이콘, 내용 출력
+                    cell.titleDiv.innerText = diary.title;
+                    cell.randerIcon(diary.icon, 20);
+                }
+            }
+        }
+
         /* 해당 연, 월에 해당하는 날짜 출력*/
         function printNum() {
-            let idx = 0;
-            let n = 0;
+            let idx = 0; // 셀의 순번
+            let n = 0; // 출력될 실제 일
             let startDay = getStartDay(currentYear, currentMonth);
             let lastDate = getLastDate(currentYear, currentMonth);
             for (let i = 0; i < 6; i++) {
-                for (let j = 0; j < 7; j++){
+                for (let j = 0; j < 7; j++) {
                     let cellIndex = cellArray[idx];
                     // 인덱스값이 시작요일에 도달하면 해당 월의 마지막일까지만
                     if (idx >= getStartDay(currentYear, currentMonth) && n < getLastDate(currentYear, currentMonth)) {
                         n++;
                         cellArray[i][j].setDate(currentYear, currentMonth, n);
+                        checkData(cellArray[i][j], n);
                     }
                     idx++;
                 }
@@ -67,33 +82,41 @@
         }
 
         /* 기존 셀의 그래픽 초기화 */
-        function clearCell(){
-            for (let i=0; i<6; i++){
-                for (let j=0; j<7; j++){
+        function clearCell() {
+            for (let i = 0; i < 6; i++) {
+                for (let j = 0; j < 7; j++) {
+                    // 텍스트 제거
                     cellArray[i][j].numDiv.innerText = "";
                     cellArray[i][j].titleDiv.innerText = "";
+
+                    // 이미지 제거
+                    let iconDiv = cellArray[i][j].iconDiv;
+
+                    if (iconDiv.children.length > 0) {
+                        iconDiv.removeChild(iconDiv.children[0]);
+                    }
                 }
             }
         }
 
         /* 달력에 이전달 출력 */
-        function prev(){
-            getCurrentTime(currentYear, currentMonth-1);
+        function prev() {
+            getCurrentTime(currentYear, currentMonth - 1);
             printTitle(); // 달력 연,월 출력
             clearCell();
             printNum(); // 달력 날짜 출력
         }
 
         /* 달력에 다음달 출력 */
-        function next(){
-            getCurrentTime(currentYear, currentMonth+1);
+        function next() {
+            getCurrentTime(currentYear, currentMonth + 1);
             printTitle(); // 달력 연,월 출력
             clearCell(); // 기존에 출력된 날짜 및 아이콘 제거
             printNum(); // 달력 날짜 출력
         }
 
         /* 숨겨놓은 다이얼로그를 띄우는데, 위치는 클릭한 셀의 x, y에서 */
-        function openDialog(obj){
+        function openDialog(obj) {
             // 현재 셀에 대한 전역변수 currentCell에, 선택한 cell인 obj 보관
             currentCell = obj;
 
@@ -103,18 +126,18 @@
             // 팝업 위치는 클릭한 셀의 좌표와 일치해야 함
             console.log(`셀 좌표 ${obj.x}, ${obj.y}`);
             dialog.style.position = "absolute";
-            dialog.style.left = obj.x+"px";
-            dialog.style.top = obj.y+"px";
+            dialog.style.left = obj.x + "px";
+            dialog.style.top = obj.y + "px";
         }
 
-        function closeDialog(){
+        function closeDialog() {
             document.getElementById("dialog").style.display = "none";
             document.getElementById("t_title").value = "";
             document.getElementById("t_detail").value = "";
         }
 
         /* 선택한 연, 월, 일에 작성한 제목, 내용 한 건 등록 */
-        function regist(){
+        function regist() {
             // 아래 6개의 데이터가 모여서 다이어리 한 건이 구성되는 것이므로, 데이터를 담기 위한 용도로 배열, 객체(클래스 or 객체리터럴)을 선택할 수 있음
             // 객체 리터럴로 구현
             // 제목
@@ -143,7 +166,7 @@
             // close
             closeDialog();
         }
-        
+
         addEventListener("load", () => {
             // 람다: 코드가 간결해짐. this를 가질 수 없음. 람다의 this는 상위 스코프.
             let d = new Date();
@@ -151,19 +174,42 @@
             printTitle(); // 달력 연,월 출력
             createCell(); // 달력 셀 생성
             printNum(); // 달력 날짜 출력
-            
+
             // 다이어리 1건 등록
-            document.getElementById("bt_regist").addEventListener("click", ()=>{
+            document.getElementById("bt_regist").addEventListener("click", () => {
                 regist();
             })
-            document.getElementById("bt_close").addEventListener("click", ()=>{
+            document.getElementById("bt_close").addEventListener("click", () => {
                 closeDialog();
             });
-            
-            document.body.addEventListener("keyup", (e)=>{
-                if (e.keyCode == 27){
+
+            document.body.addEventListener("keyup", (e) => {
+                if (e.keyCode == 27) {
                     closeDialog();
                 }
+            });
+
+            // 이미지를 클릭하면, 파일 탐색기를 강제로 클릭시키기
+            document.querySelector("#info img").addEventListener("click", () => {
+                // fileChooser에 클릭 이벤트 호출 (프로그래밍적 클릭)
+                document.getElementById("fileChooser").click();
+                document.getElementById("fileChooser").addEventListener("change", (e) => { // 파일탐색기에서 파일을 선택한 경우
+                    // console.log(e);
+                    // 파일 로딩. e.target.files라는 유사배열의 0번째 파일
+                    let file = e.target.files[0];
+                    // 파일을 읽어들이는 객체 사용
+                    let reader = new FileReader();
+                    reader.onload = function (data) { // 파일이 읽어진 시점 실행할 함수 정의
+                        console.log(data.target.result); // 읽어들인 데이터는 js객체 양식으로 된 텍스트일 뿐이므로 객체처럼 접근이 불가. -> json 내장객체를 통해 실제 객체화시켜야 함
+                        let obj = JSON.parse(data.target.result); // 텍스트파일을 해석한 json 객체 반환
+                        diaryArray = obj.diaryList;
+
+                        printTitle();
+                        clearCell(); // 기존 div에 기록된 데이터 삭제
+                        printNum();
+                    }
+                    reader.readAsText(file);
+                });
             });
         });
     </script>
@@ -171,7 +217,10 @@
 
 <body>
     <div id="wrapper">
-        <div id="info"></div>
+        <div id="info">
+            <input type="file" style="display: none;" id="fileChooser">
+            <img src="./images/download.png" alt="" style="width: 30px;">
+        </div>
         <div id="header">
             <a href="javascript:prev()">이전</a>
             <h2></h2>
