@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css">
+    <script src="./map.js"></script>
+    <script src="./GameObject.js"></script>
+    <script src="./Brick.js"></script>
+    <script src="./Sensor.js"></script>
+    <script src="./RightSensor.js"></script>
+    <script src="./Hero.js"></script>
+    <script src="../../lib/common.js"></script>
+    <script>
+        let level = 0; // 게임 레벨 변수
+        let brickArray = Array.from({length: 14}, ()=>{
+            return Array(28).fill(0);
+        } ); // 벽돌과 주인공의 충돌 검사를 위해서, 벽돌을 가리킬 수 있는 배열
+        let hero;
+        let speed = 2;
+
+        function createMap(level){
+            let map = maps[level]; // 3차원 배열 중 하나를 꺼냄
+
+            // 2차원 배열을 대상으로 모든 요소에 접근하여 1이면 new Brick(), 9이면 new Hero()
+            for(let i=0; i<map.length; i++){
+                for (let j=0; j<map[i].length; j++){
+                    if (map[i][j] == 1){
+                        //container, x, y, width, height, bg, border, borderColor
+                        let brick = new Brick(document.getElementById("stage"), j*50, i*50, 50, 50, "green", 1, "blue");
+                        brickArray[i][j] = brick;
+                    } else if (map[i][j] == 9){
+                        hero = new Hero(document.getElementById("stage"), j*50, i*50, 40, 40, 0, 0, "red", 0, "");
+                        console.log("히어로 생성됨", hero);
+                    }
+                }
+            }
+        }
+
+        function gameLoop(){
+            // 모든 게임에 등장하는 객체들에 대한 tick(), render() 호출
+            console.log("gameLoop");
+            hero.tick();
+            hero.render();
+        }
+
+        // undefined: 시스템에 의해 아무것도 없는 값. null: 의도해서 아무것도 없는 값
+        let st = null;
+        function play(){
+            if (st == null){
+                st = setInterval(gameLoop, 10);
+                document.getElementById("stage").style.background = "lightcyan";
+            } else{
+                document.getElementById("stage").style.background = "lightgray";
+                clearInterval(st);
+                st = null;
+            }
+        }
+
+        addEventListener("load", (e)=>{
+            createMap(level);
+
+            addEventListener("keydown", (e)=>{
+                // 상,하,좌,우, 실행(esc)
+                // console.log(e.keyCode);
+                switch(e.keyCode){
+                    case 27: play(); break; // 게임 가동 온오프 플래그
+                    case 37: hero.velX = -speed; break;
+                    case 38: hero.velY = -speed; break;
+                    case 39: hero.velX = speed; break;
+                    case 40: hero.velY = speed; break;
+                }
+            });
+
+             addEventListener("keyup", (e)=>{
+                // 상,하,좌,우, 실행(esc)
+                switch(e.keyCode){
+                    case 37: hero.velX = 0; break;
+                    case 38: hero.velY = 0; break;
+                    case 39: hero.velX = 0; break;
+                    case 40: hero.velY = 0; break;
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="stage"></div>
+</body>
+</html>

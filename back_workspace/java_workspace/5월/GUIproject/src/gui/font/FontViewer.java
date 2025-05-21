@@ -12,6 +12,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
 import java.awt.BorderLayout;
 
+/* 폰트 설정을 적용한 텍스트를 출력하는 클래스 */
 class FontViewer extends Frame implements ActionListener, KeyListener{
 	
 	Frame frame;
@@ -19,6 +20,7 @@ class FontViewer extends Frame implements ActionListener, KeyListener{
 	Panel panel;
 	Button btn;
 	FontSetting fontSetting;
+	
 	
 	public FontViewer(){
 		frame = new Frame();
@@ -42,7 +44,7 @@ class FontViewer extends Frame implements ActionListener, KeyListener{
 	
 	// ActionListener 인터페이스를 오버라이딩
 	public void actionPerformed(ActionEvent e){
-		this.fontSetting = new FontSetting();
+		this.fontSetting = new FontSetting(this);
 	}
 	
 	// KeyListener 인터페이스를 오버라이딩
@@ -56,6 +58,6 @@ class FontViewer extends Frame implements ActionListener, KeyListener{
 	}
 	
 	public static void main(String args[]){
-		new FontViewer();	
+		new FontViewer();
 	}
 }
