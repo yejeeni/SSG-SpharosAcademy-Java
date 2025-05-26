@@ -1,4 +1,4 @@
-package com.sinse.ioproject;
+package com.ssg.ioproject;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

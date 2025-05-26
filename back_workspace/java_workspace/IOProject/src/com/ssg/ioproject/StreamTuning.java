@@ -1,4 +1,4 @@
-package com.sinse.ioproject;
+package com.ssg.ioproject;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
