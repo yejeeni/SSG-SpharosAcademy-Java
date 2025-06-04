@@ -12,3 +12,20 @@ build/
 Thumbs.db
 
 *.tar
+
+# Eclipse 관련
+.settings/
+.project
+.classpath
+
+# Maven 빌드 결과물
+target/
+
+# 라이브러리 폴더 (수동으로 추가된 jar들)
+lib/
+
+# 기타 임시 파일
+*.log
+*.tmp
+*.bak
+.DS_Store
