@@ -40,8 +40,8 @@ public class ProgressTest extends JFrame{
 		thread = new ProgressTestThread();
 				
 		thread1 = thread.returnThread(bar1, 100);
-		thread2 = thread.returnThread(bar2, 100);
-		thread3 = thread.returnThread(bar3, 100);
+		thread2 = thread.returnThread(bar2, 50);
+		thread3 = thread.returnThread(bar3, 200);
 		
 		// 스타일
 		Dimension dimension = new Dimension(750, 45);
