@@ -113,7 +113,7 @@ public class MemberJoin extends Page{
 			
 			PreparedStatement pStatement = null;
 			try {
-				pStatement = appMain.connection.prepareStatement(sql.toString());
+				pStatement = appMain.getConnection().prepareStatement(sql.toString());
 				pStatement.setString(1, t_id.getText()); // 사용자가 입력한 id
 				pStatement.setString(2, StringUtil.getSecuredPass(new String(t_pwd.getPassword()))); // 사용자가 입력한 비밀번호
 				pStatement.setString(3, t_name.getText());

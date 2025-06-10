@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 
 import com.ssg.common.config.Config;
 import com.ssg.common.view.Page;
+import com.ssg.shopadmin.common.util.DBManager;
 import com.ssg.shopadmin.config.view.ConfigPage;
 import com.ssg.shopadmin.cs.view.CustomerPage;
 import com.ssg.shopadmin.main.view.MainPage;
@@ -41,7 +42,8 @@ public class AppMain extends JFrame {
 	JLabel la_cs;
 	JLabel la_config;
 
-	public Connection connection;
+	DBManager dbManager = DBManager.getInstance();
+	Connection connection; //??
 	public Admin admin = new Admin();
 
 	// 모든 페이지를 담을 배열
@@ -58,7 +60,7 @@ public class AppMain extends JFrame {
 		la_order = new JLabel("주문관리");
 		la_member = new JLabel("회원관리");
 		la_cs = new JLabel("cs관리");
-		la_config = new JLabel("설정");
+		la_config = new JLabel("쇼핑몰관리");
 
 		// 스타일
 		p_north.setPreferredSize(new Dimension(Config.UTIL_WIDTH, Config.UTIL_HEIGHT));
@@ -137,13 +139,7 @@ public class AppMain extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				// 데이터베이스 접속 해제
-				if (connection != null) {
-					try {
-						connection.close();
-					} catch (SQLException e1) {
-						e1.printStackTrace();
-					}
-				}
+				dbManager.release(connection);
 				
 				// 프로세스 종료
 				System.exit(0);
@@ -156,26 +152,17 @@ public class AppMain extends JFrame {
 		setBounds(300, 50, Config.ADMIN_MAIN_WIDTH, Config.ADMIN_MAIN_HEIGHT);
 		setVisible(true);
 	}
+	
+	public Connection getConnection() {
+	    return this.connection;
+	}
+
 
 	/**
 	 * 데이터베이스 연결
 	 */
 	public void connect() {
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			try {
-				connection = DriverManager.getConnection(Config.url, Config.user, Config.pw);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			if (connection != null) {
-				this.setTitle("접속 완료");
-			} else {
-				this.setTitle("접속 실패");
-			}
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+		connection = dbManager.getConnection();
 	}
 
 	/**

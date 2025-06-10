@@ -94,7 +94,7 @@ public class LoginForm extends Page{
 		ResultSet resultSet = null;
 		
 		try {
-			pStatement = appMain.connection.prepareStatement(sql);
+			pStatement = appMain.getConnection().prepareStatement(sql);
 			// 쿼리문을 수행하기 위해 바인드 변수를 지정
 			pStatement.setString(1, id);
 			pStatement.setString(2, StringUtil.getSecuredPass(pwd));

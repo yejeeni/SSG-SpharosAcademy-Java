@@ -27,7 +27,7 @@ public class Config {
 	 * 관리자 앱 메인 설정
 	 -------------------------------------------*/	
 	public static final int ADMIN_MAIN_WIDTH = 1300;
-	public static final int ADMIN_MAIN_HEIGHT = 800;
+	public static final int ADMIN_MAIN_HEIGHT = 900;
 	
 	public static final int UTIL_WIDTH = ADMIN_MAIN_WIDTH;
 	public static final int UTIL_HEIGHT = 50;

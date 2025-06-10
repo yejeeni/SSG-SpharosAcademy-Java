@@ -2,18 +2,29 @@ package com.ssg.shopadmin.product.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -21,6 +32,8 @@ import com.ssg.common.view.Page;
 import com.ssg.shopadmin.AppMain;
 import com.ssg.shopadmin.product.model.SubCategory;
 import com.ssg.shopadmin.product.model.TopCategory;
+import com.ssg.shopadmin.product.repository.ColorDAO;
+import com.ssg.shopadmin.product.repository.SizeDAO;
 import com.ssg.shopadmin.product.repository.SubCategoryDAO;
 import com.ssg.shopadmin.product.repository.TopCategoryDAO;
 
@@ -48,8 +61,10 @@ public class ProductPage extends Page {
 	JTextField t_brand;
 	JTextField t_price;
 	JTextField t_discount;
-	JTextField t_color;
-	JTextField t_size;
+	JList t_color;
+	JList t_size;
+	JScrollPane scroll_color;
+	JScrollPane scroll_size;
 	JTextField t_introduce;
 	JPanel p_priview; // 선택한 상품 이미지의 미리보기
 	JLabel la_introduce;
@@ -59,6 +74,12 @@ public class ProductPage extends Page {
 	
 	TopCategoryDAO topCategoryDAO;
 	SubCategoryDAO subCategoryDAO;
+	ColorDAO colorDAO;
+	SizeDAO sizeDAO;	
+	
+	JFileChooser jFileChooser;
+	
+	Image[] images;
 	
 	
 	public ProductPage(AppMain appMain) {
@@ -83,9 +104,24 @@ public class ProductPage extends Page {
 		t_brand = new JTextField();
 		t_price = new JTextField();
 		t_discount = new JTextField();
-		t_color = new JTextField();
-		t_size = new JTextField();
-		p_priview = new JPanel(); // 추후 익명 내부 클래스로 전환
+		t_color = new JList();
+		t_size = new JList();
+		scroll_color = new JScrollPane(t_color);
+		scroll_size = new JScrollPane(t_size);
+		
+		p_priview = new JPanel() {
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				
+				if (images != null) {
+					// 선택한 파일 수만큼 반복하면서 이미지 그리기
+					for (int i=0; i<images.length; i++) {
+						g.drawImage(images[i], 5+(i*45), 5, 45, 45, appMain);					
+					}
+				}
+			}
+		}; // 추후 익명 내부 클래스로 전환
 		t_introduce = new JTextField();
 		la_detail = new JLabel();
 		t_detail = new JTextArea();
@@ -94,6 +130,11 @@ public class ProductPage extends Page {
 		
 		topCategoryDAO = new TopCategoryDAO();
 		subCategoryDAO = new SubCategoryDAO();
+		colorDAO = new ColorDAO();
+		sizeDAO = new SizeDAO();
+		
+		jFileChooser = new JFileChooser("C:/lecture_workspace/front_workspace/images");
+		jFileChooser.setMultiSelectionEnabled(true); // 다중 선택 가능하도록 설정
 
 		// 스타일
 		Dimension d = new Dimension(400, 30);
@@ -113,8 +154,8 @@ public class ProductPage extends Page {
 		t_brand.setPreferredSize(d);
 		t_price.setPreferredSize(d);
 		t_discount.setPreferredSize(d);
-		t_color.setPreferredSize(d);
-		t_size.setPreferredSize(d);
+		scroll_color.setPreferredSize(new Dimension(400, 80));
+		scroll_size.setPreferredSize(new Dimension(400, 80));
 		p_priview.setPreferredSize(d);
 		t_introduce.setPreferredSize(d);
 		t_detail.setPreferredSize(d);
@@ -140,9 +181,9 @@ public class ProductPage extends Page {
 		add(t_discount);
 		add(la_size);
 		add(la_color);
-		add(t_color);
+		add(scroll_color);
 		add(la_size);
-		add(t_size);
+		add(scroll_size);
 		add(bt_open);
 		add(p_priview);
 		add(t_introduce);
@@ -163,25 +204,41 @@ public class ProductPage extends Page {
 					
 					// 선택한 아이템의 pk 출력
 					TopCategory topCategory = (TopCategory)cb_topCategory.getSelectedItem();
-
-					// 하위 카테고리 목록 가져오기
-					List<SubCategory> subCategoryList = subCategoryDAO.selectByTop(topCategory);
 					
-					// 모든 하위 카테고리 콤보 아이템 삭제
-					cb_subCategory.removeAllItems();
-					
-					for (int i=0; i<subCategoryList.size(); i++) {
-						cb_subCategory.addItem(subCategoryList.get(i).getSub_category_name());						
-					}
-					
-					
+					getSubCategory(topCategory);
 				}
 			}
 		});
 		
 		// 최상위 카테고리 불러오기
 		getTopCategory();
+		
+		getColorList();
+		getSizeList();
+		
+		// 파일탐색기 띄우기
+		bt_open.addActionListener(e->{
+			jFileChooser.showOpenDialog(ProductPage.this);
+			
+			// 선택한 이미지 파일에 대한 정보
+			File[] files = jFileChooser.getSelectedFiles();
+			images = new Image[files.length]; // 선택한 이미지 파일의 수와 동일한 이미지 배열 생성
+			
+			// 파일을 통해 이미지 생성
+			for (int i=0; i<files.length; i++) {
+				try {
+					BufferedImage bufferedImage = ImageIO.read(files[i]);
+					images[i] = bufferedImage.getScaledInstance(45, 45, Image.SCALE_SMOOTH);
+					
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+			// 그림 다시 그리기
+			p_priview.repaint();
+		});
 	}
+	
 	
 	// DAO를 통해 얻어온 list를 이용하여 콤보박스에 카테고리 값 채우기
 	public void getTopCategory() {
@@ -195,7 +252,35 @@ public class ProductPage extends Page {
 		
 		for (int i=0; i<list.size(); i++) {
 			cb_topCategory.addItem(list.get(i));
-			
 		}
+	}
+	
+	/**
+	 * topCategory의 하위 카테고리를 얻어오는 메서드
+	 * @param topCategory
+	 */
+	public void getSubCategory(TopCategory topCategory) {
+		// 하위 카테고리 목록 가져오기
+		List<SubCategory> subCategoryList = subCategoryDAO.selectByTop(topCategory);
+		
+		// 모든 하위 카테고리 콤보 아이템 삭제
+		cb_subCategory.removeAllItems();
+		
+		SubCategory dummyCategory = new SubCategory();
+		dummyCategory.setSub_category_name("하위 카테고리를 선택하세요");
+		dummyCategory.setSub_category_id(0);
+		cb_subCategory.addItem(dummyCategory);
+		
+		for (int i=0; i<subCategoryList.size(); i++) {
+			cb_subCategory.addItem(subCategoryList.get(i).getSub_category_name()); // 여기서 get이 아니라 toString을 오버라이딩해서 사용하심				
+		}
+	}
+	
+	public void getColorList() {
+		t_color.setListData(new Vector<>(colorDAO.selectAll()));
+	}
+	
+	public void getSizeList() {
+		t_size.setListData(new Vector<>(sizeDAO.selectAll()));
 	}
 }

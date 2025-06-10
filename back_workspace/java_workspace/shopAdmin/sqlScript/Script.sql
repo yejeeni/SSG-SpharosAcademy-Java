@@ -47,4 +47,20 @@ insert into sub_category(SUB_CATEGORY_NAME, TOP_CATEGORY_ID) VALUES('목걸이',
 
 select * from sub_category where TOP_CATEGORY_ID = 3;
 
+----------------------------------------------------
+-- 색상표
+----------------------------------------------------
+create table COLOR(
+	COLOR_ID INT primary key auto_increment
+	, COLOR_NAME VARCHAR(15)
+);
+
+----------------------------------------------------
+-- 사이즈
+----------------------------------------------------
+create table SIZE(
+	SIZE_ID INT primary key auto_increment
+	, SIZE_NAME VARCHAR(15)
+);
+
 

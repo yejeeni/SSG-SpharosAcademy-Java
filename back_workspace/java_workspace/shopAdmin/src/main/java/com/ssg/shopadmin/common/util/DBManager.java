@@ -49,6 +49,17 @@ public class DBManager {
 	}
 	
 	// db 관련 자원을 해제하는 메서드
+	public void release(Connection connection) {
+		if (connection != null) {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
 	public void release(PreparedStatement preparedStatement) {
 		if (preparedStatement != null) {
 			try {
