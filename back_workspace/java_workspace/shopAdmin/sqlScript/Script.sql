@@ -64,3 +64,39 @@ create table SIZE(
 );
 
 
+----------------------------------------------------
+-- 상품
+----------------------------------------------------
+create table PRODUCT(
+	PRODUCT_ID INT primary key auto_increment
+	, PRODUCT_NAME VARCHAR(25)
+	, BRAND VARCHAR(15)
+	, PRICE INT default 0
+	, DISCOUNT INT default 0
+	, INTRODUCT VARCHAR(250)
+	, DETAIL TEXT
+	, SUB_CATEGORY_ID INT
+	, constraint FK_SUB_CATEGORY_PRODUCT foreign key(SUB_CATEGORY_ID) references SUB_CATEGORY(SUB_CATEGORY_ID)
+);
+
+----------------------------------------------------
+-- 상품의 사이즈 정보
+----------------------------------------------------
+create table PRODUCT_SIZE(
+	PRODUCT_ID INT primary key auto_increment
+	, SIZE_ID INT
+	, constraint FK_PRODUCT_PRODUCT_SIZE foreign key(PRODUCT_ID) references PRODUCT(PRODUCT_ID)
+	, constraint FK_SIZE_PRODUCT_SIZE foreign key(SIZE_ID) references SIZE(SIZE_ID)
+);
+
+----------------------------------------------------
+-- 상품의 색상 정보
+----------------------------------------------------
+create table PRODUCT_COLOR(
+	PRODUCT_COLOR_ID INT primary key auto_increment
+	, PRODUCT_ID INT
+	, COLOR_ID INT
+	, constraint FK_PRODUCT_PRODUCT_COLOR foreign key(PRODUCT_ID) references PRODUCT(PRODUCT_ID)
+	, constraint FK_COLOR_PRODUCT_COLOR foreign key(COLOR_ID) references COLOR(COLOR_ID)
+);
+

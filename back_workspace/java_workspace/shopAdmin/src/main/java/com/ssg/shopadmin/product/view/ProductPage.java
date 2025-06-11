@@ -23,6 +23,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -79,7 +80,8 @@ public class ProductPage extends Page {
 	
 	JFileChooser jFileChooser;
 	
-	Image[] images;
+	Image[] images; // 선택한 파일로부터 생성된 이미지 배열
+	File[] files; // 이미지 파일 업로드를 위한 파일 배열. io스트림의 대상은 File이기 때문
 	
 	
 	public ProductPage(AppMain appMain) {
@@ -218,25 +220,42 @@ public class ProductPage extends Page {
 		
 		// 파일탐색기 띄우기
 		bt_open.addActionListener(e->{
-			jFileChooser.showOpenDialog(ProductPage.this);
+			int result = jFileChooser.showOpenDialog(ProductPage.this);
 			
-			// 선택한 이미지 파일에 대한 정보
-			File[] files = jFileChooser.getSelectedFiles();
-			images = new Image[files.length]; // 선택한 이미지 파일의 수와 동일한 이미지 배열 생성
-			
-			// 파일을 통해 이미지 생성
-			for (int i=0; i<files.length; i++) {
-				try {
-					BufferedImage bufferedImage = ImageIO.read(files[i]);
-					images[i] = bufferedImage.getScaledInstance(45, 45, Image.SCALE_SMOOTH);
-					
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-			// 그림 다시 그리기
-			p_priview.repaint();
+			if (result == jFileChooser.APPROVE_OPTION) {
+				preview();				
+			}			
 		});
+		
+		// 등록 버튼과 리스너 연결
+		bt_regist.addActionListener(e->{
+//			upload();
+			regist();
+		});
+	}
+	
+	public void preview() {
+		// 선택한 이미지 파일에 대한 정보
+					files = jFileChooser.getSelectedFiles();
+					
+					if (files.length > 6) {
+						JOptionPane.showMessageDialog(this, "이미지는 최대 6개까지만 가능합니다.");
+					} else {
+						images = new Image[files.length]; // 선택한 이미지 파일의 수와 동일한 이미지 배열 생성
+						
+						// 파일을 통해 이미지 생성
+						for (int i=0; i<files.length; i++) {
+							try {
+								BufferedImage bufferedImage = ImageIO.read(files[i]);
+								images[i] = bufferedImage.getScaledInstance(45, 45, Image.SCALE_SMOOTH);
+								
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+						}
+					}
+					// 그림 다시 그리기
+					p_priview.repaint();
 	}
 	
 	
@@ -282,5 +301,52 @@ public class ProductPage extends Page {
 	
 	public void getSizeList() {
 		t_size.setListData(new Vector<>(sizeDAO.selectAll()));
+	}
+	
+	/**
+	 *  시각적 효과를 위해 각 이미지의 업로드 진행율을 보여주는 메서드
+	 */
+	public void upload() {
+		UploadDialog dialog = new UploadDialog(this);
+	}
+	
+	public void insert() {
+		
+	}
+	
+	/**
+	 * 이미지 업로드 및 DB insert
+	 */
+	public void regist() {
+		// 양식을 제대로 입력했을 때
+		
+		// 상위 카테고리 유효성 체크
+		if(cb_topCategory.getSelectedIndex() == 0) {
+			JOptionPane.showConfirmDialog(this, "상위 카테고리를 선택해주세요.");
+		} else if(cb_subCategory.getSelectedIndex() == 0) {
+			JOptionPane.showConfirmDialog(this, "하위 카테고리를 선택해주세요.");
+		} else if(t_productName.getText().length() < 1) {
+			JOptionPane.showConfirmDialog(this, "상품명을 입력해주세요.");
+		} else if(t_brand.getText().length() < 1) {
+			JOptionPane.showConfirmDialog(this, "브랜드명을 입력해주세요.");
+		} else if(t_price.getText().length() < 1){
+			JOptionPane.showConfirmDialog(this, "가격을 입력해주세요.");
+		} else if(t_discount.getText().length() < 1){
+			JOptionPane.showConfirmDialog(this, "할인가를 입력해주세요.");
+		} else if(t_color.getMinSelectionIndex() < 0){
+			JOptionPane.showConfirmDialog(this, "색상을 선택해주세요.");
+		} else if(t_size.getMinSelectionIndex() < 0){
+			JOptionPane.showConfirmDialog(this, "사이즈를 선택해주세요.");
+		} else if(files.length < 0){
+			JOptionPane.showConfirmDialog(this, "상품 이미지를 선택해주세요.");
+		} else if(t_introduce.getText().length() < 1){
+			JOptionPane.showConfirmDialog(this, "상품 소개를 입력해주세요.");
+		} else if(t_detail.getText().length() < 1){
+			JOptionPane.showConfirmDialog(this, "상품 상세 내용을 입력해주세요.");
+		} else {
+			upload();
+			insert(); // db에 insert
+		}
+		
 	}
 }
