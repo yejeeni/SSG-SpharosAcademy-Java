@@ -19,10 +19,13 @@ public class UploadDialog extends JDialog{
 		dialog.setSize(700, 600);
 		dialog.setLayout(new FlowLayout());
 		
+		page.newFiles = new File[page.files.length];
+		
 		// 커스텀된 바 테스트
 		for (int i=0; i<page.files.length; i++) {
 			// 어디에 저장할지 디렉토리를 결정
 			File destFile = FileUtil.createFile(Config.PRODUCT_IMAGE_PATH	, FileUtil.getExt(page.files[i].getName()));
+			page.newFiles[i] = destFile; // 상품 등록 폼에 파일 정보 대입
 			
 			MyBar bar = new MyBar(page.files[i], destFile);
 			Thread thread = new Thread(bar); // bar의 run() 메서드가 호출

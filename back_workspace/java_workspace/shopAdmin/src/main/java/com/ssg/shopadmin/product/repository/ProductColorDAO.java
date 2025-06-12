@@ -1,0 +1,42 @@
+package com.ssg.shopadmin.product.repository;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import com.ssg.shopadmin.common.util.DBManager;
+import com.ssg.shopadmin.product.model.ProductColor;
+
+public class ProductColorDAO {
+
+	DBManager dbManager = DBManager.getInstance();
+	
+	/**
+	 * 상품이 보유한 색상들을 입력
+	 * @return
+	 */
+	public int insert(ProductColor productColor) {
+		Connection connection = null;
+		PreparedStatement pStatement = null;
+		int result = 0;
+		
+		connection = dbManager.getConnection();
+		StringBuffer sql = new StringBuffer();
+		sql.append("insert into product_color(product_id, color_id) values(?, ?)");
+		
+		try {
+			pStatement = connection.prepareStatement(sql.toString());
+			pStatement.setInt(1, productColor.getProduct().getProduct_id());
+			pStatement.setInt(2, productColor.getColor().getColor_id());
+			
+			result = pStatement.executeUpdate(); // DML 실행
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			dbManager.release(pStatement);
+		}
+		
+		return result;
+	}
+}

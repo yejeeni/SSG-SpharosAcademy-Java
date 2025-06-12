@@ -100,3 +100,58 @@ create table PRODUCT_COLOR(
 	, constraint FK_COLOR_PRODUCT_COLOR foreign key(COLOR_ID) references COLOR(COLOR_ID)
 );
 
+create table product_img(
+	product_img_id int primary key auto_increment
+	, filename varchar(20)
+	, product_id int
+	, constraint fk_product_product_img foreign key(product_id) references product(product_id)
+);
+
+
+
+
+
+select * from top_category;
+select * from sub_category;
+select * from product;
+
+select * 
+from sub_category sc
+	join top_category tp
+		on sc.TOP_CATEGORY_ID = tp.TOP_CATEGORY_ID;
+
+
+insert into TOP_CATEGORY(TOP_CATEGORY_NAME) VALUES('가방');
+
+-- 각 상위 카테고리 별 하위 카테고리의 수
+select TC.TOP_CATEGORY_ID, COUNT(SC.SUB_CATEGORY_ID)
+from top_category tc
+left outer join sub_category sc 
+	on TC.TOP_CATEGORY_ID  = SC.TOP_CATEGORY_ID
+group by TC.TOP_CATEGORY_ID
+
+create table test(
+	test_id int primary key auto_increment
+	, name varchar(20)
+);
+
+insert into test(name) values('a');
+insert into test(name) values('b');
+insert into test(name) values('c');
+
+select *
+from test
+order by test_id desc
+limit 1;
+
+-- last_insert_id(): 가장 최근에 성공적으로 수행된 insert 구문의 첫 번째 auto_increment 값을 반환 
+select last_insert_id() as id;
+
+
+
+
+
+
+
+
+

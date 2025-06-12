@@ -1,6 +1,5 @@
 package com.ssg.shopadmin.product.view;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -31,9 +30,19 @@ import javax.swing.JTextField;
 
 import com.ssg.common.view.Page;
 import com.ssg.shopadmin.AppMain;
+import com.ssg.shopadmin.product.model.Color;
+import com.ssg.shopadmin.product.model.Product;
+import com.ssg.shopadmin.product.model.ProductColor;
+import com.ssg.shopadmin.product.model.ProductImg;
+import com.ssg.shopadmin.product.model.ProductSize;
+import com.ssg.shopadmin.product.model.Size;
 import com.ssg.shopadmin.product.model.SubCategory;
 import com.ssg.shopadmin.product.model.TopCategory;
 import com.ssg.shopadmin.product.repository.ColorDAO;
+import com.ssg.shopadmin.product.repository.ProductColorDAO;
+import com.ssg.shopadmin.product.repository.ProductDAO;
+import com.ssg.shopadmin.product.repository.ProductImgDAO;
+import com.ssg.shopadmin.product.repository.ProductSizeDAO;
 import com.ssg.shopadmin.product.repository.SizeDAO;
 import com.ssg.shopadmin.product.repository.SubCategoryDAO;
 import com.ssg.shopadmin.product.repository.TopCategoryDAO;
@@ -77,16 +86,22 @@ public class ProductPage extends Page {
 	SubCategoryDAO subCategoryDAO;
 	ColorDAO colorDAO;
 	SizeDAO sizeDAO;	
+	ProductDAO productDAO;
+	ProductColorDAO productColorDAO;
+	ProductSizeDAO productSizeDAO;
+	ProductImgDAO productImgDAO;
 	
 	JFileChooser jFileChooser;
 	
 	Image[] images; // 선택한 파일로부터 생성된 이미지 배열
 	File[] files; // 이미지 파일 업로드를 위한 파일 배열. io스트림의 대상은 File이기 때문
 	
+	File[] newFiles; // 업로드 다이얼로그에 의해 새롭게 업로드된 파일들에 대한 정보
+	
 	
 	public ProductPage(AppMain appMain) {
 		super(appMain);
-		setBackground(Color.CYAN);
+		setBackground(java.awt.Color.CYAN);
 
 		// 생성
 		la_topCategory = new JLabel("최상위 카테고리");
@@ -134,6 +149,10 @@ public class ProductPage extends Page {
 		subCategoryDAO = new SubCategoryDAO();
 		colorDAO = new ColorDAO();
 		sizeDAO = new SizeDAO();
+		productDAO = new ProductDAO();
+		productColorDAO = new ProductColorDAO();
+		productImgDAO = new ProductImgDAO();
+		productSizeDAO = new ProductSizeDAO();
 		
 		jFileChooser = new JFileChooser("C:/lecture_workspace/front_workspace/images");
 		jFileChooser.setMultiSelectionEnabled(true); // 다중 선택 가능하도록 설정
@@ -229,7 +248,6 @@ public class ProductPage extends Page {
 		
 		// 등록 버튼과 리스너 연결
 		bt_regist.addActionListener(e->{
-//			upload();
 			regist();
 		});
 	}
@@ -261,6 +279,7 @@ public class ProductPage extends Page {
 	
 	// DAO를 통해 얻어온 list를 이용하여 콤보박스에 카테고리 값 채우기
 	public void getTopCategory() {
+		// 객체를 반환해서 추후 꺼내서 사용 가능
 		List<TopCategory> list = topCategoryDAO.selectAll();
 		
 		// 안내문구를 담은 더미 카테고리를 콤보박스에 추가
@@ -291,7 +310,7 @@ public class ProductPage extends Page {
 		cb_subCategory.addItem(dummyCategory);
 		
 		for (int i=0; i<subCategoryList.size(); i++) {
-			cb_subCategory.addItem(subCategoryList.get(i).getSub_category_name()); // 여기서 get이 아니라 toString을 오버라이딩해서 사용하심				
+			cb_subCategory.addItem(subCategoryList.get(i)); // 여기서 get이 아니라 toString을 오버라이딩해서 사용하심				
 		}
 	}
 	
@@ -310,7 +329,53 @@ public class ProductPage extends Page {
 		UploadDialog dialog = new UploadDialog(this);
 	}
 	
-	public void insert() {
+	public void insert() {				
+		Product product = new Product();
+		product.setProduct_name(t_productName.getText());
+		product.setBrand(t_brand.getText());
+		product.setPrice(Integer.parseInt(t_price.getText()));
+		product.setDiscount(Integer.parseInt(t_discount.getText()));
+		product.setIntroduce(t_introduce.getText());
+		product.setDetail(t_detail.getText());
+		product.setSubCategory((SubCategory)cb_subCategory.getSelectedItem());
+		
+		int result = productDAO.insert(product);
+		
+		int product_id = productDAO.selectLastInsertId();
+		product.setProduct_id(product_id); // 최근 pk를 product에 반영
+//		System.out.println(product_id);
+		
+		// 상품의 색상들 등록하기
+		List<Color> colorList = t_color.getSelectedValuesList();
+		for (Color color : colorList) {
+//			System.out.println(color.getColor_name());
+			
+			ProductColor productColor = new ProductColor();
+			productColor.setProduct(product);
+			productColor.setColor(color);
+			productColorDAO.insert(productColor);
+		}
+		
+		// 상품의 사이즈들 등록
+		List<Size> sizeList = t_size.getSelectedValuesList();
+		for (Size size : sizeList) {
+			ProductSize productSize = new ProductSize();
+			productSize.setProduct(product);
+			productSize.setSize(size);
+			
+			productSizeDAO.insert(productSize);
+		}
+		
+		// 상품의 이미지들 등록
+		for (int i=0; i<newFiles.length; i++) {
+			File file = newFiles[i]; // 업로드된 파일 객체
+			ProductImg productImg = new ProductImg();
+			
+			productImg.setProduct(product);
+			productImg.setFilename(file.getName());
+			
+			productImgDAO.insert(productImg);
+		}
 		
 	}
 	
@@ -333,9 +398,9 @@ public class ProductPage extends Page {
 			JOptionPane.showConfirmDialog(this, "가격을 입력해주세요.");
 		} else if(t_discount.getText().length() < 1){
 			JOptionPane.showConfirmDialog(this, "할인가를 입력해주세요.");
-		} else if(t_color.getMinSelectionIndex() < 0){
-			JOptionPane.showConfirmDialog(this, "색상을 선택해주세요.");
-		} else if(t_size.getMinSelectionIndex() < 0){
+		} else if (t_color.getSelectedValuesList().isEmpty()) {
+		    JOptionPane.showConfirmDialog(this, "색상을 선택해주세요.");
+		} else if(t_size.getSelectedValuesList().isEmpty()){
 			JOptionPane.showConfirmDialog(this, "사이즈를 선택해주세요.");
 		} else if(files.length < 0){
 			JOptionPane.showConfirmDialog(this, "상품 이미지를 선택해주세요.");
