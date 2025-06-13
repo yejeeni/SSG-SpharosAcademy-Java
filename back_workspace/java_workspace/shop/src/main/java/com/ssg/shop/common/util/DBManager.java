@@ -1,4 +1,4 @@
-package com.ssg.shopadmin.common.util;
+package com.ssg.shop.common.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.ssg.shopadmin.common.config.Config;
+import com.ssg.shop.common.config.Config;
 
 /* 
  * AppMain에서 db를 핸들링하지 않고, 중립적인 객체에서 connection을 얻고 닫는 기능을 보유한 객체 선언

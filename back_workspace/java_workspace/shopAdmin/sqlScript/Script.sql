@@ -107,8 +107,19 @@ create table product_img(
 	, constraint fk_product_product_img foreign key(product_id) references product(product_id)
 );
 
+select *
+from top_category t, sub_category s, product p
+where t.TOP_CATEGORY_ID = s.top_category_id
+	and s.sub_category_id = p.SUB_CATEGORY_ID;
 
-
+create table member(
+	member_id int primary key
+	, id varchar(20)
+	, pwd varchar(64)
+	, name varchar(20)
+	, email varchar(25)
+	, regdate timestamp default now()
+);
 
 
 select * from top_category;

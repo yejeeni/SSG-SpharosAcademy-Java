@@ -9,23 +9,22 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import com.ssg.common.config.Config;
-import com.ssg.common.view.Page;
+import com.ssg.shopadmin.common.config.Config;
 import com.ssg.shopadmin.common.util.DBManager;
+import com.ssg.shopadmin.common.view.Page;
 import com.ssg.shopadmin.config.view.ConfigPage;
 import com.ssg.shopadmin.cs.view.CustomerPage;
 import com.ssg.shopadmin.main.view.MainPage;
 import com.ssg.shopadmin.member.view.MemberJoin;
 import com.ssg.shopadmin.member.view.MemberPage;
 import com.ssg.shopadmin.order.view.OrderPage;
+import com.ssg.shopadmin.product.view.ProductListPage;
 import com.ssg.shopadmin.product.view.ProductPage;
 import com.ssg.shopadmin.security.LoginForm;
 import com.ssg.shopadmin.security.model.Admin;
@@ -169,7 +168,7 @@ public class AppMain extends JFrame {
 	 * 쇼핑몰에 사용할 모든 페이지 생성 및 부착
 	 */
 	public void createPage() {
-		pages = new Page[8];
+		pages = new Page[9];
 
 		pages[Config.LOGIN_PAGE] = new LoginForm(this);
 		pages[Config.MAIN_PAGE] = new MainPage(this);
@@ -178,6 +177,8 @@ public class AppMain extends JFrame {
 		pages[Config.MEMBER_PAGE] = new MemberPage(this);
 		pages[Config.CUSTOMER_PAGE] = new CustomerPage(this);
 		pages[Config.CONFIG_PAGE] = new ConfigPage(this);
+		pages[Config.PRODUCT_LIST_PAGE] = new ProductListPage(this);
+		
 		pages[7] = new MemberJoin(this);
 
 		for (int i = 0; i < pages.length; i++) {

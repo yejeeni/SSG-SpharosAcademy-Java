@@ -1,12 +1,6 @@
 package com.ssg.shopadmin.config.view;
 
 import java.awt.Dimension;
-import java.awt.List;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -19,13 +13,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
-import com.ssg.common.config.Config;
-import com.ssg.common.view.Page;
 import com.ssg.shopadmin.AppMain;
-import com.ssg.shopadmin.product.repository.ColorDAO;
-import com.ssg.shopadmin.product.repository.SizeDAO;
+import com.ssg.shopadmin.common.config.Config;
+import com.ssg.shopadmin.common.view.Page;
 import com.ssg.shopadmin.product.model.Color;
 import com.ssg.shopadmin.product.model.Size;
+import com.ssg.shopadmin.product.repository.ColorDAO;
+import com.ssg.shopadmin.product.repository.SizeDAO;
 
 public class ConfigPage extends Page{
 	

@@ -4,9 +4,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.ssg.shopadmin.common.exception.ProductException;
 import com.ssg.shopadmin.common.util.DBManager;
 import com.ssg.shopadmin.product.model.Product;
+import com.ssg.shopadmin.product.model.SubCategory;
+import com.ssg.shopadmin.product.model.TopCategory;
 
 /**
  * Product 테이블에 대한 CRUD
@@ -14,7 +19,7 @@ import com.ssg.shopadmin.product.model.Product;
 public class ProductDAO {
 	DBManager dbManager = DBManager.getInstance();
 	
-	public int insert(Product product) {
+	public void insert(Product product) throws ProductException {
 		Connection connection = null;
 		PreparedStatement pStatement = null;
 		int result = 0;
@@ -36,12 +41,15 @@ public class ProductDAO {
 			pStatement.setInt(7, product.getSubCategory().getSub_category_id());
 			
 			result = pStatement.executeUpdate();
+			if (result  == 0) {
+				throw new ProductException("상품이 등록되지 않았습니다.");
+			}
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace(); // 여기서 처리할 경우 바깥쪽의 유저가 사용하는 프로그램에서는 에러 원인을 알 수 없음. 따라서 에러 발생 시 외부 영역까지 에러 원인을 전달해야 함
+			throw new ProductException("상품 등록 중 문제가 발생했습니다.", e);
+			
 		}
-		
-		return result;
 	}
 	
 	
@@ -72,5 +80,59 @@ public class ProductDAO {
 		}
 		
 		return id;
+	}
+	
+	/**
+	 * 모든 상품의 목록 가져오기
+	 */
+	public List selectAll() {
+		Connection connection = null;
+		PreparedStatement pStatement = null;
+		ResultSet resultSet = null;
+		List<Product> list = new ArrayList();
+		
+		connection = dbManager.getConnection();
+		StringBuffer sql = new StringBuffer();
+		sql.append("select t.top_category_id, top_category_name, s.sub_category_id, sub_category_name");
+		sql.append(", product_id, product_name, brand, price, discount, introduce, detail");
+		sql.append(" FROM top_category t");
+		sql.append(" JOIN sub_category s ON t.top_category_id = s.top_category_id");
+		sql.append(" JOIN product p ON s.sub_category_id = p.sub_category_id");
+		
+		try {
+			pStatement = connection.prepareStatement(sql.toString());
+			resultSet = pStatement.executeQuery();
+			
+			while(resultSet.next()) {
+				Product product = new Product();
+				product.setProduct_id(resultSet.getInt("product_id"));
+				product.setProduct_name(resultSet.getString("product_name"));
+				product.setBrand(resultSet.getString("brand"));
+				product.setPrice(resultSet.getInt("price"));
+				product.setDiscount(resultSet.getInt("discount"));
+				product.setIntroduce(resultSet.getString("introduce"));
+				product.setDetail(resultSet.getString("detail"));
+			
+				// 하위카테고리
+				SubCategory subCategory = new SubCategory();
+				subCategory.setSub_category_id(resultSet.getInt("s.sub_category_id"));
+				subCategory.setSub_category_name("sub_category_name");					
+				product.setSubCategory(subCategory);
+				
+				// 상위 카테고리
+				TopCategory topCategory = new TopCategory();
+				topCategory.setTop_category_id(resultSet.getInt("t.top_category_id"));
+				topCategory.setTop_category_name(resultSet.getString("top_category_name"));
+				subCategory.setTop_category(topCategory);
+				
+				list.add(product);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			dbManager.release(pStatement, resultSet);
+		}
+		
+		return list;
 	}
 }

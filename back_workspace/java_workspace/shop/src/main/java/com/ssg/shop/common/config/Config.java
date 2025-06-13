@@ -5,13 +5,22 @@ package com.ssg.shop.common.config;
  */
 public class Config {
 	/*-------------------------------------------
+	 * 데이터베이스 접속 정보
+	 -------------------------------------------*/
+	public static final String url = "jdbc:mysql://localhost:3306/shop";
+	public static final String user = "shop";
+	public static final String pw = "1234";
+	
+	public static final String PRODUCT_IMAGE_PATH = "C:\\public";
+	
+	/*-------------------------------------------
 	 * 페이지 번호
 	 -------------------------------------------*/
 	public static final int MAIN_PAGE = 0; // 메인 페이지
-	public static final int PRODUCT_PAGE = 1; // 상품 페이지
-	public static final int CUSTOMER_PAGE = 2; // 고객센터 페이지
-	public static final int LOGIN_PAGE = 3;
-	public static final int JOIN_PAGE = 4;
+	public static final int JOIN_PAGE = 1; // 회원가입 페이지
+	public static final int PRODUCT_PAGE = 2; // 상품 페이지
+	public static final int CUSTOMER_PAGE = 3; // 고객센터 페이지
+	public static final int LOGIN_PAGE = 4;
 	public static final int CART_PAGE = 5;
 	public static final int WISHLIST_PAGE = 6;
 	

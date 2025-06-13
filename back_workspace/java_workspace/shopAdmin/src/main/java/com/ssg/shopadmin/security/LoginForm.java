@@ -14,10 +14,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import com.ssg.common.config.Config;
-import com.ssg.common.view.Page;
 import com.ssg.shopadmin.AppMain;
+import com.ssg.shopadmin.common.config.Config;
 import com.ssg.shopadmin.common.util.StringUtil;
+import com.ssg.shopadmin.common.view.Page;
 import com.ssg.shopadmin.security.model.Admin;
 
 public class LoginForm extends Page{

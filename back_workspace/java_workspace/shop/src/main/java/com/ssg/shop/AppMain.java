@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -13,6 +15,7 @@ import javax.swing.JPanel;
 import com.ssg.shop.common.config.Config;
 import com.ssg.shop.common.view.Page;
 import com.ssg.shop.home.MainPage;
+import com.ssg.shop.member.view.MemberJoin;
 
 public class AppMain extends JFrame {
 	JPanel p_north; // p_util, p_navi를 담을 패널
@@ -85,6 +88,14 @@ public class AppMain extends JFrame {
 		createPage();
 		showPage(Config.MAIN_PAGE);
 		
+		// 회원가입 버튼 클릭 시 이벤트 발생
+		la_join.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				showPage(Config.JOIN_PAGE);
+			}
+		});
+		
 		setDefaultCloseOperation(EXIT_ON_CLOSE); // DB연동 후 지워야 함
 		setVisible(true);
 		setBounds(300, 50, 1400, 900);
@@ -95,10 +106,11 @@ public class AppMain extends JFrame {
 	 */
 	public void createPage() {
 		// 페이지 리스트
-		pages = new Page[1]; // 만든 페이지 수
+		pages = new Page[2]; // 만든 페이지 수
 		
 		// 페이지 생성
-		pages[Config.MAIN_PAGE] = new MainPage();
+		pages[Config.MAIN_PAGE] = new MainPage(this);
+		pages[Config.JOIN_PAGE] = new MemberJoin(this);
 		
 		// 모든 페이지를 p_container에 부착
 		for (int i=0; i<pages.length; i++) {

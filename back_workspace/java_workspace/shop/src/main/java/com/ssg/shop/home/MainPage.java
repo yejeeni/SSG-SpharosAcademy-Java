@@ -8,6 +8,7 @@ import java.awt.Image;
 
 import javax.swing.JPanel;
 
+import com.ssg.shop.AppMain;
 import com.ssg.shop.common.config.Config;
 import com.ssg.shop.common.util.ImageUtil;
 import com.ssg.shop.common.view.Page;
@@ -17,8 +18,11 @@ public class MainPage extends Page{
 	JPanel p_content; // 상품 출력 영역
 	ImageUtil imageUtil = new ImageUtil();
 	Image image;
+	AppMain appMain;
 	
-	public MainPage() {
+	public MainPage(AppMain appMain) {
+		super(appMain);
+		
 		// 생성
 		image = imageUtil.getImage("images/post-image1.jpg", Config.MAIN_VISUAL_WIDTH, Config.MAIN_VISUAL_HEIGHT);
 

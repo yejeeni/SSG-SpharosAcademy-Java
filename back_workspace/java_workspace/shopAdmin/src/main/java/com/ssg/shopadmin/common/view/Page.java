@@ -1,11 +1,11 @@
-package com.ssg.common.view;
+package com.ssg.shopadmin.common.view;
 
 import java.awt.Dimension;
 
 import javax.swing.JPanel;
 
-import com.ssg.common.config.Config;
 import com.ssg.shopadmin.AppMain;
+import com.ssg.shopadmin.common.config.Config;
 
 /**
  * 쇼핑몰 관리자 페이지의 최상단 객체

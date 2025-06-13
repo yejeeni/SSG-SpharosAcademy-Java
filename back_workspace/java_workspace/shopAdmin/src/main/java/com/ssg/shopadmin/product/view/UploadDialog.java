@@ -5,7 +5,7 @@ import java.io.File;
 
 import javax.swing.JDialog;
 
-import com.ssg.common.config.Config;
+import com.ssg.shopadmin.common.config.Config;
 import com.ssg.shopadmin.common.util.FileUtil;
 
 public class UploadDialog extends JDialog{
