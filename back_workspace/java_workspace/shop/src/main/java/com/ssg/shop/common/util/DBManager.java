@@ -45,8 +45,14 @@ public class DBManager {
 	}
 	
 	public Connection getConnection() {
-		return connection;
+	    if (connection == null) {
+	        throw new IllegalStateException(
+	            "DB 연결 실패: connection 객체가 null입니다.\n" +
+	            "→ URL, 계정, 비밀번호, DB 서버 상태를 먼저 확인하세요.");
+	    }
+	    return connection;
 	}
+
 	
 	// db 관련 자원을 해제하는 메서드
 	public void release(Connection connection) {

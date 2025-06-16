@@ -24,6 +24,7 @@ public class ImageUtil {
 		// 패키지 경로로부터 이미지 얻어오기
 		// url로 이미지 얻어오기
 		URL url = this.getClass().getClassLoader().getResource(filename);
+		System.out.println(url);
 		Image image = null;
 		try {
 			BufferedImage bufferedImage = ImageIO.read(url);

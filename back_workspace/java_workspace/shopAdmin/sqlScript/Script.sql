@@ -158,7 +158,33 @@ limit 1;
 -- last_insert_id(): 가장 최근에 성공적으로 수행된 insert 구문의 첫 번째 auto_increment 값을 반환 
 select last_insert_id() as id;
 
+select product_id, product_name, brand, price, discount, INTRODUCE , detail, s.sub_category_id, sub_category_name from product p join sub_category s on p.sub_category_id = s.sub_category_id order by product_id desc limit 6;
 
+select * from product;
+
+-- 
+-- 상품이 보유한 사이즈명
+select size_name
+from product_size ps
+join size s
+where ps.size_id = s.size_id
+	and ps.product_id = 10;
+
+select * from product_color;
+
+-- 상품이 보유한 컬러명
+select color_name
+from product_color pc
+join color c
+where pc.color_id = c.color_id
+	and pc.product_id = 10;
+
+-- 상품이 보유한 파일명
+select filename
+from product_img pi
+join color c
+where pc.color_id = c.color_id
+	and pc.product_id = 10;
 
 
 
