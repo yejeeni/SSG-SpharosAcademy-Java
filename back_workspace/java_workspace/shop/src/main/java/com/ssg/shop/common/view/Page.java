@@ -9,13 +9,10 @@ import com.ssg.shop.AppMain;
  */
 public class Page extends JPanel{
 	
-	public Page() {
-		setVisible(false);
-	}
-	
-	AppMain appMain;
+	public AppMain appMain;
 	
 	public Page(AppMain appMain) {
 		this.appMain = appMain;
+		setVisible(false);
 	}
 }

@@ -7,9 +7,9 @@ public class Config {
 	/*-------------------------------------------
 	 * 데이터베이스 접속 정보
 	 -------------------------------------------*/
-	public static final String url = "jdbc:mysql://localhost:3306/shop";
-	public static final String user = "shop";
-	public static final String pw = "1234";
+	public static final String URL = "jdbc:mysql://localhost:3306/shop";
+	public static final String USER = "shop";
+	public static final String PW = "1234";
 	
 	public static final String PRODUCT_IMAGE_PATH = "C:\\public";
 	
@@ -18,7 +18,7 @@ public class Config {
 	 -------------------------------------------*/
 	public static final int MAIN_PAGE = 0; // 메인 페이지
 	public static final int JOIN_PAGE = 1; // 회원가입 페이지
-	public static final int PRODUCT_PAGE = 2; // 상품 페이지
+	public static final int PRODUCT_DETAIL_PAGE = 2; // 상품 페이지
 	public static final int CUSTOMER_PAGE = 3; // 고객센터 페이지
 	public static final int LOGIN_PAGE = 4;
 	public static final int CART_PAGE = 5;

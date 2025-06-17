@@ -22,8 +22,9 @@ public class MainPage extends Page{
 	JPanel p_content; // 상품 출력 영역
 	ImageUtil imageUtil = new ImageUtil();
 	Image image;
-	AppMain appMain;
 	ProductDAO productDAO = new ProductDAO();
+	// 최신 상품 목록 중, 현재 선택한 상품
+	public Product product;
 	
 	public MainPage(AppMain appMain) {
 		super(appMain);
@@ -82,7 +83,7 @@ public class MainPage extends Page{
 					System.out.println(i+"번째 "+product.getFilenames().get(a));
 				}
 				
-				ProductItem productItem = new ProductItem(product);//상품 하나를 표현하는 디자인 카드
+				ProductItem productItem = new ProductItem(this, product);//상품 하나를 표현하는 디자인 카드
 				
 				p_content.add(productItem);
 			}

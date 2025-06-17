@@ -16,6 +16,7 @@ import com.ssg.shop.common.config.Config;
 import com.ssg.shop.common.view.Page;
 import com.ssg.shop.home.MainPage;
 import com.ssg.shop.member.view.MemberJoin;
+import com.ssg.shop.product.view.ProductDetailPage;
 
 public class AppMain extends JFrame {
 	JPanel p_north; // p_util, p_navi를 담을 패널
@@ -36,7 +37,7 @@ public class AppMain extends JFrame {
 	JLabel la_best;
 	JLabel la_cs;
 	
-	Page[] pages;
+	public Page[] pages;
 	
 	public AppMain() {
 		// 생성
@@ -106,11 +107,12 @@ public class AppMain extends JFrame {
 	 */
 	public void createPage() {
 		// 페이지 리스트
-		pages = new Page[2]; // 만든 페이지 수
+		pages = new Page[3]; // 만든 페이지 수
 		
 		// 페이지 생성
-		pages[Config.MAIN_PAGE] = new MainPage(this);
-		pages[Config.JOIN_PAGE] = new MemberJoin(this);
+		pages[0] = new MainPage(this);
+		pages[1] = new MemberJoin(this);
+		pages[2] = new ProductDetailPage(this);
 		
 		// 모든 페이지를 p_container에 부착
 		for (int i=0; i<pages.length; i++) {
@@ -125,7 +127,9 @@ public class AppMain extends JFrame {
 		// 모든 페이지를 같은 자료형의 배열로 준비
 		
 		for (int i=0; i<pages.length; i++) {
+			
 			pages[i].setVisible((i==target)? true:false);
+//			System.out.println(i + "= " + target);
 		}
 	}
 	

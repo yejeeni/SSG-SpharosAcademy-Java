@@ -181,10 +181,8 @@ where pc.color_id = c.color_id
 
 -- 상품이 보유한 파일명
 select filename
-from product_img pi
-join color c
-where pc.color_id = c.color_id
-	and pc.product_id = 10;
+from product_img
+where product_id = 10;
 
 
 

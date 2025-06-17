@@ -33,7 +33,7 @@ public class DBManager {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 
 			// 2) 접속
-			connection = DriverManager.getConnection(Config.url, Config.user, Config.pw);
+			connection = DriverManager.getConnection(Config.URL, Config.USER, Config.PW);
 	
 			
 			
