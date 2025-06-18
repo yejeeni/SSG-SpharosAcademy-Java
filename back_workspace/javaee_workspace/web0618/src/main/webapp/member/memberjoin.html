@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box;}
+
+input[type=text], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: vertical;
+}
+
+input[type=submit] {
+  background-color: #04AA6D;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+.container {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+</style>
+<script>
+	window.addEventListener("load", ()=>{
+		// 버튼에 이벤트 연결
+		let bt = document.querySelector("input[type='button']");
+		
+		
+		bt.addEventListener("click", ()=>{
+		// HTTP 프로토콜 기반에서 클라이언트인 브라우저 측이 서버 측에 무언가를 부탁하는 통신 행위를 요청(request)라고 한다.
+			let form = document.querySelector("form");
+			form.submit(); // 폼 양식을 전송
+		});
+	});
+</script>
+</head>
+<body>
+
+<h3>Contact Form</h3>
+
+<div class="container">
+	<!-- 
+	form: 서버로 전송할 파라미터의 범위를 설정하는 태그. 
+	action: 어느 서버에 전송할지에 대한 주소 
+			  값이 '/'로 시작할 때엔 이 html을 배포한 원천 서버의 주소 루트를 의미하여 생략 가능
+	name: 파라미터명
+	-->
+  <form action="/member/regist" method="post">
+    <label for="fname">First Name</label>
+    <input type="text" id="fname" name="id" placeholder="Your name..">
+
+    <label for="lname">pass</label>
+    <input type="text" id="pwd" name="pwd" placeholder="Your last name..">
+
+    <label for="subject">name</label>
+    <textarea id="name" name="name" placeholder="Write something.." style="height:200px"></textarea>
+
+    <input type="submit" value="submit">
+  </form>
+</div>
+
+</body>
+</html>
