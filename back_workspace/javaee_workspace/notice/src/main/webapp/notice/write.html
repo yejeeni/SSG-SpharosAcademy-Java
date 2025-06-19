@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- include libraries(jQuery, bootstrap) -->
+<link
+	href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+	rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script
+	src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+<!-- include summernote css/js -->
+<link
+	href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.css"
+	rel="stylesheet">
+<script
+	src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() { //addEventListener("load", function()){};과 동일하다....
+		$('#summernote').summernote();
+	
+	// 버튼에 클릭 이벤트 연결
+	$("input[type=button]").click(()=>{
+		// 웹서버 프로그램에게 request
+		// 입력 양식의 범위를 설정하는 form 태그를 이용하여 해당 내용들을 서버에 전송. HTTP 프로토콜에서 서버에 데이터 전송 시 POST 방식을 사용
+		$("form").submit(); // 전송 발생
+	});
+	
+	});
+</script>
+
+<style>
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+input[type=text], select, textarea {
+	width: 100%;
+	padding: 12px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+	margin-top: 6px;
+	margin-bottom: 16px;
+	resize: vertical;
+}
+
+input[type=button] {
+	background-color: #04AA6D;
+	color: white;
+	padding: 12px 20px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+input[type=button]:hover {
+	background-color: #45a049;
+}
+
+.container {
+	border-radius: 5px;
+	background-color: #f2f2f2;
+	padding: 20px;
+}
+</style>
+
+
+</head>
+<body>
+
+	<h3>Contact Form</h3>
+
+	<div class="container">
+		<form method="post" action="/notice/write">
+			<label for="fname">제목</label> 
+			<input type="text" id="fname" name="title" placeholder="Your name.."> 
+				<label for="lname">작성자</label> 
+				<input type="text" id="lname" name="writer" placeholder="Your last name.."> 
+				<label for="subject">내용</label>
+			<textarea id="summernote" name="content" placeholder="Write something.." style="height: 200px"></textarea>
+			<input type="button" value="등록">
+		</form>
+	</div>
+
+</body>
+</html>

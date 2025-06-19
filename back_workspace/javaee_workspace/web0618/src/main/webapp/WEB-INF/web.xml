@@ -20,4 +20,23 @@
   		<servlet-name>MemberRegist</servlet-name>
   		<url-pattern>/member/regist</url-pattern>
   </servlet-mapping>
+  
+    <!-- 서블릿 생명 주기 테스트용 서블릿 -->
+  <servlet>
+  		<servlet-name>testServlet</servlet-name>
+  		<servlet-class>com.ssg.web0618.TestServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  		<servlet-name>testServlet</servlet-name>
+  		<url-pattern>/hello</url-pattern>
+  </servlet-mapping>
+  
+    <servlet>
+  		<servlet-name>StudyServlet</servlet-name>
+  		<servlet-class>com.ssg.web0618.studyServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  		<servlet-name>studyServlet</servlet-name>
+  		<url-pattern>/study</url-pattern>
+  </servlet-mapping>
 </web-app>
