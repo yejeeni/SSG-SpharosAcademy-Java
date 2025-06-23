@@ -1,11 +1,21 @@
 package com.ssg.notice.model;
 
+import java.sql.Date;
+
 public class Notice {
 	private int notice_id;
 	private String title;
 	private String wtirer;
 	private String content;
 	private int hit;
+	private Date regDate;
+	
+	public Date getRegDate() {
+		return regDate;
+	}
+	public void setRegDate(Date regDate) {
+		this.regDate = regDate;
+	}
 	public int getNotice_id() {
 		return notice_id;
 	}
