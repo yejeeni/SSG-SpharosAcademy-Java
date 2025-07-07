@@ -1,0 +1,57 @@
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	id="WebApp_ID" version="3.1">
+
+	<display-name>hiberasync</display-name>
+
+	<!-- 필터 정의 -->
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>com.ssg.hiberasync.util.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>foodTypeList</servlet-name>
+		<servlet-class>com.ssg.hiberasync.servlet.FoodTypeList</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>foodTypeList</servlet-name>
+		<url-pattern>/foodtype/list</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>storeRegist</servlet-name>
+		<servlet-class>com.ssg.hiberasync.servlet.StoreRegist</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>storeRegist</servlet-name>
+		<url-pattern>/store/regist</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>storeList</servlet-name>
+		<servlet-class>com.ssg.hiberasync.servlet.StoreList</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>storeList</servlet-name>
+		<url-pattern>/store/list</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>storeDetail</servlet-name>
+		<servlet-class>com.ssg.hiberasync.servlet.StoreDetail</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>storeDetail</servlet-name>
+		<url-pattern>/store/detail</url-pattern>
+	</servlet-mapping>
+</web-app>

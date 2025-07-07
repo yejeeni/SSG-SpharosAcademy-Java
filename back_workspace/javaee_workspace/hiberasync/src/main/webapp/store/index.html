@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<style>
+#wrapper {
+	width: 1000px;
+	height: 800px;
+}
+
+#aside_regist {
+	width: 200px;
+	height: 100%;
+	background-color: rgb(155, 155, 155);
+	float: left;
+}
+
+#content {
+	width: 600px;
+	height: 100%;
+	background-color: rgb(34, 34, 34);
+	float: left;
+}
+
+#content_header {
+	width: 600px;
+	height: 50px;
+	background-color: rgb(180, 190, 180);
+	line-height: 50px;
+	text-align: center;
+}
+
+#list {
+	width: 600px;
+	height: 750px;
+	background-color: rgb(212, 212, 212);
+}
+
+#aside_detail {
+	width: 200px;
+	height: 100%;
+	background-color: rgb(104, 104, 104);
+	float: left;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+th, td {
+  text-align: left;
+  padding: 16px;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+</style>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script type="text/javascript">
+	function getFoodList() {
+		// 화면 전체가 아니라 일부 영역을 바꿀 것이므로 서버로부터 가져올 대상은 html이 아니라 데이터
+		// 브라우저로 하여금 데이터를 서버에 전송하고, 서버가 응답할 때 데이터를 받아올 수 있도록 브라우저에게 맡겨야 함
+		// js는 단일 쓰레드 기반이므로 웹 요청과 응답을 받으면서 다른 일을 처리할 수가 없으나, 웹브라우저는 멀티쓰레드 기반이므로 가능
+		// js가 브라우저에게 웹 요청을 비동기방식으로 맡기려면 순수 js에서 지원하는 객체인 XMLHttpRequest를 이용
+		// Ajax(Asynchronous JAvaScript Xml)
+		let xhttp = new XMLHttpRequest();
+		xhttp.open("GET", "/Hiberasync/foodtype/list");
+
+				
+		// 웹브라우저가 서버로부터 응답을 받았을 경우 호출되는 메서드
+		xhttp.onload = function() {
+			// 문자열을 파싱하여 JSON 객체로 반환
+			console.log(JSON.parse(this.responseText));
+			let list = JSON.parse(this.responseText);
+			
+			// 화면에 렌더링
+			let tag = "<option value='0'>유형선택</option>";
+			for (let i=0; i<list.length; i++){
+				tag += "<option value='" + list[i].food_type_id + "'>" + list[i].title + "</option>";
+			}
+			
+			
+			$("#aside_regist select").html(tag); // innerHTML
+		}
+		
+		xhttp.send(); // 요청 발생
+		console.log("C");
+	}
+	
+	function getDetail(store_id){
+		console.log(store_id);
+		
+		let xhttp = new XMLHttpRequest();
+		
+		xhttp.open("GET", "/Hiberasync/store/detail?store_id="+store_id);
+		xhttp.onload = function(){
+
+		};
+		xhttp.send();
+	}
+	
+	function printList(json){
+		let tag = "<table width='90%' border='1'>";
+
+		tag += "<tr>";
+		tag += "<th>분류</th>";
+		tag += "<th>상호명</th>";
+		tag += "<th>연락처</th>";
+		tag += "</tr>";
+
+		for(let i=0; i<json.length; i++){
+			tag += "<tr>";
+			tag += "<td>"+json[i].foodType.title+"</td>";
+			tag += "<td><a href='javascript:getDetail("+json[i].store_id+")'>"+json[i].store_name+"</a></td>";
+			tag += "<td>"+json[i].tel+"</td>";
+			tag += "</tr>";
+
+		}
+
+		tag += "</table>";
+		
+		$("#list").html(tag);
+	}
+	
+	// 비동기 방식의 상점 목록 요청
+	function getStoreList(){
+		let xhttp = new XMLHttpRequest();
+		xhttp.open("GET", "/Hiberasync/store/list");
+		
+		xhttp.onload = function(){
+			console.log("서버 응답 원본:", this.responseText);
+
+			if (!this.responseText || this.responseText.trim() === "") {
+				console.error("서버에서 응답이 비어있습니다.");
+				return;
+			}
+
+			try {
+				let json = JSON.parse(this.responseText);
+				printList(json);
+			} catch (e) {
+				console.error("JSON 파싱 실패:", e);
+			}
+		}
+		xhttp.send();
+
+	}
+	
+	// 비동기 방식의 post 요청
+	function regist(){
+		let xhttp = new XMLHttpRequest();
+		xhttp.open("POST", "/Hiberasync/store/regist");
+		// 표준 post 전송 요청 헤더. XMLHttpRequest를 이용하는 비동기통신에서는 브라우저가 대신해주지 않음
+		xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		
+		xhttp.onload = function(){
+			if (this.status == 201){ // 서버의 응답 코드
+				// 목록 출력
+				getStoreList();
+			} else{
+				let json = JSON.parse(this.responseText); // 서버가 보내온 응답 문자열
+				alert(json.msg);
+			}
+			
+		}
+		xhttp.send("food_type_id="+ $("#aside_regist select").val() +"&store_name=" + $("#aside_regist input[name='store_name']").val() + "&tel=" + $("#aside_regist input[name='tel']").val() ); // 이 시점부터 js는 자기 할 일을 하고, 브라우저가 통신을 담당하는 비동기가 시작
+		
+	}
+	
+	 $(()=>{
+			getFoodList();
+			getStoreList();
+			
+			$("#aside_regist button").click(()=>{
+				regist();
+			});
+		 });
+</script>
+
+<body>
+	<div id="wrapper">
+
+		<div id="aside_regist">
+			<select name="food_type_id"></select>
+			<input type="text" name="store_name" placeholder="맛집 상호명">
+			<input type="text" name="tel" placeholder="연락처">
+			<button type="button">등록</button>
+		</div>
+		
+		<div id="content">
+			<div id="content_header">
+				<select>
+					<option>전체</option>
+					<option>상호명</option>
+					<option>연락처</option>
+				</select>
+				<input type="text" placeholder="검색 키워드">
+				<button>Search</button>
+			</div>
+			<div id="list"></div>
+		</div>
+		<div id="aside_detail">
+			<select></select>
+			<input type="text" placeholder="맛집 상호명">
+			<input type="text" placeholder="연락처">
+			<button>수정</button>
+			<button>삭제</button>
+		
+		</div>
+		
+	</div>
+
+</body>
+
+</html>
