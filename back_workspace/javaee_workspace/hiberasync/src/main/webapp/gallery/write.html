@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+function upload(){
+	// 동기 방식으로 전송
+	$("form").attr({
+		action: "/Hiberasync/upload/regist", 
+	    method: "POST",   
+		enctype: "multipart/form-data"
+	});
+	$("form").submit();
+}
+
+$(()=>{
+	$("input[type='button']").click(()=>{
+		upload();
+	});
+});
+</script>
+</head>
+<body>
+	<form>
+		<p>
+			<input type="text" name="title">
+		</p>
+		<p>
+			<input type="file" name="pic">
+		</p>
+		<input type="button" value="업로드">
+	</form>
+</body>
+</html>

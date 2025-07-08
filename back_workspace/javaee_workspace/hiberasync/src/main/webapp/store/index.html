@@ -65,7 +65,7 @@ tr:nth-child(even) {
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script type="text/javascript">
-	function getFoodList() {
+	function getFoodList(target) {
 		// 화면 전체가 아니라 일부 영역을 바꿀 것이므로 서버로부터 가져올 대상은 html이 아니라 데이터
 		// 브라우저로 하여금 데이터를 서버에 전송하고, 서버가 응답할 때 데이터를 받아올 수 있도록 브라우저에게 맡겨야 함
 		// js는 단일 쓰레드 기반이므로 웹 요청과 응답을 받으면서 다른 일을 처리할 수가 없으나, 웹브라우저는 멀티쓰레드 기반이므로 가능
@@ -88,13 +88,14 @@ tr:nth-child(even) {
 			}
 			
 			
-			$("#aside_regist select").html(tag); // innerHTML
+			$(target).html(tag); // innerHTML
 		}
 		
 		xhttp.send(); // 요청 발생
 		console.log("C");
 	}
 	
+	// 리스트에서 맛집 클릭시 상세보기 정보 출력하는 메서드
 	function getDetail(store_id){
 		console.log(store_id);
 		
@@ -102,7 +103,12 @@ tr:nth-child(even) {
 		
 		xhttp.open("GET", "/Hiberasync/store/detail?store_id="+store_id);
 		xhttp.onload = function(){
-
+			console.log("서버 응답 정보 ", this.responseText);
+			let store = JSON.parse(this.responseText);
+			$("#aside_detail input[name = 'store_id']").val(store.store_id); // hidden값
+			$("#aside_detail input[name = 'store_name']").val(store.store_name);
+			$("#aside_detail input[name = 'tel']").val(store.tel);
+			$("#aside_detail select").val(store.foodType.food_type_id);
 		};
 		xhttp.send();
 	}
@@ -139,7 +145,7 @@ tr:nth-child(even) {
 			console.log("서버 응답 원본:", this.responseText);
 
 			if (!this.responseText || this.responseText.trim() === "") {
-				console.error("서버에서 응답이 비어있습니다.");
+				console.error("서버 응답이 비어있습니다.");
 				return;
 			}
 
@@ -147,7 +153,7 @@ tr:nth-child(even) {
 				let json = JSON.parse(this.responseText);
 				printList(json);
 			} catch (e) {
-				console.error("JSON 파싱 실패:", e);
+				console.error("파싱 실패", e);
 			}
 		}
 		xhttp.send();
@@ -175,14 +181,72 @@ tr:nth-child(even) {
 		
 	}
 	
+	// 수정하기
+	function edit(){
+		let xhttp = new XMLHttpRequest();
+		xhttp.open("POST", "/Hiberasync/store/edit");
+		xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		
+		xhttp.onload = function(){
+			if(this.status == 204){
+				// 새롭게 갱신될 목록을 요청
+				getStoreList();
+			} else {
+				let json = JSON.parse(this.responseText);
+				alert(json.msg);
+			}
+		}
+		
+		let param = "store_id="+$("#aside_detail input[name='store_id']").val();
+		param += "&store_name="+$("#aside_detail input[name='store_name']").val();
+		param += "&tel="+$("#aside_detail input[name='tel']").val();
+		param += "&food_type_id="+$("#aside_detail select").val();
+		
+		xhttp.send(param);
+	}
+	
+	// 삭제하기
+	function del(){
+		let xhttp = new XMLHttpRequest();
+		xhttp.open("POST", "/Hiberasync/store/delete");
+		xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		
+		xhttp.onload = function(){
+			if (this.status == 204){
+				getStoreList();
+			} else{
+				let json = JSON.parse(this.responseText);
+				alert(json.msg);
+			}
+		}
+		
+		xhttp.send("store_id="+$("#aside_detail input[name='store_id']").val());
+	}
+	
 	 $(()=>{
-			getFoodList();
+		 getFoodList("#aside_regist select");
+			getFoodList("#aside_detail select");
+
 			getStoreList();
 			
 			$("#aside_regist button").click(()=>{
 				regist();
 			});
+			
+			$("#bt_edit").click(()=>{
+				if (confirm("수정하시겠습니까?")){
+					edit();
+				}
+			});
+			$("#bt_del").click(()=>{
+				if (confirm("삭제하시겠습니까?")){
+					del();
+				}
+			});
+			
 		 });
+	 
+	 
 </script>
 
 <body>
@@ -209,10 +273,12 @@ tr:nth-child(even) {
 		</div>
 		<div id="aside_detail">
 			<select></select>
-			<input type="text" placeholder="맛집 상호명">
-			<input type="text" placeholder="연락처">
-			<button>수정</button>
-			<button>삭제</button>
+			<!-- store_id는 보이지는 않으나 쿼리문을 날릴 때 필요하므로 타입을 hidden으로 지정하여 받아둠 -->
+			<input type="hidden" name="store_id">
+			<input type="text" name="store_name" placeholder="맛집 상호명">
+			<input type="text" name="tel" placeholder="연락처">
+			<button id="bt_edit">수정</button>
+			<button id="bt_del">삭제</button>
 		
 		</div>
 		

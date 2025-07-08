@@ -26,7 +26,7 @@ public class StoreList extends HttpServlet{
 		
 		try {
 			List list=storeDAO.selectAll();
-			out.print(gson.toJson(list));// 클라이언트가 받을 json 문자열 스트림에 넣기 
+			out.print(gson.toJson(list)); // 클라이언트가 받을 json 문자열 스트림에 넣기 
 		} catch (StoreException e) {
 			e.printStackTrace();
 			message.setResult("fail");

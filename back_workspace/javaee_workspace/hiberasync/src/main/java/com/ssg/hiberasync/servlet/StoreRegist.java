@@ -55,13 +55,15 @@ public class StoreRegist extends HttpServlet{
 			storeDAO.insert(store);
 			// HTTP Status 코드 설정 (평소에 보던 404, 500 등)
 			response.setStatus(HttpServletResponse.SC_CREATED); // 201
+			
+			message.setResult("success");
+			message.setMsg("등록 성공");
+			
 		} catch (StoreException e) {
 			e.printStackTrace();
 			message.setResult("fail");
 			message.setMsg(e.getMessage());
-			out.print(gson.toJson(message));
 		}
-		
+		out.print(gson.toJson(message));
 	}
-	
 }

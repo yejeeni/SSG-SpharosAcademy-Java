@@ -53,6 +53,7 @@ public class StoreDAO {
 			
 			transaction.commit();
 		} catch (Exception e) {
+			e.printStackTrace();
 			if (transaction != null) transaction.rollback();
 			throw new StoreException("조회 실패");
 		}
@@ -60,6 +61,12 @@ public class StoreDAO {
 		return list;
 	}
 	
+	/**
+	 * 한 건 조회
+	 * @param store_id
+	 * @return
+	 * @throws StoreException
+	 */
 	public Store select(int store_id) throws StoreException{
 		Transaction transaction = null;
 		Store store = null;
@@ -68,6 +75,7 @@ public class StoreDAO {
 			store = session.get(Store.class, store_id);
 			transaction.commit();
 		} catch (Exception e) {
+			e.printStackTrace();
 			if (transaction != null) transaction.rollback();
 			throw new StoreException("조회 실패", e);
 		}
@@ -75,5 +83,48 @@ public class StoreDAO {
 		return store;
 	}
 	
+	/**
+	 * 한 건 수정
+	 * @param store
+	 */
+	public void update(Store store) throws StoreException{
+		Transaction transaction = null;
+		
+		try(Session session = config.getSession()){
+			transaction = session.beginTransaction();
+			
+			session.update(store);
+			
+			transaction.commit();
+		} catch(Exception e){
+			e.printStackTrace();
+			if (transaction != null) transaction.rollback();
+			throw new StoreException("수정 실패", e);
+		}
+	}
+	
+	/**
+	 * 한 건 삭제
+	 * @param store_id
+	 * @throws StoreException
+	 */
+	public void delete(int store_id) throws StoreException{
+		Transaction transaction = null;
+		
+		try(Session session = config.getSession()){
+			transaction = session.beginTransaction();
+			
+			Store store = session.get(Store.class, store_id);
+			if (store != null) {
+				session.delete(store);
+			}
+			
+			transaction.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (transaction != null) transaction.rollback();
+			throw new StoreException("삭제 실패", e);
+		}
+	}
 	
 }

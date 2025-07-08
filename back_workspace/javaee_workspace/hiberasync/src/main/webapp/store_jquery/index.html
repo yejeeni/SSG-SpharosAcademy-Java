@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<style>
+#wrapper {
+	width: 1000px;
+	height: 800px;
+}
+
+#aside_regist {
+	width: 200px;
+	height: 100%;
+	background-color: rgb(155, 155, 155);
+	float: left;
+}
+
+#content {
+	width: 600px;
+	height: 100%;
+	background-color: rgb(34, 34, 34);
+	float: left;
+}
+
+#content_header {
+	width: 600px;
+	height: 50px;
+	background-color: rgb(180, 190, 180);
+	line-height: 50px;
+	text-align: center;
+}
+
+#list {
+	width: 600px;
+	height: 750px;
+	background-color: rgb(212, 212, 212);
+}
+
+#aside_detail {
+	width: 200px;
+	height: 100%;
+	background-color: rgb(104, 104, 104);
+	float: left;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+th, td {
+  text-align: left;
+  padding: 16px;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+</style>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script type="text/javascript">
+	function printList(json){
+		let tag = "<table width='90%' border='1'>";
+
+		tag += "<tr>";
+		tag += "<th>분류</th>";
+		tag += "<th>상호명</th>";
+		tag += "<th>연락처</th>";
+		tag += "</tr>";
+
+		for(let i=0; i<json.length; i++){
+			tag += "<tr>";
+			tag += "<td>"+json[i].foodType.title+"</td>";
+			tag += "<td><a href='javascript:getDetail("+json[i].store_id+")'>"+json[i].store_name+"</a></td>";
+			tag += "<td>"+json[i].tel+"</td>";
+			tag += "</tr>";
+
+		}
+
+		tag += "</table>";
+		
+		$("#list").html(tag);
+	}
+	
+	// 음식 유형을 불러오는 메서드
+	function getFoodList(target) {  // target: 좌측의 select, 우측 select
+		$.ajax({
+			type: "GET",
+			url: "/Hiberasync/foodtype/list",
+			success: function(result, status, xhr){
+				console.log("음식 종류 ", result);
+				
+				let tag = "<option value='0'>유형선택</option>";
+				for (let i=0; i<result.length; i++){
+					tag += "<option value='" + result[i].food_type_id + "'>" + result[i].title + "</option>";
+				}
+				$(target).html(tag);
+			},
+			error: function(xhr, status, result){
+			}
+		});
+	}
+	
+	// 리스트에서 맛집 클릭시 상세보기 정보 출력하는 메서드
+	function getDetail(store_id){
+		$.ajax({
+			url: "/Hiberasync/store/detail",
+			type: "GET",
+			data: 
+				{ store_id: store_id}, 
+			success: function(result, status, xhr){
+				$("#aside_detail input[name = 'store_id']").val(result.store_id);
+				$("#aside_detail input[name = 'store_name']").val(result.store_name);
+				$("#aside_detail input[name = 'tel']").val(result.tel);
+				$("#aside_detail select").val(result.foodType.food_type_id);
+			}
+		});
+	}
+	
+	
+	// 비동기 방식의 상점 목록 요청
+	function getStoreList(){
+		$.ajax({
+			url: "/Hiberasync/store/list",
+			type: "GET",
+			success: function(result, status, xhr){
+				printList(result);
+			},
+			error: function(xhr, status, result){
+			}
+		});
+	}
+	
+	// 등록하기. 비동기 방식의 post 요청
+	function regist(){
+		$.ajax({
+			type: "POST",
+			url: "/Hiberasync/store/regist",
+			data: {
+				food_type_id: $("#aside_regist select").val(),
+				store_name: $("#aside_regist input[name='store_name']").val(),
+				tel: $("#aside_regist input[name='tel']").val()
+			},
+			statusCode: {
+			    201: function() {
+			      alert("등록 성공");
+			      getStoreList();
+			    }
+			  }
+		});
+	}
+	
+	// 수정하기
+	function edit(){
+		$.ajax({
+			url: "/Hiberasync/store/edit",
+			type: "POST",
+			data: {
+				store_id: $("#aside_detail input[name='store_id']").val(),
+				store_name: $("#aside_detail input[name='store_name']").val(),
+				tel: $("#aside_detail input[name='tel']").val(),
+				food_type_id: $("#aside_detail select").val()
+			},
+			statusCode: {
+			    204: function() {
+			      alert("수정 성공");
+			      getStoreList();
+			    }
+			  }
+		});
+	}
+	
+	// 삭제하기
+	function del(){
+		$.ajax({
+			url: "/Hiberasync/store/delete",
+			type: "POST",
+			data: {
+				store_id: $("#aside_detail input[name='store_id']").val()
+			},
+			statusCode: {
+			    204: function() {
+			      alert("삭제 성공");
+			      getStoreList();
+			    }
+			  }
+		});
+	}
+	
+	 $(()=>{
+		 getFoodList("#aside_regist select");
+			getFoodList("#aside_detail select");
+
+			getStoreList();
+			
+			$("#aside_regist button").click(()=>{
+				regist();
+			});
+			
+			$("#bt_edit").click(()=>{
+				if (confirm("수정하시겠습니까?")){
+					edit();
+				}
+			});
+			$("#bt_del").click(()=>{
+				if (confirm("삭제하시겠습니까?")){
+					del();
+				}
+			});
+			
+		 });
+	 
+	 
+</script>
+
+<body>
+	<div id="wrapper">
+
+		<div id="aside_regist">
+			<select name="food_type_id"></select>
+			<input type="text" name="store_name" placeholder="맛집 상호명">
+			<input type="text" name="tel" placeholder="연락처">
+			<button type="button">등록</button>
+		</div>
+		
+		<div id="content">
+			<div id="content_header">
+				<select>
+					<option>전체</option>
+					<option>상호명</option>
+					<option>연락처</option>
+				</select>
+				<input type="text" placeholder="검색 키워드">
+				<button>Search</button>
+			</div>
+			<div id="list"></div>
+		</div>
+		<div id="aside_detail">
+			<select></select>
+			<!-- store_id는 보이지는 않으나 쿼리문을 날릴 때 필요하므로 타입을 hidden으로 지정하여 받아둠 -->
+			<input type="hidden" name="store_id">
+			<input type="text" name="store_name" placeholder="맛집 상호명">
+			<input type="text" name="tel" placeholder="연락처">
+			<button id="bt_edit">수정</button>
+			<button id="bt_del">삭제</button>
+		
+		</div>
+		
+	</div>
+
+</body>
+
+</html>
