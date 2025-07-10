@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	id="WebApp_ID" version="3.1">
+	<display-name>mvcapp</display-name>
+	<!-- MVC 패턴 원칙대로 웹 애플리케이션을 개발. 모든 요청을 하나의 진입점으로 처리 -->
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>com.ssg.mvcapp.util.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>dispatcher</servlet-name>
+		<servlet-class>com.ssg.mvcapp.controller.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/servlet-mapping.data</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+
+
+	<!-- 색상에 대한 요청 <servlet> <servlet-name>colorController</servlet-name> <servlet-class>com.ssg.mvcapp.color.controller.ColorController</servlet-class> 
+		</servlet> <servlet-mapping> <servlet-name>colorController</servlet-name> 
+		<url-pattern>/color/advice</url-pattern> </servlet-mapping> -->
+	<!-- 혈액형에 대한 요청 <servlet> <servlet-name>aboController</servlet-name> <servlet-class>com.ssg.mvcapp.abo.controller.ABOController</servlet-class> 
+		</servlet> <servlet-mapping> <servlet-name>aboController</servlet-name> <url-pattern>/ABO/advice</url-pattern> 
+		</servlet-mapping> -->
+
+</web-app>

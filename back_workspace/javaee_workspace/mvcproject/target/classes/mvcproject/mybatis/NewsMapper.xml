@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "mybatis-3-mapper.dtd">
+ <mapper namespace="News">
+ 
+ 	<!-- mybatis를 사용하다보면, 자동으로 매핑을할 수 없는 경우가 있다. 이때는 개발자가 매핑을 수동으로 시도할 수 있다. -->
+ 	<resultMap type="News" id="CommentMap">
+ 		<id column="news_id" property="news_id"/>
+ 		<result column="title" property="title"/>
+ 		<result column="writer" property="writer"/>
+ 		<result column="content" property="content"/>
+ 		<result column="regdate" property="regdate"/>
+ 		<result column="hit" property="hit"/>
+ 		<collection column="news_id" javaType="java.util.List" 
+ 			ofType="Comment" property="commentList" 
+ 			select="Comment.selectByNewsId"/>
+ 	</resultMap>
+ 
+	<!-- 모든 레코드 가져오기 -->
+	<select id="selectAll" resultType="News" resultMap="CommentMap"> <!-- List명시 안해도 됨, 여러건이면 알아서 List만들어 줌 -->
+		select news_id, title, writer, content, regdate, hit
+		 from news order by news_id desc
+	</select>
+	
+	
+	<!-- 한건 등록 -->
+	<insert id="insert" parameterType="News">
+		insert into news(title, writer, content) values(#{title}, #{writer}, #{content})
+	</insert>
+	
+	
+	
+	<!-- 한건 가져오기 -->
+	<select id="select" parameterType="int" resultType="News">
+		select * from news where news_id = #{news_id}	
+	</select>
+	
+	
+	
+	
+</mapper>

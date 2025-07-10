@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "mybatis-3-mapper.dtd">
+ <!-- namespace -> 많은 수의 Mapper xml에 작성된 id들을 중복시키지 않기 위해 씀 -->
+<mapper namespace="Comment">
+
+	<!-- 댓글 등록 -->
+	<insert id="insert" parameterType="Comment">
+		insert into comment (msg, user, news_id) values(#{msg},#{user}, #{news.news_id})
+	</insert>
+	
+	<!-- 댓글 목록 -->
+	<select id="selectByNewsId" parameterType="int" resultType="Comment">
+		select * from comment where news_id = #{news_id}
+	</select>	
+	
+	
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ 	Log Level of Java
+	The one with the least seriousness, trace
+	Something a little more serious. Debug
+	Something serious, Info
+	Something serious, Warn
+	a very serious, error
+	The most serious thing, fatal
+
+
+ 	trace : It even outputs so much trivial information (turn it off in the production environment)
+			It is used when you want to know how far the i value has reached in the for() statement.
+			
+	Debug : After trace, more information is output. 
+			For example, it is used to output parameter values, variable values, etc.
+
+			It's only good to use it in a development environment and turn it off in an operating environment.
+			
+	info : Check the flow of the program,
+		   Example: Which method did the executor reach and perform
+		   
+	warn : Warning situation (there are no errors right now, so things that require attention) - Available in production environments
+	
+	fatal : Error occurred (when handling exceptions) - Available in production environments
+
+  -->
+
+
+<configuration>
+	<appender name = "console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>[%d{HH:mm:ss}][%level]%logger-%msg%n</pattern>
+		</encoder>
+	</appender>
+	<!-- 조절이 가능함 -->
+	<root level = "debug">
+		<appender-ref ref = "console"/>
+	</root>
+</configuration>

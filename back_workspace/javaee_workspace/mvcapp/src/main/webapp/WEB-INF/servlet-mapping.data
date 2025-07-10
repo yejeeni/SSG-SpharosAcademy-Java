@@ -1,0 +1,15 @@
+# if문 대체를 위해 java.util.Map 형식을 갖는 데이터 정의
+
+# [컨트롤러 매핑]
+/ABO.do=com.ssg.mvcapp.abo.controller.ABOController
+/color.do=com.ssg.mvcapp.color.controller.ColorController
+/notice/list.do=com.ssg.mvcapp.controller.notice.ListController
+/notice/content.do=com.ssg.mvcapp.controller.notice.DetailController
+/notice/regist.do=com.ssg.mvcapp.controller.notice.RegistController
+
+# [뷰 페이지 매핑]
+/color/result/view=/mvcapp/color/result.jsp
+/ABO/result/view=/mvcapp/ABO/result.jsp
+/notice/list/view=/notice/list.jsp
+/notice/regist/view=/notice/list.do
+/notice/detail/view=/notice/content

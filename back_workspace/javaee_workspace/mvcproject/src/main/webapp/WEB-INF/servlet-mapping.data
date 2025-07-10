@@ -1,0 +1,20 @@
+# [컨트롤러 매핑]
+/ABO.do=mvcproject.ABO.controller.ABOController
+/color.do=mvcproject.color.controller.ColorController
+
+#[뷰 매핑]
+/ABO/view=/ABO/result.jsp
+
+# [게시판]
+/notice/list.do=mvcproject.notice.controller.ListController
+/notice/regist.do=mvcproject.notice.controller.RegistController
+/notice/detail.do=mvcproject.notice.controller.DetailController
+/notice/edit.do=mvcproject.notice.controller.EditController
+/notice/del.do=mvcproject.notice.controller.DeleteController
+
+# [게시판 뷰 매핑]
+/notice/list/view=/notice/list.jsp
+/notice/detail/view=/notice/content.jsp
+/notice/regist/view=/notice/list.do
+/notice/delete/view=/notice/list.do
+/notice/edit/view=/notice/content.jsp
