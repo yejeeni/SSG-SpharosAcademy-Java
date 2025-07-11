@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "mybatis-3-mapper.dtd">
+<mapper namespace="Bio">
+	<insert id="insert" parameterType="Bio">
+		insert into bio(blood, height, weight, staff_id) values(#{blood}, #{height}, #{weight}, #{staff.staff_id})
+	</insert>
+	
+</mapper>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration SYSTEM "mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<typeAlias type="com.sinse.mvcapp.model.Notice" alias="Notice"/>
+
+	</typeAliases>
+
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" 	value="com.mysql.cj.jdbc.Driver" />
+				<property name="url" 		value="jdbc:mysql://localhost:3306/spring4" />
+				<property name="username" value="spring4" />
+				<property name="password" value="12341234" />
+			</dataSource>
+		</environment>
+	</environments>
+	<mappers>
+		<mapper resource="com/sinse/mvcapp/mybatis/NoticeMapper.xml" />
+	
+	</mappers>
+</configuration>
+
+
+
+

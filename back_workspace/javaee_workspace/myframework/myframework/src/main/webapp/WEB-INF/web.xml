@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	id="WebApp_ID" version="3.1">
+	<display-name>myframework</display-name>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.xhtml</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.xhtml</welcome-file>
+	</welcome-file-list>
+	
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>myframework.web.util.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!-- 웹사이트의 요청을 관리자와 일반 유저의 요청으로 분기르 ㄹ따라서 DispatcherServlet이 두 개로 구분된다. -->
+	<servlet>
+		<servlet-name>adminDispatcher</servlet-name>
+		<servlet-class> myframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/admin-servlet.json</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminDispatcher</servlet-name>
+		<url-pattern>/admin/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>userDispatcher</servlet-name>
+		<servlet-class> myframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/user-servlet.json</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>userDispatcher</servlet-name>
+		<url-pattern>/shop/*</url-pattern>
+	</servlet-mapping> 
+
+</web-app>

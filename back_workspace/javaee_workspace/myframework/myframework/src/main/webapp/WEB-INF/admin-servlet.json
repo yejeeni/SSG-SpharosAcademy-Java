@@ -1,0 +1,18 @@
+{
+	"mappingType":"myframework.web.handler.SimpleUrlHandlerMapping",
+	
+	"controllerMappings":{
+		"/admin/notice/list" : "myframework.admin.notice.controller.ListController",
+		"/admin/notice/write" : "myframework.admin.notice.controller.WriteController",
+		"/admin/notice/detail" : "myframework.admin.notice.controller.DetailController",
+		"/admin/notice/edit" : "myframework.admin.notice.controller.EditController",
+		"/admin/notice/delete" : "myframework.admin.notice.controller.DeleteController"
+	},
+	"viewMappings":{
+		"/admin/notice/list/view" : "/secure/notice/list.jsp",
+		"/admin/notice/write/view" : "/secure/notice/list",
+		"/admin/notice/detail/view" : "/secure/notice/content.jsp",
+		"/admin/notice/edit/view" : "/secure/notice/detail.jsp",
+		"/admin/notice/delete/view" : "/secure/notice/list"	
+	}
+}
