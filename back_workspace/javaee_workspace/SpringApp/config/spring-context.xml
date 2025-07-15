@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:context="http://www.springframework.org/schema/context"
+      xsi:schemaLocation="
+          http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/context
+          http://www.springframework.org/schema/context/spring-context.xsd">
+          
+          <!-- 스프링 프레임워크에 객체 간 관계를 설명 -->
+          <!-- 스프링에 인스턴스 생성을 등록 (싱글톤으로) -->
+          <bean class="SpringApp.cook.FryPan" id="fryPan"></bean>
+          <bean class="SpringApp.cook.Induction" id="induction"></bean>
+          
+          <!-- 요리사 클래스는 Pan을 생성자로 주입받기를 원함 -->
+          <bean class="SpringApp.cook.Cook" id="cook">
+          	<constructor-arg ref="fryPan"></constructor-arg>
+          </bean>
+  
+</beans>	

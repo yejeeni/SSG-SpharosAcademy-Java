@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "mybatis-3-mapper.dtd">
+<mapper namespace="Notice">
+	<!--namespace 많은 수의 Mapper xml 의 작성된 id들을 중복시키지 않기 위해  -->
+	<!-- 기존의 DAO의 업무였던 CRUD 작업의 쿼리작성을 여기서 한다 
+		DAO는 여전히 존지하되, DAO가 직접 쿼리를 작성하지 않는 것 뿐인다..
+	 -->
+	 <select id="selectAll" resultType="Notice">
+	 	select * from notice order by notice_id desc
+	 </select>
+	
+	<!-- 글 한건넣기 -->
+	<insert id="insert" parameterType="Notice">
+		insert into notice(title, writer, content) values(#{title},#{writer},#{content})
+	</insert>	
+	
+	<!-- 글한건 가져오기 
+	Mybatis 가 스스로 Notice 모델에 담는다..따라서 담은 결과는 resultType으로 반환해야 한다..
+	-->
+	<select id="select" parameterType="int" resultType="Notice">
+		select notice_id,title,writer,content,regdate,hit 
+		from notice where notice_id=#{notice_id}
+	</select>
+	
+	<!-- 한건 삭제 -->
+	<delete id="delete" parameterType="int">
+		delete from notice where notice_id=#{notice_id}
+	</delete>
+	
+	<!-- 한건 수정 
+		SQL  Mapper : SQL문과 Java객체와의 매핑을 자동으로 지원하는 프레임웍, Mybatis
+		ORM(Object-Relation-Mapping) : Java객체와 데이터베이스를 자동으로 매핑  Hibernate, JPA  
+	-->
+	<update id="update" parameterType="Notice">
+		update notice set title=#{title}, writer=#{writer}, content=#{content} 
+		where notice_id=#{notice_id}
+	</update>
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+

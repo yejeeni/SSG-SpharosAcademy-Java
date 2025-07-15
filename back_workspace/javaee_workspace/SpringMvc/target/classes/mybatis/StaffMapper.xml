@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "mybatis-3-mapper.dtd">
+<mapper namespace="Staff">
+	
+	<!-- insert 하자마자 pk 값을 자동으로 채울 때 사용 -->
+	<insert id="insert" parameterType="Staff">
+		insert into staff(name, sal, email) values(#{name},#{sal},#{email})
+		<selectKey keyColumn="staff_id" resultType="int" keyProperty="staff_id" order="AFTER">
+			select last_insert_id() as staff_id
+		</selectKey>
+	</insert>	
+	
+	
+	
+</mapper>
