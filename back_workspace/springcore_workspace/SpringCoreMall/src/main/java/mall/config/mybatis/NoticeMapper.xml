@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Notice">
+
+	<sql id="query">
+		SELECT NOTICE_ID, TITLE, WRITER, CONTENT, REGDATE, HIT
+	</sql>
+
+	<select id="selectAll" resultType="Notice">
+		<include refid="query"/> FROM NOTICE ORDER BY notice_id DESC
+	</select>
+
+	<select id="select" parameterType="int" resultType="Notice">
+		<include refid="query"/> FROM NOTICE WHERE NOTICE_ID = #{notice_id}
+	</select>
+
+	<insert id="insert" parameterType="Notice">
+		INSERT INTO NOTICE (TITLE, WRITER, CONTENT)
+		VALUES (#{title}, #{writer}, #{content})
+	</insert>
+
+	<update id="update" parameterType="Notice">
+		UPDATE NOTICE
+		SET TITLE = #{title}, WRITER = #{writer}, CONTENT = #{content}
+		WHERE NOTICE_ID = #{notice_id}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		DELETE FROM NOTICE WHERE NOTICE_ID = #{notice_id}
+	</delete>
+
+</mapper>
