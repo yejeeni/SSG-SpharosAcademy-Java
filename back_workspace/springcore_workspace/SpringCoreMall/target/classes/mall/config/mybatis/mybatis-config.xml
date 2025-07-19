@@ -4,7 +4,12 @@
   "https://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
    <typeAliases>
-      <typeAlias type="mall.notice.domain.Notice" alias="Notice"/>
+      <typeAlias type="notice.domain.Notice" alias="Notice"/>
+      <typeAlias type="mall.domain.TopCategory" alias="TopCategory"/>
+      <typeAlias type="mall.domain.SubCategory" alias="SubCategory"/>
+      <typeAlias type="mall.domain.Product" alias="Product"/>
+      <typeAlias type="mall.domain.Color" alias="Color"/>
+      <typeAlias type="mall.domain.Size" alias="Size"/>
    </typeAliases>
   <environments default="development">
     <environment id="development">
@@ -16,5 +21,10 @@
   </environments>
   <mappers>
 <mapper resource="mall/config/mybatis/NoticeMapper.xml"/> 
+<mapper resource="mall/config/mybatis/TopCategoryMapper.xml"/> 
+<mapper resource="mall/config/mybatis/SubCategoryMapper.xml"/> 
+<mapper resource="mall/config/mybatis/ProductMapper.xml"/> 
+<mapper resource="mall/config/mybatis/ColorMapper.xml"/> 
+<mapper resource="mall/config/mybatis/SizeMapper.xml"/> 
   </mappers>
 </configuration>

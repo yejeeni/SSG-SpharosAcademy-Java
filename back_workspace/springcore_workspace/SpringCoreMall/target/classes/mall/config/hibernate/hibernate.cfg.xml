@@ -4,6 +4,12 @@
 	<session-factory>
 		<property name="hibernate.connection.datasource">java:comp/env/jndi/mysql</property>
 		<property name="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</property>
-		<mapping class="mall.notice.domain.Notice"></mapping>
+		<property name="hibernate.show_sql">true</property>
+		<property name="hibernate.format_sql">true</property>
+
+		<!-- 매핑 -->
+		<mapping class="notice.domain.Notice"/>
+		<mapping class="mall.domain.TopCategory"/>
+		<mapping class="mall.domain.SubCategory"/>
 	</session-factory>
 </hibernate-configuration>

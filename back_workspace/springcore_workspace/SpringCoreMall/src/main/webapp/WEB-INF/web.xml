@@ -1,45 +1,81 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
          http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
-         version="3.1">
+	version="3.1">
 
-  <display-name>mall</display-name>
+	<display-name>mall</display-name>
 
-  <!-- [한글 인코딩 필터 설정] -->
-  <filter>
-    <filter-name>encodingFilter</filter-name>
-    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
-    <init-param>
-      <param-name>encoding</param-name>
-      <param-value>UTF-8</param-value>
-    </init-param>
-    <init-param>
-      <param-name>forceEncoding</param-name>
-      <param-value>true</param-value>
-    </init-param>
-  </filter>
-  <filter-mapping>
-    <filter-name>encodingFilter</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
+	<!-- 웹 애플리케이션이 가동될 때, 애플리케이션이 살아있는 동안 유지되어 모든 서블릿이 접근할 수 있는 객체인 ServletContext의 
+		MVC 중 재사용성을 위한 영역인 모델 파트의 객체를 저장 -->
 
-  <!-- DispatcherServlet 설정 -->
-  <servlet>
-    <servlet-name>adminDispatcher</servlet-name>
-    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-    <init-param>
-      <param-name>contextClass</param-name>
-      <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
-    </init-param>
-    <init-param>
-      <param-name>contextConfigLocation</param-name>
-      <param-value>mall.config.MyAdminWebConfig</param-value>
-    </init-param>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>adminDispatcher</servlet-name>
-    <url-pattern>/admin/*</url-pattern>
-  </servlet-mapping>
+	<!-- ApplicationContext가 메모리에 올라온 직후 초기화 시 넘겨줄 파라미터 설정 -->
+	<context-param>
+		<param-name>contextClass</param-name>
+		<param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+	</context-param>
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>mall.config.RootConfig</param-value>
+	</context-param>
+
+	<!-- 서버가 가동될 때를 감지하는 listener -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- 한글 인코딩 필터 -->
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!-- adminDispatcherServlet 설정 -->
+	<servlet>
+		<servlet-name>adminDispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextClass</param-name>
+			<param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+		</init-param>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>mall.config.AdminWebConfig</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminDispatcher</servlet-name>
+		<url-pattern>/admin/*</url-pattern>
+	</servlet-mapping>
+
+	<!-- userDispatcherServlet 설정 -->
+	<servlet>
+		<servlet-name>userDispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextClass</param-name>
+			<param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+		</init-param>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>mall.config.UserWebConfig</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>userDispatcher</servlet-name>
+		<url-pattern>/shop/*</url-pattern>
+	</servlet-mapping>
 
 </web-app>
