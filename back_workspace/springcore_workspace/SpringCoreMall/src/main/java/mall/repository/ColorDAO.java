@@ -6,4 +6,6 @@ import mall.domain.Color;
 
 public interface ColorDAO {
 	public List<Color> selectAll();
+	
+	public Color selectById(int id);
 }

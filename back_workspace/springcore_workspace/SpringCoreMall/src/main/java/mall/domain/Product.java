@@ -1,5 +1,9 @@
 package mall.domain;
 
+import java.util.List;
+
+import javax.persistence.OneToMany;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Data;
@@ -13,7 +17,17 @@ public class Product {
 	private int discount;
 	private String introduce;
 	private String detail;
-	private MultipartFile photo; // 상품 이미지
+	
+	@OneToMany
+	private List<ProductColor> productColorList;
+	
+	@OneToMany
+	private List<ProductSize> productSizeList;
+	
+	@OneToMany
+	private List<ProductImg> productImgList;
+	
+	private MultipartFile[] photo; // 상품 이미지
 	
 	private SubCategory subCategory;
 	

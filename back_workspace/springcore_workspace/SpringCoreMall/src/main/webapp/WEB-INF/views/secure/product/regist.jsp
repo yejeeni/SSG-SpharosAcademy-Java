@@ -55,7 +55,7 @@
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form>
+              <form id="form1">
                 <div class="card-body">
                 	<!-- 카테고리 영역 시작 -->
 	                  <div class="row">
@@ -96,14 +96,13 @@
                   </div>
 				   <div class="form-group">
 				   <label>색상</label>
-                       <select class="form-control" name="color.color_id" id="color">
+                       <select class="form-control" name="color" id="color" multiple="multiple">
                          <option>색상 선택</option>
                        </select>
 	              </div>
-				  
 				  <div class="form-group">
 				  <label>사이즈</label>
-                       <select class="form-control" id="size">
+                       <select class="form-control" name="size" id="size" multiple="multiple">
                          <option>사이즈 선택</option>
                        </select>
 	              </div>
@@ -117,13 +116,18 @@
                   <div class="form-group">
                     <div class="input-group">
                       <div class="custom-file">
-                        <input type="file" class="custom-file-input" name="photo">
+                        <input type="file" class="custom-file-input" name="photo" id="photo" multiple="multiple">
                         <label class="custom-file-label" for="exampleInputFile">상품 이미지 선택</label>
                       </div>
                       <div class="input-group-append">
                         <span class="input-group-text">Upload</span>
                       </div>
                     </div>
+                    
+                    <div id="preview" style="width:100%;background:skyblue">
+                    미리보기
+                    </div>
+                    
                   </div>
                   <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="exampleCheck1">
@@ -152,6 +156,7 @@
 </div>
 <!-- ./wrapper -->
 	<%@ include file="../inc/footer_link.jsp" %>
+<script src="/static/admin/custom/ProductImg.js"></script>
 	<script>
 	
 	// 화면에 카테고리를 출력하는 메서드
@@ -221,16 +226,37 @@
 		});
 	}
 	
+	// 브라우저에서 지원하는 e.target.files 유사 배열은 읽기 전용이므로 쓰기가 불가하여, 사용하기 위해선 이를 복제한 배열이 필요
+	// 그러나 submit 시 selectedFile을 전송할 수 없어 이미지 업로드 컴포넌트를 재설정하고, js의 프로그래밍적 formData 객체를 통해 form 태그에 인식시켜야 함
+	let selectedFile = [];
+	
 	// 상품 등록
 	function regist(){
-		$("form").attr({
-			action: "/admin/product/regist",
-			method: "post",
-			enctype: "multipart/form-data"
-		});
-		$("form").submit();
-	}
+		// 기존 form에서 file 컴포넌트 파라미터만 새로 교체(위에서 선언한 selectedFile 배열)
+		let formData = new FormData(document.getElementById("form1"));
 		
+		// 기존의 photo 대신, selectedFile 배열로 대체
+		// formData는 디폴트로 multipart/form-data가 지정되어 있음
+		formData.delete("photo");
+		for(let i=0; i<selectedFile.length; i++){
+			formData.append("photo", selectedFile[i]);
+		}
+		
+		// formData는 동기/비동기 둘 다 지원하지만, 대부분 비동기방식을 많이 씀
+		$.ajax({
+			url: "/admin/product/regist",
+			type: "post",
+			data: formData,
+			processData: false, // form을 이루는 데이터들이 문자열로 변환되지 않도록 (현재 바이너리 파일이 들어있음)
+			contentType: false, // 브라우저가 자동으로 contentType을 설정하지 않도록 
+			success: function(result, status, xhr){
+				alert("등록 성공");
+			},
+			error: function(xhr, status, result){
+				
+			}
+		});
+	}
 	
 	$(()=>{
 	   $('#summernote').summernote({
@@ -250,6 +276,28 @@
 			getSubCategory($(this).val());
 		});
 	});
+	
+	// 파일 컴포넌트의 값 변경 시 이벤트 연결
+	$("#photo").change(function(e){
+		// console.log(e);
+		// e.target.files 안에는 파일 객체가 읽어들인 파일의 정보가 배열 유사 객체인 FileList에 담겨있음
+		let files = e.target.files;
+		
+		// 첨부 파일 수만큼 반복
+		for(let i=0; i<files.length;i++){
+			selectedFile[i] = files[i]; // 읽기 전용에 들어있던 파일을 selectedFile에 저장
+			
+			// 파일을 읽기위한 스트림 객체 생성
+			const reader = new FileReader();
+			reader.onload = function(e){ // 파일을 스트림으로 읽어들인 정보 e
+				console.log(e);
+				
+				let productImg = new ProductImg(document.getElementById("preview"), selectedFile[i], e.target.result, 100, 100);
+			}
+			reader.readAsDataURL(files[i]); // 지정한 파일을 읽기
+		}
+	});
+	
 	
 	// 등록 버튼 이벤트 연결
 	$("#bt_regist").click(()=>{

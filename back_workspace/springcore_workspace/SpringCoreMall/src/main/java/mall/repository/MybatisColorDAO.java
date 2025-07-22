@@ -18,5 +18,10 @@ public class MybatisColorDAO implements ColorDAO{
 	public List<Color> selectAll() {
 		return sqlSessionTemplate.selectList("Color.selectAll");
 	}
+
+	@Override
+	public Color selectById(int id) {
+		return null;
+	}
 	
 }

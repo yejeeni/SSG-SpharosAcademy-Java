@@ -2,6 +2,7 @@ package mall.admin.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -14,47 +15,89 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import lombok.extern.slf4j.Slf4j;
+import mall.domain.Color;
 import mall.domain.Product;
+import mall.domain.ProductColor;
+import mall.domain.ProductSize;
+import mall.domain.Size;
 import mall.domain.TopCategory;
+import mall.service.ColorService;
+import mall.service.ProductService;
 import mall.service.TopCategoryService;
 
+@Slf4j
 @Controller
 public class ProductController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
-    
-    @Autowired
-    private TopCategoryService topCategoryService;
+	private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
-    @RequestMapping("/product/registform")
-    public String registform(Model model) {
-    	// 상품 등록페이지를 보여주면서 상위 카테고리를 채우기
-    	System.out.println(topCategoryService.getClass());
+	@Autowired
+	private ProductService productService; // RootConfig가 연결
+	@Autowired
+	private TopCategoryService topCategoryService;
 
-    	List<TopCategory> categories = topCategoryService.selectAll();
-    	
-    	model.addAttribute("topList", categories);
-    	
-        System.out.println("ProductController.registform() 호출됨");
-        return "secure/product/regist";
-    }
-    
-    /**
-     * 상품 등록 요청 처리
-     */
-    @PostMapping("/product/regist")
-    public String regist(Product product, HttpServletRequest request) {
-    	// MultipartFile 변수와 html 이름이 동일하면 매핑됨
-    	
-    	// 메모리에 올라온 이미지 정보를 디스크에 저장
-    	// 파일의 경로를 고정하는 것이 아니라, 애플리케이션으로부터 경로를 동적으로 받아오기
-    	ServletContext context = request.getServletContext(); // jsp 어플리케이션 내장 객체. 애플리케이션과 생명을 같이함
-    	String realPath = context.getRealPath("/data");
-    	logger.debug(realPath);
+	@RequestMapping("/product/registform")
+	public String registform(Model model) {
+		// 상품 등록페이지를 보여주면서 상위 카테고리를 채우기
+		System.out.println(topCategoryService.getClass());
 
-    	
-    	
-    	return "redirect:/admin/product/list";
-    }
+		List<TopCategory> categories = topCategoryService.selectAll();
+
+		model.addAttribute("topList", categories);
+
+		System.out.println("ProductController.registform() 호출됨");
+		return "secure/product/regist";
+	}
+
+	/**
+	 * 상품 등록 요청 처리
+	 */
+	@PostMapping("/product/regist")
+	@ResponseBody
+	public String regist(Product product, int[] color, int[] size, HttpServletRequest request) {
+		// MultipartFile 변수와 html 이름이 동일하면 매핑됨
+		MultipartFile[] photo = product.getPhoto();
+		logger.debug("업로드 파일 수 " + photo.length);
+
+
+		// 선택한 상품 색상
+		List<ProductColor> productColorList = new ArrayList<>();
+		for (int c : color) {
+			Color cc = new Color();
+			cc.setColor_id(c);
+
+			ProductColor productColor = new ProductColor();
+			productColor.setColor(cc);
+
+			productColorList.add(productColor);
+		}
+
+		// 선택한 상품 사이즈
+		List<ProductSize> productSizeList = new ArrayList<>();
+		for (int s : size) {
+			Size ss = new Size();
+			ss.setSize_id(s);
+
+			ProductSize productSize = new ProductSize();
+			productSize.setSize(ss);
+
+			productSizeList.add(productSize);
+		}
+
+		// Product에 선택 옵션 대입
+		product.setProductColorList(productColorList);
+		product.setProductSizeList(productSizeList);
+
+		// 파일 저장 경로 구하기
+		String savePath = request.getServletContext().getRealPath("/data");
+
+		// 상품 등록
+		productService.regist(product, savePath);
+
+		return "ok";
+	}
 }
