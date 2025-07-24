@@ -12,7 +12,7 @@ import lombok.Data;
 public class Product {
 	private int product_id;
 	private String product_name;
-	private String brand;
+	private String brand_name;
 	private int price;
 	private int discount;
 	private String introduce;
@@ -29,6 +29,6 @@ public class Product {
 	
 	private MultipartFile[] photo; // 상품 이미지
 	
-	private SubCategory subCategory;
+	private SubCategory subcategory;
 	
 }

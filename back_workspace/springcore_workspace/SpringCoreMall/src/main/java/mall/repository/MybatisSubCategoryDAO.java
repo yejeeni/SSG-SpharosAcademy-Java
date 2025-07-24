@@ -20,7 +20,8 @@ public class MybatisSubCategoryDAO implements SubCategoryDAO{
 
 	@Override
 	public List<SubCategory> selectByTopCategoryId(int topcategory_id) {
-		return sessionTemplate.selectList("SubCategory.selectByTopCategoryId", topcategory_id);
+	    return sessionTemplate.selectList("mall.repository.SubCategoryDAO.selectByTopCategoryId", topcategory_id);
 	}
+
 	
 }

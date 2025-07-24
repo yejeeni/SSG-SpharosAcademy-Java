@@ -80,7 +80,7 @@
                   </div>
                   <div class="form-group">
                   <label>브랜드</label>
-                    <input type="text" class="form-control" name="brand" placeholder="브랜드 입력">
+                    <input type="text" class="form-control" name="brand_name" placeholder="브랜드 입력">
                   </div>
                   <div class="form-group">
                   <label>가격</label>
@@ -136,7 +136,8 @@
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer">
-                  <button type="button" class="btn btn-primary" id="bt_regist">Submit</button>
+                  <button type="button" class="btn btn-primary" id="bt_regist">등록</button>
+                  <button type="button" class="btn btn-primary" id="bt_list">목록보기</button>
                 </div>
               </form>
             </div>
@@ -158,6 +159,7 @@
 	<%@ include file="../inc/footer_link.jsp" %>
 <script src="/static/admin/custom/ProductImg.js"></script>
 	<script>
+	
 	
 	// 화면에 카테고리를 출력하는 메서드
 	function printCategory(obj, list){
@@ -298,11 +300,15 @@
 		}
 	});
 	
-	
 	// 등록 버튼 이벤트 연결
 	$("#bt_regist").click(()=>{
 		console.log("click");
 		regist();
+	});
+	
+	// 목록보기 버튼 이벤트 연결
+	$("#bt_list").click(()=>{
+		location.href = "/admin/product/list";
 	});
 	
 	</script>

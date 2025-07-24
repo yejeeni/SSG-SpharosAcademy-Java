@@ -1,10 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="SubCategory">
-<select id="selectByTopCategoryId" parameterType="int" resultType="SubCategory">
-	select * from subcategory where topcategory_id=#{topcategory_id}
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mall.repository.SubCategoryDAO">
+<!-- 서브 카테고리를 가져올 때, 자동매핑이 되지 않는 TopCategory를 assocation으로 연결해야하기 때문에 resultMap으로 가져오기 -->
+	<resultMap type="SubCategory" id="topcategoryMap">
+		<id column="subcategory_id" property="subcategory_id"/>
+		<result column="sub_name" property="sub_name"/>
+		<!-- 1:1 관계인 부모를 연계한다 -->		
+	<association column="topcategory_id" property="topCategory" javaType="TopCategory"
+    select="mall.repository.TopCategoryDAO.select"/>
+
+	</resultMap>
+	
+	<select id="selectByTopCategoryId" parameterType="int" resultType="SubCategory" resultMap="topcategoryMap">
+		select * from subcategory where topcategory_id=#{topcategory_id}
+	</select>
+	
+	<select id="select" resultMap="topcategoryMap" parameterType="int">
+    select subcategory_id, sub_name, topcategory_id from subcategory where subcategory_id = #{subcategory_id}
 </select>
 
+	
 
 </mapper>

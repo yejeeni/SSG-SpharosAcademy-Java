@@ -2,8 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="mall.repository.TopCategoryDAO">
-	<select id="selectAll" resultType="TopCategory">
-		select * from topcategory
+
+	<resultMap type="TopCategory" id="subJoin">
+		<id column="topcategory_id" property="topcategory_id"/>
+		<result column="top_name" property="top_name"/>
+		<collection column="topcategory_id" property="subCategories" javaType="java.util.List" ofType="SubCategory" 
+		select="SubCategory.selectByTopCategoryId"/>
+	</resultMap>
+
+	<select id="selectAll" resultMap="subJoin">
+		select topcategory_id, top_name from topcategory
+	</select>
+	
+	<select id="select" resultType="TopCategory" parameterType="int">
+		select * from topcategory where topcategory_id = #{topcategory_id}
 	</select>
 
 </mapper>

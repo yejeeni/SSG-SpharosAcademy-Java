@@ -3,6 +3,27 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ProductColor">
 	<insert id="insert" parameterType="ProductColor">
-		insert into product_color(product_id, color_id) values(#{product.product_id}, #{color.color_id})
+		insert into
+		product_color(product_id, color_id) values(#{product.product_id},
+		#{color.color_id})
 	</insert>
+
+	<resultMap type="ProductColor" id="colorMap">
+		<id column="product_color_id" property="product_color_id" />
+
+		<association column="color_id" property="color"
+			javaType="Color" select="Color.select" />
+
+		<!-- mybatis 에서 조인문을사용하지 않고 객체간의 관계만 잘 명시하면, 코드가 간결해질 수 있다.. 주의할점: 서로 참조 
+			관계를 명시하다 보면 무한루프에 빠질 수 있음 -->
+		<!-- <association column="product_id" property="product" javaType="Product" 
+			select="Product.select"/> -->
+
+	</resultMap>
+	<!-- 특정 상품에 등록된 색상 목록 자동 매핑이 불가능 하므로, resultMap 사용하자 -->
+	<select id="selectByProductId" parameterType="int"
+		resultMap="colorMap">
+		select product_color_id, color_id, product_id
+		from product_color where product_id=#{product_id}
+	</select>
 </mapper>

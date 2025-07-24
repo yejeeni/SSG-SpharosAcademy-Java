@@ -2,7 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ProductImg">
+
 	<insert id="insert" parameterType="ProductImg">
 		insert into product_img(product_id, filename) values(#{product.product_id}, #{filename})
 	</insert>
+	
+	
+	<select id="selectByProductId" parameterType="int" resultType="ProductImg">
+		select product_img_id, filename, product_id from product_img 
+		where product_id=#{product_id}
+	</select>
+	
 </mapper>

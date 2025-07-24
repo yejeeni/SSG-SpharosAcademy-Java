@@ -65,21 +65,36 @@ public class ProductServiceImpl implements ProductService {
 			img.setProduct(product);
 			productImgDAO.insert(img);
 		}
-		
-
-		// 색상 ID 추출
-		List<Integer> colorIds = new ArrayList<>();
-		for (ProductColor pc : product.getProductColorList()) {
-			colorIds.add(pc.getColor().getColor_id());
-		}
-
-		// 사이즈 ID 추출
-		List<Integer> sizeIds = new ArrayList<>();
-		for (ProductSize ps : product.getProductSizeList()) {
-			sizeIds.add(ps.getSize().getSize_id());
-		}
-
-		log.debug("[상품 등록] ID: {}, 색상: {}, 사이즈: {}, 이미지: {}", product.getProduct_id(), colorIds, sizeIds);
 	}
+
+	@Override
+	public void remove(Product product, String savePath) {
+		fileManager.remove(product, savePath);
+	}
+
+	@Override
+	public List selectAll() {
+		return productDAO.selectAll();
+	}
+
+	@Override
+	public Product select(int product_id) {
+		return productDAO.select(product_id);
+	}
+
+	@Override
+	public void update(Product product) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(Product product) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+	
 
 }

@@ -7,8 +7,9 @@
 		select * from color
 	</select>
 
-	<select id="selectById" parameterType="int" resultType="Color">
+	<select id="select" parameterType="int" resultType="Color">
 		select * from color where color_id = #{color_id}
 	</select>
+	
 
 </mapper>

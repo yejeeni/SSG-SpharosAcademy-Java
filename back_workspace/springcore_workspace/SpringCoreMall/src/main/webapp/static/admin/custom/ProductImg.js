@@ -16,7 +16,7 @@ class ProductImg {
 
 		// style
 		this.img.style.width = this.width + "px";
-		this.img.style.height = this.width + "px";
+		this.img.style.height = this.height + "px";
 
 		this.wrapper.style.width = this.width + "px";
 		this.wrapper.style.height = this.height + 20 + "px";

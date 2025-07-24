@@ -6,5 +6,8 @@
 	select * from size
 </select>
 
-
+	<select id="select" parameterType="int" resultType="Size">
+		select * from size where size_id=#{size_id}
+	</select>
+	
 </mapper>

@@ -2,12 +2,59 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="Product">
+
+	
 	<insert id="insert" parameterType="Product">
-		insert into product(product_name, brand_name, price, discount, introduce, detail, subcategory_id) 
-		values(#{product_name}, #{brand}, #{price}, #{discount}, #{introduce}, #{detail}, #{subCategory.subcategory_id}) 
-		<!-- insert되자마자 현재 세션에서 일으킨 pk의 최대값 -->
+		insert into product(product_name, brand_name, price, discount, introduce,detail, subcategory_id)
+		values(#{product_name}, #{brand_name}, #{price}, #{discount}, #{introduce},#{detail}, #{subcategory.subcategory_id})
+		
+		<!-- insert 시키자 마자, 현재 세션에서 일으킨 pk의 최대값  -->
 		<selectKey keyColumn="product_id" keyProperty="product_id" resultType="int" order="AFTER">
 			select last_insert_id() as product_id
 		</selectKey>
 	</insert>
+
+	<sql id="columns">
+		product_id, product_name, brand_name, price,discount, introduce, detail, subcategory_id
+	</sql>
+		
+	<!-- Product 의 레코드를 수집하여 Product 모델 객체에 담아야 하지만, 
+		컬럼명 중 colorList, sizeList, imgList 와 일치하는 컬럼이 없으므로, 수동으로 직접 개발자가 나서서 
+		매핑을 걸어야 한다..이때 사용하는 기능이 resutlMap 이다
+	 -->	
+	<resultMap type="Product" id="joinMap">
+		<id 		column="product_id" 		property="product_id"/>
+		<result 	column="product_name" 	property="product_name"/>
+		<result 	column="brand_name" 	property="brand_name"/>
+		<result 	column="price" 				property="price"/>
+		<result 	column="discount" 			property="discount"/>
+		<result 	column="introduce" 			property="introduce"/>
+		<result 	column="detail" 				property="detail"/>
+	
+		<!-- 1:1 관계인 부모를 연계한다 -->		
+		<association column="subcategory_id" property="subcategory" javaType="SubCategory"
+    select="mall.repository.SubCategoryDAO.select"/>
+
+		
+		<!-- 1:多 관계인 자식을 수집한다 -->
+		<collection column="product_id" property="productColorList" javaType="java.util.List" ofType="ProductColor"
+			select="ProductColor.selectByProductId"/>
+		
+		<collection column="product_id" property="productSizeList" javaType="java.util.List" ofType="ProductSize"
+			select="ProductSize.selectByProductId"/>
+		
+		<collection column="product_id" property="productImgList" javaType="java.util.List" ofType="ProductImg"
+			select="ProductImg.selectByProductId"/>
+		
+	</resultMap>
+	
+	<select id="selectAll" resultMap="joinMap">
+		select <include refid="columns"/> from product
+	</select>
+	
+	<select id="select" parameterType="int" resultMap="joinMap">
+		select <include refid="columns"/> from product 
+		where product_id=#{product_id}
+	</select>
+	
 </mapper>

@@ -21,6 +21,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @Import(RootConfig.class) // 루트 컨텍스트 설정 불러오기(빈 공유)
 @ComponentScan(basePackages = { "mall.admin.controller", "mall.repository", // DAO
 		"mall.service" // Service
+		, "mall.util"
 })
 public class AdminWebConfig extends WebMvcConfigurerAdapter {
 	/**

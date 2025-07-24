@@ -2,7 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ProductSize">
+
 	<insert id="insert" parameterType="ProductSize">
 		insert into product_size(product_id, size_id) values(#{product.product_id}, #{size.size_id})
 	</insert>
+	
+	<resultMap type="ProductSize" id="sizeMap">
+		<id 				column="product_size_id" property="product_size_id"/>
+		<association 	column="size_id" property="size" javaType="Size" select="Size.select"/>
+	</resultMap>
+	
+	<select id="selectByProductId" parameterType="int" resultMap="sizeMap">
+		select product_size_id, product_id, size_id from product_size 
+		where product_id=#{product_id}	
+	</select>
 </mapper>

@@ -1,6 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8"%>
 <%@ page import="java.util.List" %>
 <%@ page import="mall.domain.TopCategory" %>
+<%
+    List<TopCategory> topCategories = (List<TopCategory>) request.getAttribute("topCategories");
+%>
     <header class="header">
         <div class="container-fluid">
             <div class="row">

@@ -1,10 +1,9 @@
 package mall.util;
 
 import java.io.File;
+import java.nio.file.spi.FileSystemProvider;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.ServletContext;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,7 +22,18 @@ import mall.exception.UploadException;
 @Slf4j
 @Component // ComponentScan 대상으로 지정
 public class FileManager {
+	
+	/**
+	 * 상품의 이미지 저장
+	 * @param product
+	 * @param savePath
+	 * @throws UploadException
+	 */
 	public void save(Product product, String savePath) throws UploadException {
+		
+		// 상품 이미지를 담을 디렉토리를 생성
+		File directory = new File(savePath, "p_"+product.getProduct_id());
+		
 		// MultipartFile 변수와 html 이름이 동일하면 매핑됨
 		MultipartFile[] photo = product.getPhoto();
 		log.debug("업로드 파일 수 " + photo.length);
@@ -50,8 +60,8 @@ public class FileManager {
 				productImgs.add(productImg);
 				
 				product.setProductImgList(productImgs);
-
-				File file = new File(savePath + File.separator + filename);
+ 
+				File file = new File(directory.getAbsolutePath() + File.separator + filename); // directory의 hdd상 풀 경로
 				log.debug("업로드 이미지 생성 경로 " + savePath);
 				photo[i].transferTo(file); // 메모리상의 파일 정보가 실제 디스크상으로 존재하게 되는 시점
 			}
@@ -60,8 +70,42 @@ public class FileManager {
 			throw new UploadException("파일 업로드 실패", e);
 		}
 	}
+	
+	/**
+	 * 상품 이미지 디렉토리와 파일을 삭제
+	 * 
+	 * @param product
+	 * @param savePath /data까지
+	 */
+	public void remove(Product product, String savePath) throws UploadException  {
+		File directory = new File(savePath, "p_"+product.getProduct_id());
+		
+		// 폴더 내 파일이 존재할 경우
+		if (directory.exists() && directory.isDirectory()) {
+			File[] files = directory.listFiles();
+			
+			if(files != null) {
+				// 파일 삭제
+				for (File file: files) {
+					boolean deleted = file.delete();
+					log.debug(file.getName()+"삭제 결과 "+deleted);
+				}
+			}
+			
+			// 디렉토리 삭제
+			boolean result = directory.delete();
+			if(result == false) {
+				log.warn(directory.getAbsolutePath()+"디렉토리 삭제 실패");
+			}
+		}
+	}
+	
+	
+	
+	
+	
 
-	public void save2(MultipartFile photo, String savePath, String filename) throws UploadException {
+	public void saveOld(MultipartFile photo, String savePath, String filename) throws UploadException {
 
 		// 파일의 확장자 얻어오기
 		String ext = filename.substring(filename.lastIndexOf(".") + 1, filename.length());
