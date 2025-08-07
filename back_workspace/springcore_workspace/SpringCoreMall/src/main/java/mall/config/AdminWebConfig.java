@@ -19,10 +19,11 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @Configuration // 설정용
 @EnableWebMvc
 @Import(RootConfig.class) // 루트 컨텍스트 설정 불러오기(빈 공유)
-@ComponentScan(basePackages = { "mall.admin.controller", "mall.repository", // DAO
-		"mall.service" // Service
-		, "mall.util"
-})
+@ComponentScan(basePackages = {
+	    "mall.admin.controller", // 👉 관리자 컨트롤러만
+	    "mall.admin.service",    // 👉 관리자 전용 서비스만
+	    "mall.admin.repository", // 👉 관리자 전용 DAO
+	})
 public class AdminWebConfig extends WebMvcConfigurerAdapter {
 	/**
 	 * 하위 컨트롤러가 3, 4단계를 수행 후, DispatcherServlet에게 ModelAndView를 반환

@@ -49,7 +49,9 @@
 	</resultMap>
 	
 	<select id="selectAll" resultMap="joinMap">
-		select <include refid="columns"/> from product
+		select 
+		<include refid="columns"/> 
+		from product
 	</select>
 	
 	<select id="select" parameterType="int" resultMap="joinMap">

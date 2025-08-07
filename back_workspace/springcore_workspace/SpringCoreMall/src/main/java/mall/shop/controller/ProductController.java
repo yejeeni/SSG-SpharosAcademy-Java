@@ -19,8 +19,6 @@ import mall.service.TopCategoryService;
 public class ProductController {
 	
 	@Autowired
-	private TopCategoryService topCategoryService;
-	@Autowired
 	private ProductService productService;
 	
 	/**
@@ -29,14 +27,8 @@ public class ProductController {
 	@GetMapping("/product/list")
 	public ModelAndView getProductList() {
 		ModelAndView mav = new ModelAndView("shop/list");
-		
-		// 최상위 카테고리 가져오기
-		List<TopCategory> topCategories = topCategoryService.selectAll();
-		
 		// 모든 상품 가져오기
 		List<Product> productList = productService.selectAll();
-		
-		mav.addObject("topCategories", topCategories);
 		mav.addObject("productList", productList);
 		
 		return mav;
@@ -49,10 +41,8 @@ public class ProductController {
 	public ModelAndView getProductDetail(int product_id) {
 		ModelAndView mav = new ModelAndView("shop/detail");// 최상위 카테고리 가져오기
 		
-		List<TopCategory> topCategories = topCategoryService.selectAll();
 		Product product = productService.select(product_id);
 
-		mav.addObject("topCategories", topCategories);
 		mav.addObject("product", product);
 		
 		return mav;

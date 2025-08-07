@@ -13,6 +13,9 @@
       <typeAlias type="mall.domain.ProductColor" alias="ProductColor"/>
       <typeAlias type="mall.domain.ProductSize" alias="ProductSize"/>
       <typeAlias type="mall.domain.ProductImg" alias="ProductImg"/>
+      <typeAlias type="mall.domain.Member" alias="Member"/>
+      <typeAlias type="mall.domain.SnsProvider" alias="SnsProvider"/>
+      <typeAlias type="mall.domain.Cart" alias="Cart"/>
    </typeAliases>
   <environments default="development">
     <environment id="development">
@@ -32,5 +35,8 @@
 <mapper resource="mall/config/mybatis/ProductColorMapper.xml"/> 
 <mapper resource="mall/config/mybatis/ProductSizeMapper.xml"/> 
 <mapper resource="mall/config/mybatis/ProductImgMapper.xml"/> 
+<mapper resource="mall/config/mybatis/MemberMapper.xml"/> 
+<mapper resource="mall/config/mybatis/SnsProviderMapper.xml"/> 
+<mapper resource="mall/config/mybatis/CartMapper.xml"/> 
   </mappers>
 </configuration>

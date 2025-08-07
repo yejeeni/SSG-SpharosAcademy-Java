@@ -7,6 +7,7 @@
 <%@ page import="mall.domain.Product" %>
 <%
 	Product product = (Product)request.getAttribute("product");
+	
 %>
 <!DOCTYPE html>
 <html lang="zxx">
@@ -21,7 +22,6 @@
 
     <%@ include file="./inc/head_link.jsp"%>
 </head>
-
 <body>
     <!-- Page Preloder -->
      <%@ include file="./inc/preloder.jsp"%>
@@ -105,7 +105,7 @@
                                     		String color = productColor.getColor().getColor_name().toLowerCase(); 
                                     	%>
                                         <label for="<%=color%>">
-                                            <input type="radio" name="color" id="<%=color%>" value="<%productColor.getColor().getColor_id()%>">
+                                           <input type="radio" name="color" id="<%=color%>" value="<%=productColor.getColor().getColor_id()%>">
                                             <span class="checkmark <%=color%>-bg"></span>
                                         </label>
                                         <%} %>
@@ -114,12 +114,16 @@
                                 <li>
                                     <span>Available size:</span>
                                     <div class="size__btn">
-                                    	<%for (ProductSize size : product.getProductSizeList()) {%>                                    	
-                                        <label for="xs-btn" class="active">
-                                            <input type="radio" id="xs-btn">
-                                            <%= size.getSize().getSize_name() %>
-                                        </label>
-                                        <%} %>
+                                    		<%
+											for (int i = 0; i < product.getProductSizeList().size(); i++) {
+											%>
+											<label> <input type="radio" name="size"
+												value="<%=product.getProductSizeList().get(i).getSize().getSize_id()%>">
+												<%=product.getProductSizeList().get(i).getSize().getSize_name()%>
+											</label>
+											<%
+											}
+										%>
                                     </div>
                                 </li>
                                 <li>
@@ -291,26 +295,6 @@
 <%@ include file="./inc/search.jsp"%>
 <!-- Search End -->
 
-<script type="text/javascript">
-	function addCart(){
-		$.ajax({
-			url: "/shop/cart/regist",
-			type: "post",
-			data: {
-				"product.product_id" : <%= product.getProduct_id()%>,
-				"ea": $("#ea").val(),
-				"member_id": 999
-				
-			}
-			processData: false,
-			contentType: false,
-			success: function(result, status, xhr){
-				console.log(result);
-			}
-		});
-	}
-</script>
-
 <!-- Js Plugins -->
 <script src="/static/shop/js/jquery-3.3.1.min.js"></script>
 <script src="/static/shop/js/bootstrap.min.js"></script>
@@ -322,6 +306,42 @@
 <script src="/static/shop/js/owl.carousel.min.js"></script>
 <script src="/static/shop/js/jquery.nicescroll.min.js"></script>
 <script src="/static/shop/js/main.js"></script>
+
+<script type="text/javascript">
+
+function addCart() {
+    const color_id = $("input[name='color']:checked").val();
+    const size_id = $("input[name='size']:checked").val();
+
+    if (!color_id || !size_id) {
+        alert("색상과 사이즈를 선택해주세요.");
+        return;
+    }
+
+    $.ajax({
+        url: "/shop/cart/regist",
+        type: "post",
+        data: {
+            "product.product_id": <%= product.getProduct_id() %>,
+            "ea": $("#ea").val(),
+            "color.color_id": color_id,
+            "size.size_id": size_id,
+        },
+        success: function(result, status, xhr) {
+            if (confirm("장바구니에 추가되었습니다.\n장바구니로 이동하시겠습니까?")){
+            	location.href="/shop/cart/list";
+            }
+            console.log("성공", result);
+        },
+        error: function(xhr, status, err) {
+            console.log("장바구니 담기 에러");
+            console.log("응답 코드", xhr.status);
+            console.log("메시지", xhr.responseJSON.msg);
+        }
+    });
+}
+
+</script>
 </body>
 
 </html>

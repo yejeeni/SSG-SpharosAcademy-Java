@@ -81,6 +81,7 @@ public class RootConfig {
 		factoryBean.setConfigLocation(new ClassPathResource("mall/config/mybatis/mybatis-config.xml")); // mybatis 설정파일의 위치
 		// sqlSessionFactoryBean에게 사용할 데이터베이스를 알려줌
 		factoryBean.setDataSource(dataSource);
+		
 
 		return factoryBean.getObject();
 	}
