@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #app{
+            width:1400px;
+            height:800px;
+            background-color: yellow;
+            margin: auto;
+        }
+        #aside_regist{
+            width: 200px;
+            height: 100%;
+            background-color: rgb(108, 181, 253);
+            float:left;
+            text-align: center;
+        }
+        #content{
+            width: 1000px;
+            height: 100%;
+            background-color: blanchedalmond;
+            float:left;
+        }
+        #content_header{
+            width: 100%;
+            height: 50px;
+            background-color: cornflowerblue;
+        }
+        #content_list{
+            width: 100%;
+            height: 750px;
+            background-color: azure;
+        }
+        #aside_detail{
+            width: 200px;
+            height: 100%;
+            background-color: rgb(108, 181, 253);
+            float:left;
+            text-align: center;
+        }
+        #form1 input,textArea{
+            width: 90%;
+            height: 30px;
+            margin: 5px;
+        }
+
+        #form2 input,textArea{
+            width: 90%;
+            height: 30px;
+            margin: 5px;
+        }
+
+        textarea{
+            height: 250px;
+        }
+        
+        button{
+            width: 90%;
+            background-color: darkslateblue;
+            color: aliceblue;
+            border: none
+        }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+</head>
+<body>
+    
+    <div id="app">
+        <div id="aside_regist">
+            <form id="form1">
+                <input type="text" name="title">
+                <input type="text" name="writer">
+                <textarea name="content" id=""></textarea>
+                <button type="button" @click="regist()">등록</button>
+            </form>
+        </div>
+        <div id="content">
+            <div id="content_header"></div>
+            <div id="content_list">
+                <table width="100%" border="1px">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Title</th>
+                            <th>Writer</th>
+                            <th>RegDate</th>
+                            <th>Hit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="board in boardList" :key="board.board_id">
+                            <td>{{board.board_id}}</td>
+                            <td @click="getDetail(board.board_id)">{{board.title}}</td>
+                            <td>{{board.writer}}</td>
+                            <td>{{board.regdate}}</td>
+                            <td>{{board.hit}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="aside_detail">
+            <form id="form2">
+                <input type="text" name="title" v-model=board.title>
+                <input type="text" name="writer" v-model=board.writer>
+                <textarea name="content" id="" v-model=board.content></textarea>
+                <button type="button" @click="edit(board.board_id)">수정</button>
+                <button type="button" @click="del(board.board_id)">삭제</button>
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+        /* 구조 분해 
+        [ 구조 분해란? ]
+            - 객체나 배열에서 필요한 값만 쉽게 꺼내서 변수에 담을 수 있는 문법
+        [예시]
+        const person = {name:"scott", age:30};
+        -> const {name, age} = person;
+        */
+        const { createApp, reactive, ref } = Vue;
+
+        createApp({
+            setup(){
+                //reactive: 배열, 객체 유형의 바인딩 데이터를 선언할 때 사용
+                // const price = ref(0);   //숫자, 문자, 논리값과 같은 일반데이터는 ref로 표현
+                const boardList = reactive([]);
+                const board = ref({});
+
+                //글 목록
+                const getList=()=>{
+                    $.ajax({
+                        url: "http://192.168.70.11:8888/shop/boards",
+                        method: "get",
+                        success: result=>{
+                            boardList.splice(0);    //기존 바인딩 배열 요소 모두 제거
+                            result.forEach(item => {
+                                boardList.push(item);
+                            });
+                        }
+                    });
+                }
+
+                //글 등록
+                const regist=()=>{
+                    $.ajax({
+                        url: "http://192.168.70.11:8888/shop/boards",
+                        method: "post",
+                        contentType: "application/json",
+                        data:JSON.stringify({
+                            title: $("#form1 input[name=title]").val(),
+                            writer: $("#form1 input[name=writer]").val(),
+                            content: $("#form1 textarea[name=content]").val()
+                        }),
+                        success:()=>{
+                            getList();
+                        },
+                        error:()=>{
+
+                        }
+                    });
+                }
+
+                //상세보기
+                const getDetail=(board_id)=>{
+                    $.ajax({
+                        url: "http://192.168.70.11:8888/shop/boards/${board_id}",
+                        method: "get",
+                        success:(result)=>{
+                            board.value = result;
+                            console.log(result);
+                            Object.assign(board, result);
+                        },
+                        error:()=>{
+
+                        }
+                    })
+                }
+
+                //수정하기
+                const edit=()=>{
+                    
+                }
+
+                //삭제하기
+                const del=()=>{
+                    
+                }
+
+                //목록 요청
+                getList();
+
+                //setup에 사용된 모든 변수와 메서드를 리턴해야 함.
+                return{ boardList, board, getList, getDetail, regist, edit, del }
+            }
+        }).mount("#app");
+    </script>
+</body>
+</html>

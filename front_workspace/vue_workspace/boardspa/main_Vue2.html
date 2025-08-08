@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>게시판</title>
+  <link rel="stylesheet" href="./style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<body>
+  <div id="app">
+    <!-- 왼쪽 등록 -->
+    <div id="aside_regist">
+      <h2><i class="fas fa-pen-to-square"></i> 글 등록</h2>
+      <form id="form1">
+        <input type="text" name="title" placeholder="제목">
+        <input type="text" name="writer" placeholder="작성자">
+        <textarea name="content" placeholder="내용"></textarea>
+        <button type="button" @click="regist()"><i class="fas fa-plus"></i> 등록</button>
+        <button type="button" @click="getList()"><i class="fas fa-list"></i> 목록</button>
+      </form>
+    </div>
+
+    <!-- 게시글 목록 -->
+    <div id="content_list">
+      <div id="content_header">
+        <i class="fas fa-table"></i> 게시글 목록
+      </div>
+      <div id="content_body">
+        <table>
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>제목</th>
+              <th>작성자</th>
+              <th>등록일</th>
+              <th>조회수</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="post in boardList" @click="getDetail(post)">
+              <td>{{post.boardId}}</td>
+              <td>{{post.title}}</td>
+              <td>{{post.writer}}</td>
+              <td>{{post.regdate}}</td>
+              <td>{{post.hit}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 오른쪽 상세보기 -->
+    <div id="aside_detail">
+      <h2><i class="fas fa-file-lines"></i> 상세보기</h2>
+      <form id="form2">
+        <input type="hidden" name="boardId">
+        <input type="text" name="title" placeholder="제목">
+        <input type="text" name="writer" placeholder="작성자">
+        <textarea name="content" placeholder="내용"></textarea>
+        <button type="button" @click="editBoard"><i class="fas fa-edit"></i> 수정</button>
+        <button type="button" @click="deleteBoard"><i class="fas fa-trash"></i> 삭제</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          boardList: [],
+          boardDetail: {
+            boardId: null,
+            title: null,
+            writer: null,
+            content: null
+          }
+        };
+      },
+      methods: {
+        // 게시물 등록하기
+        regist() {
+          const data = {
+            title: $("#form1 input[name='title']").val(),
+            writer: $("#form1 input[name='writer']").val(),
+            content: $("#form1 textarea[name='content']").val()
+          };
+
+          $.ajax({
+            url: "http://localhost:8888/shop/boards",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: (result) => {
+              console.log("등록 성공:", result);
+              alert("등록 성공");
+              this.getList();
+            },
+            error: function (err) {
+              console.error("등록 실패:", err);
+            }
+          });
+        },
+
+        // 목록 불러오기
+        getList() {
+          $.ajax({
+            url: "http://localhost:8888/shop/boards",
+            method: "GET",
+            contentType: "application/json",
+            success: (result) => { // 람다를 통해 바로 위 상위 context를 가리킴
+              this.boardList = result;
+              console.log(result);
+            },
+            error: function (err) {
+              console.error("목록 불러오기 실패:", err);
+            }
+          });
+        },
+
+        // 게시물 상세보기
+        getDetail(data) {
+          console.log("click 상세보기");
+          // 상세보기 폼에 데이터 채우기
+          $("#form2 input[name='boardId']").val(data.boardId);
+          $("#form2 input[name='title']").val(data.title);
+          $("#form2 input[name='writer']").val(data.writer);
+          $("#form2 textarea[name='content']").val(data.content);
+        },
+
+        // 게시물 수정하기
+        editBoard() {
+          console.log("수정 클릭");
+
+          const data = {
+            boardId: $("#form2 input[name='boardId']").val(),
+            title: $("#form2 input[name='title']").val(),
+            writer: $("#form2 input[name='writer']").val(),
+            content: $("#form2 textarea[name='content']").val()
+          };
+
+          $.ajax({
+            url: "http://localhost:8888/shop/boards/${data.boardId}",
+            method: "PUT",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: (result) => {
+              console.log("수정 성공:", result);
+              alert("수정 성공");
+              this.getList();
+            },
+            error: function (err) {
+              console.error("수정 실패:", err);
+            }
+          });
+        },
+
+        // 게시물 삭제하기
+        deleteBoard() {
+          const boardId = $("#form2 input[name='boardId']").val();
+          if (!boardId) {
+            alert("삭제할 게시물을 선택하세요.");
+            return;
+          }
+          if (!confirm("정말 삭제하시겠습니까?")) return;
+
+          $.ajax({
+            url: "http://localhost:8888/shop/boards/${boardId}",
+            method: "DELETE",
+            success: (result) => {
+              console.log("삭제 성공:", result);
+              alert("삭제 성공");
+              this.getList();
+              // 삭제 후 상세보기 폼 초기화
+              $("#form2 input[name='boardId']").val('');
+              $("#form2 input[name='title']").val('');
+              $("#form2 input[name='writer']").val('');
+              $("#form2 textarea[name='content']").val('');
+            },
+            error: function (err) {
+              console.error("삭제 실패:", err);
+            }
+          });
+        }
+      },
+      // mounted. el 속성에서 지정한 화면 요소에 인스턴스 부착 시 호출되는 단계. 화면 요소 제어 로직을 수행하기 좋은 단계
+      mounted() {
+        this.getList();
+      }
+    });
+
+    app.mount("#app");
+  </script>
+</body>
+
+</html>

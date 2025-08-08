@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -26,13 +25,8 @@ public class BoardController {
      * 게시판 목록 요청 처리
      */
     @GetMapping("/boards")
-    public List<String> selectAll(){
-        log.debug("selectAll");
-        List<String> list = new ArrayList();
-        list.add("apple");
-        list.add("banana");
-        list.add("grape");
-        return list;
+    public List<Board> selectAll(){
+        return boardService.selectAll();
     }
 
     /**

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #app{
+            width:1400px;
+            height:800px;
+            background-color: yellow;
+            margin: auto;
+        }
+        #aside_regist{
+            width: 200px;
+            height: 100%;
+            background-color: aquamarine;
+            float:left;
+        }
+        #content{
+            width: 1000px;
+            height: 100%;
+            background-color: blanchedalmond;
+            float:left;
+        }
+        #content_header{
+            width: 100%;
+            height: 50px;
+            background-color: blueviolet;
+        }
+        #content_list{
+            width: 100%;
+            height: 750px;
+            background-color: cadetblue;
+        }
+        #aside_detail{
+            width: 200px;
+            height: 100%;
+            background-color: aquamarine;
+            float:left;
+        }
+        #form1 input,textArea{
+            width: 90%;
+            height: 30px;
+            margin: 5px;
+        }
+
+        #form2 input,textArea{
+            width: 90%;
+            height: 30px;
+            margin: 5px;
+        }
+
+        textarea{
+            height: 250px;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    
+    <div id="app">
+        <div id="aside_regist">
+            <form id="form1">
+                <input type="text" name="title">
+                <input type="text" name="writer">
+                <textarea name="content" id=""></textarea>
+                <button type="button" @click="regist()">등록</button>
+                <button type="button" @click="getList()">목록</button>
+            </form>
+        </div>
+        <div id="content">
+            <div id="content_header"></div>
+            <div id="content_list">
+                <table width="100%" border="1px">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Title</th>
+                            <th>Writer</th>
+                            <th>regdate</th>
+                            <th>hit</th>
+                        </tr>                            
+                    </thead>                        
+                    <tbody>
+                        <tr v-for="board  in boardList" :key="board.boardId">
+                            <td>No</td>
+                            <td @click="getDetail(board.boardId)">{{board.title}}</td>
+                            <td>{{board.writer}}</td>
+                            <td>{{board.regdate}}</td>
+                            <td>{{board.hit}}</th>
+                        </tr>                            
+                    </tbody>    
+                </table>        
+            </div>
+        </div>
+        <div id="aside_detail">
+            <form id="form2">
+                <input type="text" name="title" v-model="board.title">
+                <input type="text" name="writer" v-model="board.writer">
+                <textarea name="content" v-model="board.content"></textarea>
+
+                <button type="button" @click="edit()">수정</button>
+                <button type="button" @click="del()">삭제</button>
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+        const {createApp, reactive, ref} = Vue;
+        /*
+        위와 같은 코드를 구조 분해라 한다
+        [구조 분해란?]
+            - 객체나 배열에서 필요한 값만 쉽게 떠내서 변수에 담을 수 있는 문법 
+        
+        [예]            
+        const person={
+            name:"scott",
+            age:30
+        }
+        console.log(person.name);
+        console.log(person.age);
+
+        const {name, age} = person       
+        */
+
+
+        createApp({
+            setup(){
+                const boardList=reactive([]);//배열, 객체 유형의 바인딩 데이터 선언할때
+                const board=reactive({});
+                const price=ref(0); //숫자,문자,논리값과 같은 일반데이터는 ref
+
+                //글목록
+                const getList=()=>{
+                    $.ajax({
+                        url:"http://192.168.70.11:8888/shop/boards", 
+                        method:"GET",                        
+                        success:result=>{
+                            boardList.splice(0); //기존 바인딩 배열 요소 모두 제거~~~  
+                            result.forEach(item=>{
+                                boardList.push(item);        
+                            }); 
+                        }
+                    });
+                }
+                //글등록
+                const regist=()=>{
+                    $.ajax({
+                        url:"http://192.168.70.11:8888/shop/boards", 
+                        method:"POST",
+                        contentType:"application/json"                                 ,
+                        data:JSON.stringify({
+                            title:$("#form1 input[name='title']").val(),
+                            writer:$("#form1 input[name='writer']").val(),
+                            content:$("#form1 textarea[name='content']").val()
+                        }),
+                        success:()=>{
+                            getList();
+                        },
+                        error:()=>{
+                        }
+
+                    });
+                }
+
+                //상세보기
+                const getDetail=(boardId)=>{
+                    //console.log(boardId, " 상세글 보고싶어?");
+                    $.ajax({
+                        url:`http://192.168.70.11:8888/shop/boards/${boardId}`,
+                        type:"GET",
+                        success:(result, status, xhr)=>{
+                            console.log("서버로부터 받은 게시물 한건은 ", result);
+                            //result 를 board로 바로 대입하면, board 바인딩 기능이 사라질 수 있으므로
+                            //객체내용 복사하자 
+                            Object.assign(board, result);                            
+                        }
+                    });
+
+                }
+
+                //수정하기
+                const edit=()=>{
+                    if(board.boardId==undefined){
+                        alert("삭제하실 글을 선택해주세요");
+                        return;
+                    }
+
+                    let data=JSON.stringify(
+                    {
+                        title:$("#form2 input[name='title']").val(),
+                        writer:$("#form2 input[name='writer']").val(),
+                        content:$("#form2 textarea[name='content']").val()
+                    });
+
+                    $.ajax({
+                        url:`http://192.168.70.11:8888/shop/boards/${board.boardId}`,
+                        type:"PUT",
+                        contentType:"application/json",
+                        data:data,
+                        success:(result, status, xhr)=>{
+                            getList();        
+                        },
+                        error:(xhr, status, err)=>{
+                            alert(err);
+                        }
+
+                    });
+
+                }
+
+                //삭제하기
+                const del=()=>{
+                    if(board.boardId==undefined){
+                        alert("삭제하실 글을 선택해주세요");
+                        return;
+                    }
+                    console.log(board.boardId);                    
+
+                    $.ajax({
+                        url:`http://192.168.70.11:8888/shop/boards/${board.boardId}`,
+                        type:"DELETE",
+                        success:(result, status, xhr)=>{
+                            getList();        
+                        },
+                        error:(xhr, status, err)=>{
+                            alert(err);
+                        }
+
+                    });
+
+                }
+
+                //목록 요청 
+                getList();
+
+                return { boardList, board, price, getList, getDetail, regist, edit, del}
+            }
+        }).mount("#app");
+    </script>
+</body>
+</html>

@@ -4,12 +4,20 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ssg.restapp.model.board.BoardMapper">
+    <resultMap id="BoardResultMap" type="Board">
+        <id property="boardId" column="board_id"/>
+        <result property="title" column="title"/>
+        <result property="writer" column="writer"/>
+        <result property="content" column="content"/>
+        <result property="regdate" column="regdate"/>
+        <result property="hit" column="hit"/>
+    </resultMap>
 
-    <select id="selectAll" resultType="Board">
+    <select id="selectAll" resultMap="BoardResultMap">
         SELECT * FROM board
     </select>
 
-    <select id="selectById" parameterType="int" resultType="Board">
+    <select id="selectById" parameterType="int" resultMap="BoardResultMap">
         SELECT * FROM board WHERE board_id = #{boardId}
     </select>
 
