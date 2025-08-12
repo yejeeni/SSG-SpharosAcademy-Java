@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>맛집 목록</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        #app {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        #contentheader {
+            padding: 15px;
+            background-color: #f9fafb;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        #contentheader input {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            width: 250px;
+            font-size: 14px;
+        }
+
+        #contentbody {
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+
+        a {
+            color: #0077cc;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .description {
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+
+<body>
+
+    <div id="app">
+        <div id="contentheader">
+            <input type="text" placeholder="검색어를 입력하세요" v-model="searchWord">
+            <button @click="getList(searchWord)">검색</button>
+        </div>
+        <div id="contentbody">
+            <table>
+                <thead>
+                    <tr>
+                        <th>업종명</th>
+                        <th>업소명</th>
+                        <th>소재지(도로명)</th>
+                        <th>소재지(지번)</th>
+                        <th>소재지 전화번호</th>
+                        <th>관리기관 전화번호</th>
+                        <th>관리기관명</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="store in storeList">
+                        <td>{{store.bssh_nm}}</td>
+                        <td>{{store.induty_nm}}</td>
+                        <td>{{store['locplc(lnm)']}}</td> <!--데이터에 괄호가 껴있는 경우 이렇게-->
+                        <td>{{store['locplc(rn)']}}</td>
+                        <td>{{store.locplc_telno}}</td>
+                        <td>{{store.mgc_nm}}</td>
+                        <td>{{store.mgc_telno}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+<script>
+    const {createApp, reactive, ref} = Vue;
+
+    // setup() 메서드에 변수 및 메서드를 등록 (단, return 명시 필요)
+    createApp({
+        setup(){
+            let msg = ref(0); // 바인딩 데이터 
+            const storeList = reactive([]); // 바인딩 배열
+            const searchWord = ref("");
+
+            // 음식 목록 요청 메서드
+            const getList=(keyword)=>{
+                $.ajax({
+                    url: "http://localhost:7777/food/stores",
+                    method: "get",
+                    data: {searchKey: keyword || ""},
+                    success: (result)=>{
+                        console.log("음식점 목록: ", result);
+                        storeList.splice(0); // 리스트 모두 제거
+
+                        result.body.forEach(element => { // 바디에 상점 정보들이 있으므로 바디를 꺼냄
+                            storeList.push(element)
+                        });
+                    }
+
+                });
+            }
+            getList();
+            return {msg, getList, storeList, searchWord};
+        }
+    }).mount("#app");
+
+
+
+</script>
+</body>
+
+</html>
