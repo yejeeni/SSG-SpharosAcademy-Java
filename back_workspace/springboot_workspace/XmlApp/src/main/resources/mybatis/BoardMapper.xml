@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssg.xmlapp.model.board.BoardMapper">
+    <select id="selectAll" resultType="Board">
+        SELECT * FROM board
+    </select>
+
+    <select id="select" parameterType="int">
+        SELECT * FROM board WHERE board_id = #{boardId}
+    </select>
+
+    <insert id="insert" parameterType="Board">
+        INSERT INTO board(title, writer, content) VALUES(#{title}, #{writer}, #{content})
+    </insert>
+
+    <update id="update" parameterType="Board">
+        UPDATE board SET title=#{title}, writer=#{writer}, content=#{content}
+        WHERE board_id=#{boardId}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM board WHERE board_id=#{boardId}
+    </delete>
+</mapper>

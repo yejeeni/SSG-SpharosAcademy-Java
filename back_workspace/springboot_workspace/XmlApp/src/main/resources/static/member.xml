@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding="UTF-8"?>
+<members>
+    <member>
+        <name>김서현</name>
+        <age>29</age>
+        <job>웹 개발자</job>
+        <tel>010-4821-9357</tel>
+    </member>
+    <member>
+        <name>이도윤</name>
+        <age>34</age>
+        <job>마케팅 매니저</job>
+        <tel>010-3259-7146</tel>
+    </member>
+    <member>
+        <name>박지민</name>
+        <age>27</age>
+        <job>디자이너</job>
+        <tel>010-1928-6054</tel>
+    </member>
+    <member>
+        <name>최수빈</name>
+        <age>31</age>
+        <job>데이터 분석가</job>
+        <tel>010-5837-4912</tel>
+    </member>
+    <member>
+        <name>정민호</name>
+        <age>41</age>
+        <job>영업팀장</job>
+        <tel>010-8614-2935</tel>
+    </member>
+    <member>
+        <name>한지우</name>
+        <age>26</age>
+        <job>영상 편집자</job>
+        <tel>010-4127-6803</tel>
+    </member>
+    <member>
+        <name>송유진</name>
+        <age>33</age>
+        <job>회계사</job>
+        <tel>010-7382-5096</tel>
+    </member>
+    <member>
+        <name>임하늘</name>
+        <age>28</age>
+        <job>프론트엔드 개발자</job>
+        <tel>010-9153-2847</tel>
+    </member>
+    <member>
+        <name>백지연</name>
+        <age>36</age>
+        <job>HR 매니저</job>
+        <tel>010-2548-7139</tel>
+    </member>
+    <member>
+        <name>윤태현</name>
+        <age>39</age>
+        <job>제품 매니저</job>
+        <tel>010-6842-5701</tel>
+    </member>
+    <member>
+        <name>강민서</name>
+        <age>25</age>
+        <job>카페 매니저</job>
+        <tel>010-9432-1687</tel>
+    </member>
+    <member>
+        <name>오현우</name>
+        <age>37</age>
+        <job>백엔드 개발자</job>
+        <tel>010-8327-4592</tel>
+    </member>
+    <member>
+        <name>조은별</name>
+        <age>32</age>
+        <job>UI/UX 디자이너</job>
+        <tel>010-6195-3740</tel>
+    </member>
+    <member>
+        <name>신재호</name>
+        <age>30</age>
+        <job>프로젝트 매니저</job>
+        <tel>010-5241-8630</tel>
+    </member>
+    <member>
+        <name>김다영</name>
+        <age>28</age>
+        <job>온라인 쇼핑몰 운영자</job>
+        <tel>010-3817-2946</tel>
+    </member>
+    <member>
+        <name>이승민</name>
+        <age>35</age>
+        <job>변호사</job>
+        <tel>010-1429-3684</tel>
+    </member>
+    <member>
+        <name>장하윤</name>
+        <age>24</age>
+        <job>대학생</job>
+        <tel>010-6074-2183</tel>
+    </member>
+    <member>
+        <name>전도현</name>
+        <age>40</age>
+        <job>교사</job>
+        <tel>010-7238-4910</tel>
+    </member>
+    <member>
+        <name>권지훈</name>
+        <age>29</age>
+        <job>소프트웨어 엔지니어</job>
+        <tel>010-1538-6974</tel>
+    </member>
+    <member>
+        <name>이아린</name>
+        <age>31</age>
+        <job>마케팅 기획자</job>
+        <tel>010-8942-3605</tel>
+    </member>
+    <member>
+        <name>문성호</name>
+        <age>38</age>
+        <job>시스템 관리자</job>
+        <tel>010-2847-9501</tel>
+    </member>
+    <member>
+        <name>김지우</name>
+        <age>26</age>
+        <job>바리스타</job>
+        <tel>010-7652-8349</tel>
+    </member>
+    <member>
+        <name>홍나래</name>
+        <age>34</age>
+        <job>패션 디자이너</job>
+        <tel>010-5321-8607</tel>
+    </member>
+    <member>
+        <name>서민재</name>
+        <age>27</age>
+        <job>헬스 트레이너</job>
+        <tel>010-9428-5710</tel>
+    </member>
+    <member>
+        <name>백승연</name>
+        <age>30</age>
+        <job>간호사</job>
+        <tel>010-1259-7840</tel>
+    </member>
+    <member>
+        <name>한태양</name>
+        <age>33</age>
+        <job>사진작가</job>
+        <tel>010-3768-9024</tel>
+    </member>
+    <member>
+        <name>정유리</name>
+        <age>25</age>
+        <job>광고 디자이너</job>
+        <tel>010-6835-1749</tel>
+    </member>
+    <member>
+        <name>이찬호</name>
+        <age>42</age>
+        <job>대학 교수</job>
+        <tel>010-5974-2830</tel>
+    </member>
+    <member>
+        <name>박하린</name>
+        <age>28</age>
+        <job>콘텐츠 크리에이터</job>
+        <tel>010-7830-4961</tel>
+    </member>
+</members>

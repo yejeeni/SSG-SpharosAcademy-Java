@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <table width="100%" border="1px">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>title</th>
+                <th>writer</th>
+                <th>regDate</th>
+                <th>hit</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr th:each="board : ${boards}">
+            <td th:text="${board.boardId}"></td>
+            <td th:text="${board.title}"></td>
+            <td th:text="${board.writer}"></td>
+            <td th:text="${#dates.format(board.regdate, 'yyyy-MM-dd')}"></td>
+            <td th:text="${board.hit}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>
