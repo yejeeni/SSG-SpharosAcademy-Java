@@ -35,6 +35,12 @@ public class BoardController {
         return "board/content";
     }
 
+    @GetMapping("/board/registform")
+    public String registForm(Model model){
+
+        return "/board/write";
+    }
+
     @PostMapping("/board/regist")
     public String regist(Board board) {
         boardService.insert(board);

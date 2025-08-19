@@ -6,8 +6,10 @@ import lombok.Setter;
 @Getter @Setter
 public class Restaurant {
     private String mainTitle;
-    private String place;
-    private String title;
-    private String subTitle;
+    private String lat;
+    private String lng;
+    private String cntctTel;
     private String itemcntnts;
+    private String mainImgThumb;
+    private String addr1;
 }

@@ -26,10 +26,12 @@ public class RestaurantHandler extends DefaultHandler {
     
     // 실행부가 지나가고 있는 태그 파악
     private boolean isMainTitle = false;
-    private boolean isPlace = false;
-    private boolean isTitle = false;
-    private boolean isSubTtitle = false;
+    private boolean isLat = false;
+    private boolean isLng = false;
+    private boolean isCntctTel = false;
     private boolean isItemcntnts = false;
+    private boolean isMainImgThumb = false;
+    private boolean isAddr1 = false;
 
     @Override
     public void startDocument() throws SAXException {
@@ -45,14 +47,18 @@ public class RestaurantHandler extends DefaultHandler {
             restaurant = new Restaurant();
         } else if (tag.equals("MAIN_TITLE")) {
             isMainTitle = true;
-        } else if (tag.equals("PLACE")) {
-            isPlace = true;
-        } else if (tag.equals("TITLE")) {
-            isTitle = true;
-        } else if (tag.equals("SUBTITLE")) {
-            isSubTtitle = true;
+        } else if (tag.equals("LAT")) {
+            isLat = true;
+        } else if (tag.equals("LNG")) {
+            isLng = true;
+        } else if (tag.equals("CNTCN_TEL")) {
+            isCntctTel = true;
         } else if (tag.equals("ITEMCNTNTS")) {
             isItemcntnts = true;
+        } else if (tag.equals("MAIN_IMG_THUMB")) {
+            isMainImgThumb = true;
+        } else if (tag.equals("ADDR1")) {
+            isAddr1 = true;
         }
     }
 
@@ -62,10 +68,12 @@ public class RestaurantHandler extends DefaultHandler {
         String content = new String(ch, start, length);
         log.debug(content);
         if (isMainTitle) restaurant.setMainTitle(content);
-        if (isPlace) restaurant.setPlace(content);
-        if (isTitle) restaurant.setTitle(content);
-        if (isSubTtitle) restaurant.setSubTitle(content);
+        if (isLat) restaurant.setLat(content);
+        if (isLng) restaurant.setLng(content);
+        if (isCntctTel) restaurant.setCntctTel(content);
         if (isItemcntnts) restaurant.setItemcntnts(content);
+        if (isMainImgThumb) restaurant.setMainImgThumb(content);
+        if (isAddr1) restaurant.setAddr1(content);
     }
 
     // 종료 태그를 만났을 때
@@ -76,14 +84,18 @@ public class RestaurantHandler extends DefaultHandler {
             restaurants.add(restaurant);
         } else if (tag.equals("MAIN_TITLE")) {
             isMainTitle = false;
-        } else if (tag.equals("PLACE")) {
-            isPlace = false;
-        } else if (tag.equals("TITLE")) {
-            isTitle = false;
-        } else if (tag.equals("SUBTITLE")) {
-            isSubTtitle = false;
+        } else if (tag.equals("LAT")) {
+            isLat = false;
+        } else if (tag.equals("LNG")) {
+            isLng = false;
+        } else if (tag.equals("CNTCT_TEL")) {
+            isCntctTel = false;
         } else if (tag.equals("ITEMCNTNTS")) {
             isItemcntnts = false;
+        } else if (tag.equals("MAIN_IMG_THUMB")) {
+            isMainImgThumb = false;
+        } else if (tag.equals("ADDR1")) {
+            isAddr1 = false;
         }
     }
 

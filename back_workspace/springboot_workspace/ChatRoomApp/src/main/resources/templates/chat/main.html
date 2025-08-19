@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Streaming Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/chat-main.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <div id="wrapper">
+        <div id="aside">
+            <div class="aside-header">
+                <h2>🎥 Live Stream</h2>
+                <p>실시간 방송 플랫폼</p>
+            </div>
+
+            <div class="room-creator" th:if="${session.member} != null">
+                <h3 th:text="|${session.member.name}님 안녕하세요!|">이름님 안녕하세요!</h3>
+                <h3>방송을 시작할까요?</h3>
+                <div class="input-group">
+                    <label for="roomTitle">방송 제목</label>
+                    <input type="text" id="roomTitle" v-model="roomTitle" placeholder="방송 제목을 입력하세요...">
+                </div>
+                <!--            <div class="input-group">-->
+                <!--                <label for="roomCategory">카테고리</label>-->
+                <!--                <input type="text" id="roomCategory" placeholder="게임, 토크, 음악 등...">-->
+                <!--            </div>-->
+                <button class="create-btn" @click="createRoom()">방송 시작</button>
+                <ul>
+                    <li>현재 접속자</li>
+                    <li v-for="member in memberList">{{member.name}}</li>
+                </ul>
+            </div>
+
+            <div class="stats">
+                <div class="stats-item">
+                    <div class="stats-number">1,247</div>
+                    <div class="stats-label">활성 방송</div>
+                </div>
+                <div class="stats-item">
+                    <div class="stats-number">15,892</div>
+                    <div class="stats-label">총 시청자</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content">
+            <div class="content-header">
+                <h1>실시간 방송</h1>
+                <!--            <div class="filter-tabs">-->
+                <!--                <div class="filter-tab active">전체</div>-->
+                <!--                <div class="filter-tab">게임</div>-->
+                <!--                <div class="filter-tab">토크</div>-->
+                <!--                <div class="filter-tab">음악</div>-->
+                <!--            </div>-->
+            </div>
+
+            <div class="rooms-grid">
+                <div class="room" v-for="room in roomList" :key="room.uuid" @click="joinRoom(room.uuid)">
+                    <div class="room-header">
+                        <div class="room-header-content">
+                            <div class="room-title">{{room.roomName}}</div>
+                            <div class="room-meta">
+                                <div class="live-indicator">LIVE</div>
+                                <div class="viewer-count">1,234명 시청중</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="room-body">
+                        <div class="video-placeholder">🎮</div>
+                    </div>
+                    <div class="room-footer">
+                        <div class="streamer-info">
+                            <div class="streamer-avatar">김</div>
+                            <div class="streamer-details">
+                                <h4>{{room.masterId}}</h4>
+                                <p>게임 • 2시간 전 시작</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const {createApp, reactive, ref, onMounted} = Vue;
+    createApp({
+        setup(){
+            const userId = '[[${session.member.id}]]';
+            let ws = null;
+
+            let memberList = reactive([]);
+            let roomList = reactive([]);
+            const roomTitle = ref('');
+
+            // 방 들어가기
+            const joinRoom = (uuid) => {
+                console.log("클릭된 방 UUID:", uuid);
+                ws.close(); // 메인 연결 종료
+                window.location.href = "/chat/joinRoom?uuid="+uuid;
+            }
+
+            // 서버에 메시지 전송
+            const request = (data) => {
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(data);
+                } else {
+                    console.error("WebSocket이 연결되지 않았습니다.");
+                }
+            }
+
+            // 웹소켓 서버 연결
+            const connect = () => {
+                ws = new WebSocket("ws://localhost:8888/chat/multi");
+
+                // 연결 성공
+                ws.onopen = (event) => {
+                    console.log("WebSocket 연결 성공!", event);
+                }
+
+                // 메시지 수신 (모든 메시지 처리)
+                ws.onmessage = (e) => {
+                    console.log("메시지 수신:", e.data);
+
+                    try {
+                        const responseJson = JSON.parse(e.data);
+                        console.log("응답 타입:", responseJson.responseType);
+
+                        // 연결 시 또는 방 생성 시 모두 처리
+                        if (responseJson.responseType === "createRoom" ||
+                            responseJson.responseType === "userConnected") {
+
+                            // 접속자 명단 업데이트
+                            if (responseJson.memberList) {
+                                memberList.splice(0); // 기존 배열 삭제
+                                responseJson.memberList.forEach(member => {
+                                    memberList.push(member);
+                                });
+                                console.log("접속자 업데이트:", memberList.length, "명");
+                            }
+
+                            // 방 목록 업데이트
+                            if (responseJson.roomList) {
+                                roomList.splice(0); // 기존 배열 삭제
+                                responseJson.roomList.forEach(room => {
+                                    roomList.push(room);
+                                });
+                                console.log("방 목록 업데이트:", roomList.length, "개");
+                            }
+
+                            // 방 생성한 경우에만 페이지 이동
+                            if (responseJson.responseType === "createRoom") {
+                                console.log("방 생성 완료, 페이지 이동");
+                                joinRoom();
+                            }
+                        }
+                    } catch (error) {
+                        console.error("JSON 파싱 에러:", error);
+                    }
+                }
+
+                // 연결 종료
+                ws.onclose = (event) => {
+                    console.log("WebSocket 연결 종료:", event);
+                }
+
+                // 에러 발생
+                ws.onerror = (error) => {
+                    console.error("WebSocket 에러:", error);
+                }
+            }
+
+            // 방 생성 요청
+            const createRoom = () => {
+                if (!roomTitle.value.trim()) {
+                    alert("방송 제목을 입력해주세요!");
+                    return;
+                }
+
+                const payload = {
+                    requestType: "createRoom",
+                    userId: userId,
+                    roomName: roomTitle.value,
+                }
+
+                console.log("방 생성 요청:", payload);
+                request(JSON.stringify(payload));
+                roomTitle.value = ''; // 입력창 초기화
+            }
+
+            // 페이지 로드 시 자동 연결
+            onMounted(() => {
+                connect();
+            });
+
+            return {memberList, roomList, roomTitle, createRoom, joinRoom, connect};
+        }
+    }).mount("#app");
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>채팅 테스트</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0f0f23;
+            height: 100vh;
+            overflow: hidden;
+            color: #ffffff;
+        }
+
+        #app {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            position: relative;
+        }
+
+        /* 헤더 영역 */
+        .chat-header {
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 16px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 70px;
+        }
+
+        .chat-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #64ffda;
+        }
+
+        /* 연결 버튼 영역 */
+        #btn {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        #btn button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        #btn button:first-child {
+            background: linear-gradient(135deg, #00c9ff, #92fe9d);
+            color: #0f0f23;
+        }
+
+        #btn button:first-child:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 201, 255, 0.3);
+        }
+
+        #btn button:last-child {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+
+        #btn button:last-child:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #8892b0;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ff6b6b;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.connected {
+            background: #00c9ff;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+
+        /* 메인 채팅 영역 */
+        #users {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #area {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            background: rgba(15, 15, 35, 0.3);
+        }
+
+        #area textarea {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            resize: none;
+            color: #ccd6f6;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            padding: 0;
+        }
+
+        #area textarea::placeholder {
+            color: #495670;
+        }
+
+        /* 입력 영역 */
+        #keyinput {
+            padding: 20px 24px 24px;
+            background: rgba(15, 15, 35, 0.8);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(100, 255, 218, 0.2);
+            border-radius: 12px;
+            padding: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .input-container.focused {
+            border-color: #64ffda;
+            box-shadow: 0 0 20px rgba(100, 255, 218, 0.2);
+        }
+
+        #keyinput input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #ccd6f6;
+            font-size: 15px;
+            padding: 14px 18px;
+            font-family: inherit;
+        }
+
+        #keyinput input::placeholder {
+            color: #8892b0;
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, #64ffda, #00c9ff);
+            border: none;
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            margin-right: 4px;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(100, 255, 218, 0.4);
+        }
+
+        .send-btn:active {
+            transform: scale(0.95);
+        }
+
+        .send-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: #0f0f23;
+        }
+
+        /* 스크롤바 스타일 */
+        #area::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #area::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        #area::-webkit-scrollbar-thumb {
+            background: rgba(100, 255, 218, 0.3);
+            border-radius: 3px;
+        }
+
+        #area::-webkit-scrollbar-thumb:hover {
+            background: rgba(100, 255, 218, 0.5);
+        }
+
+        /* 입력 애니메이션 */
+        #keyinput input.sending {
+            background: rgba(100, 255, 218, 0.1);
+        }
+
+        .input-container.sending {
+            transform: scale(0.98);
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .chat-header {
+                padding: 12px 16px;
+                min-height: 60px;
+            }
+
+            .chat-title {
+                font-size: 16px;
+            }
+
+            #btn button {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+
+            #area {
+                padding: 16px;
+            }
+
+            #keyinput {
+                padding: 16px;
+            }
+
+            #keyinput input {
+                font-size: 14px;
+                padding: 12px 16px;
+            }
+        }
+
+        /* 등장 애니메이션 */
+        #app {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 파티클 배경 효과 */
+        .bg-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(100, 255, 218, 0.3);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            50% { transform: translateY(-100px) rotate(180deg); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- 파티클 배경 -->
+        <div class="bg-particles"></div>
+        
+        <!-- 헤더 -->
+        <div class="chat-header">
+            <div class="chat-title">💬 Chat System</div>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <div class="connection-status">
+                    <div class="status-dot" id="statusDot"></div>
+                    <span id="statusText">Disconnected</span>
+                </div>
+                <div id="btn">
+                    <button type="button" @click="connect()">Connect</button>
+                    <button type="button">Disconnect</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 채팅 영역 -->
+        <div id="users">
+            <ul>
+                <li v-for="id in userList" :key="id">
+                    {{id}}
+                </li>
+            </ul>
+            <div id="area">
+                <textarea ref="area" v-model="log" placeholder="채팅 메시지가 여기에 표시됩니다..." readonly></textarea>
+            </div>
+            <div id="keyinput">
+                <div class="input-container">
+                    <input type="text" v-model="txt" @keypress.enter="sendMsg" placeholder="메시지를 입력하세요...">
+                    <button class="send-btn"  @click="sendMsg">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // 파티클 배경 생성
+            function createParticles() {
+                const particleContainer = $('.bg-particles');
+                for (let i = 0; i < 50; i++) {
+                    const particle = $('<div class="particle"></div>');
+                    particle.css({
+                        left: Math.random() * 100 + '%',
+                        animationDelay: Math.random() * 6 + 's',
+                        animationDuration: (4 + Math.random() * 4) + 's'
+                    });
+                    particleContainer.append(particle);
+                }
+            }
+            createParticles();
+            
+            // 입력창 포커스 효과
+            $('#keyinput input').focus(function() {
+                $('.input-container').addClass('focused');
+            }).blur(function() {
+                $('.input-container').removeClass('focused');
+            });
+            
+            // 엔터키 입력 효과
+            $('#keyinput input').keypress(function(e) {
+                if (e.which === 13) {
+                    $('.input-container').addClass('sending');
+                    $(this).addClass('sending');
+                    setTimeout(() => {
+                        $('.input-container').removeClass('sending');
+                        $(this).removeClass('sending');
+                    }, 200);
+                }
+            });
+            
+            // 전송 버튼 클릭 효과
+            $('.send-btn').click(function() {
+                $('.input-container').addClass('sending');
+                $('#keyinput input').addClass('sending');
+                setTimeout(() => {
+                    $('.input-container').removeClass('sending');
+                    $('#keyinput input').removeClass('sending');
+                }, 200);
+            });
+        });
+
+        const {createApp, reactive, ref} = Vue;
+
+        createApp({
+            setup(){
+                let ws = null;
+                let area = ref(null);
+                let log = ref("");
+                let txt=ref("");
+                let userList = reactive([]);
+
+                const connect=()=>{
+                    ws = new WebSocket("ws://localhost:9999/ws/multi");
+
+                    ws.onopen = () =>{
+                        log.value+="접속 성공\n";
+
+                        let msg = {};
+                        msg["requestType"] = "conenct";
+                        request(JSON.stringify(msg)); // 접속 알림 메시지 송
+                    }
+
+                    ws.onmessage=(e)=>{
+                        let responseJson = JSON.parse(e.data);
+                        
+                        // 최초 접속 시 서버로부터 접속자 정보를 받는 경우
+                        if (responseJson.responseType == "connect"){
+                            console.log("접속 요청 받음");
+
+                            userList.splice(0);
+
+                            jsonList.forEach(element => {
+                            userList.push(element);
+                            });
+
+                        } else if (responseJson.responseType == "chat"){
+                            log.value += responseJson.sender + ": " + responseJson.data;
+                        }
+                        
+                        
+                        // log.value += e.data+"\n";
+
+                        // 서버에서 접속자 명단을 보내준 경우, e.jata가 json 문자열이므로 객체로 변환
+                        // let jsonUserList = JSON.parse(e.data);
+                        // userList.splice(0);
+
+                        // jsonList.forEach(element => {
+                        //     userList.push(element);
+                        // });
+                    }
+
+                }
+
+                /**
+                 *  접속 요청 정보 {"resultType": "connect", "userId": "123"} 
+                 *      응답 정보 {"responseType": "connect", "data":[{"userId":"1"}, {"userId":"2"}, ... ]}  
+                 */
+
+                // 서버에 요청하기
+                const request=(msg)=>{
+                    ws.send(msg); // 서버에 데이터 전송
+                }
+                
+                // 메시지 보내기
+                const sendMsg=()=>{
+                    // ws.send(txt.value);
+
+                    let msg = {};
+                    msg["requestType"] = "chat";
+                    msg["data"] = 
+
+                    request(msg);
+                    txt.value="";
+                }
+
+                return {area, log, txt, userList, connect, sendMsg}
+            }
+        }).mount("#app");
+    </script>
+</body>
+</html>

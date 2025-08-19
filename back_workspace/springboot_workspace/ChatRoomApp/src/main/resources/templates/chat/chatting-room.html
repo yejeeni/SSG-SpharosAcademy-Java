@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>채팅방</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/chatting-room.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <div id="wrapper">
+        <!-- 메인 컨텐츠 -->
+        <div id="content">
+            <!-- 헤더 -->
+            <div class="content-header">
+                <h1 class="room-title">🎮 게임 토크방</h1>
+                <div class="room-info">
+                    <span>👥 5명 참여중</span>
+                    <span>🕐 오후 2:30 시작</span>
+                    <span>📍 공개방</span>
+                </div>
+            </div>
+
+            <!-- 채팅 로그 -->
+            <div class="content-body">
+                <div class="chat-messages">
+                    <div class="message">
+                        <div class="message-avatar">김</div>
+                        <div class="message-content">
+                            <div class="message-header">
+                                <span class="message-sender">김게이머</span>
+                                <span class="message-time">오후 2:31</span>
+                            </div>
+                            <div class="message-text">
+                                안녕하세요! 롤 같이 하실 분 계신가요?
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="message">
+                        <div class="message-avatar">박</div>
+                        <div class="message-content">
+                            <div class="message-header">
+                                <span class="message-sender">박프로</span>
+                                <span class="message-time">오후 2:32</span>
+                            </div>
+                            <div class="message-text">
+                                저 참여하고 싶어요! 티어는 골드입니다 ㅎㅎ
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="message own">
+                        <div class="message-avatar">나</div>
+                        <div class="message-content">
+                            <div class="message-header">
+                                <span class="message-sender">나</span>
+                                <span class="message-time">오후 2:33</span>
+                            </div>
+                            <div class="message-text">
+                                저도 참여할게요! 언제 시작하나요?
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="message">
+                        <div class="message-avatar">이</div>
+                        <div class="message-content">
+                            <div class="message-header">
+                                <span class="message-sender">이스킬</span>
+                                <span class="message-time">오후 2:34</span>
+                            </div>
+                            <div class="message-text">
+                                5분 후에 시작해요! 디스코드 주소 드릴게요
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 사이드바 -->
+        <div id="aside">
+            <!-- 내 정보 -->
+            <div class="aside-header">
+                <div class="aside-header-content">
+                    <div class="user-info">
+                        <div class="user-avatar">김</div>
+                        <div class="user-details">
+                            <h3>김예진</h3>
+                            <p>방장 • 온라인</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 참여자 정보 -->
+            <div class="aside-body">
+                <h3 class="participants-title">
+                    👥 참여자 (5명)
+                </h3>
+                <div class="participant-list">
+                    <div class="participant">
+                        <div class="participant-avatar">김</div>
+                        <div class="participant-info">
+                            <div class="participant-name">김게이머</div>
+                            <div class="participant-status">방장</div>
+                        </div>
+                        <div class="online-indicator"></div>
+                    </div>
+
+                    <div class="participant">
+                        <div class="participant-avatar">박</div>
+                        <div class="participant-info">
+                            <div class="participant-name">박프로</div>
+                            <div class="participant-status">참여자</div>
+                        </div>
+                        <div class="online-indicator"></div>
+                    </div>
+
+                    <div class="participant">
+                        <div class="participant-avatar">이</div>
+                        <div class="participant-info">
+                            <div class="participant-name">이스킬</div>
+                            <div class="participant-status">참여자</div>
+                        </div>
+                        <div class="online-indicator"></div>
+                    </div>
+
+                    <div class="participant">
+                        <div class="participant-avatar">최</div>
+                        <div class="participant-info">
+                            <div class="participant-name">최고수</div>
+                            <div class="participant-status">참여자</div>
+                        </div>
+                        <div class="online-indicator"></div>
+                    </div>
+
+                    <div class="participant">
+                        <div class="participant-avatar">정</div>
+                        <div class="participant-info">
+                            <div class="participant-name">정마스터</div>
+                            <div class="participant-status">참여자</div>
+                        </div>
+                        <div class="online-indicator"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 나가기 버튼 -->
+            <div class="aside-footer">
+                <button class="leave-btn">🚪 채팅방 나가기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 채팅 입력 -->
+    <div id="footer">
+        <div class="chat-input-container">
+            <input type="text" class="chat-input" placeholder="메시지를 입력하세요..." maxlength="500">
+            <button class="send-btn">
+                <svg viewBox="0 0 24 24">
+                    <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const roomId = window.location.pathname.split('/').pop(); // 방 id 추출
+    const chatWs = new WebSocket(`ws://localhost:8888/chat/joinRoom/${roomId}`); // 채팅방 웹소켓
+
+    chatWs.onmessage=(e)=>{
+        const data = JSON.parse(e.data);
+    }
+
+
+    // 입력창 포커스 효과
+    const chatInput = document.querySelector('.chat-input');
+    const inputContainer = document.querySelector('.chat-input-container');
+
+    chatInput.addEventListener('focus', () => {
+        inputContainer.classList.add('focused');
+    });
+
+    chatInput.addEventListener('blur', () => {
+        inputContainer.classList.remove('focused');
+    });
+
+    // 엔터키로 메시지 전송
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    // 전송 버튼 클릭
+    document.querySelector('.send-btn').addEventListener('click', sendMessage);
+
+    function sendMessage() {
+        const message = chatInput.value.trim();
+        if (message) {
+            console.log('메시지 전송:', message);
+            chatInput.value = '';
+
+            // 여기에 실제 메시지 전송 로직 추가
+            addMessage(message, true);
+        }
+    }
+
+    // 메시지 추가 함수
+    function addMessage(text, isOwn = false) {
+        const messagesContainer = document.querySelector('.chat-messages');
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('ko-KR', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        });
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isOwn ? 'own' : ''}`;
+
+        messageDiv.innerHTML = `
+                <div class="message-avatar">${isOwn ? '나' : '김'}</div>
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="message-sender">${isOwn ? '나' : '김게이머'}</span>
+                        <span class="message-time">${timeString}</span>
+                    </div>
+                    <div class="message-text">${text}</div>
+                </div>
+            `;
+
+        messagesContainer.appendChild(messageDiv);
+
+        // 스크롤을 맨 아래로
+        document.querySelector('.content-body').scrollTop =
+            document.querySelector('.content-body').scrollHeight;
+    }
+
+    // 나가기 버튼 이벤트
+    document.querySelector('.leave-btn').addEventListener('click', () => {
+        if (confirm('정말 채팅방을 나가시겠습니까?')) {
+            window.location.href = '/chat/main';
+        }
+    });
+</script>
+</body>
+</html>

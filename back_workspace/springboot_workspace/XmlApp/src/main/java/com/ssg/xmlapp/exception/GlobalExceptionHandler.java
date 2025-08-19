@@ -7,8 +7,8 @@ import org.springframework.web.servlet.ModelAndView;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(RestraurantException.class)
-    public ModelAndView handleRestaurantException(RestraurantException e) {
+    @ExceptionHandler(RestaurantException.class)
+    public ModelAndView handleRestaurantException(RestaurantException e) {
         ModelAndView mv = new ModelAndView("error/result"); // 이동할 뷰 이름
         mv.addObject("errorCode", "RESTAURANT_ERROR");
         mv.addObject("message", e.getMessage());

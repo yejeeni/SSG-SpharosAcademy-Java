@@ -142,18 +142,22 @@
                 <thead>
                     <tr>
                         <th>콘텐츠명</th>
-                        <th>장소</th>
-                        <th>제목</th>
-                        <th>부제목</th>
+                        <th>위도</th>
+                        <th>경도</th>
+                        <th>이미지</th>
                         <th>상세내용</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="r in restaurants">
                         <td>{{r.mainTitle}}</td>
-                        <td>{{r.place}}</td>
-                        <td>{{r.title}}</td>
-                        <td>{{r.subTitle}}</td>
+                        <td>{{r.lat}}</td>
+                        <td>{{r.lng}}</td>
+                        <td>
+                            <a :href="r.mainImgThumb" target="_blank">
+                                <img :src="r.mainImgThumb" alt="썸네일" style="width:100px; height:auto;">
+                            </a>
+                        </td>
                         <td>{{r.itemcntnts}}</td>
                     </tr>
                 </tbody>

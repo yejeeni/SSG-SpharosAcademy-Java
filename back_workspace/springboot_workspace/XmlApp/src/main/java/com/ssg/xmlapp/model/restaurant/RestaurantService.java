@@ -1,6 +1,6 @@
 package com.ssg.xmlapp.model.restaurant;
 
-import com.ssg.xmlapp.exception.RestraurantException;
+import com.ssg.xmlapp.exception.RestaurantException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
@@ -22,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RestaurantService {
     private final RestaurantHandler restaurantHandler;
-    private String serviceKey = "oMSkyu%2Bb2VuK64aR0lHoMdmyncTCdZACXV46LXaIWNje0OudnzrOHHuAFUx6uczfAbNK6VGw7mUjkbro7Y04fQ%3D%3D";
+    private String serviceKey = "nNOBuNwKr7Qv0kMJ1JWwm9VEF%2F45LYS4%2Fn2G4SwwQ0zQ9KxOcNlugQhrcOELgYw7m4U9OgLaZHbPisCCFiGp5w%3D%3D";
 
     /**
      * 데이터 받아오기
@@ -57,7 +57,7 @@ public class RestaurantService {
 
             return sb.toString();
         } catch (IOException e) {
-            throw new RestraurantException("음식점 API 호출 실패", e);
+            throw new RestaurantException("음식점 API 호출 실패", e);
         }
     }
 
@@ -81,7 +81,7 @@ public class RestaurantService {
             return restaurantHandler.getRestaurants();
         } catch (ParserConfigurationException | SAXException | IOException e) {
             // 구체적인 예외를 잡아서 MemberException으로 감싸서 던짐
-            throw new RestraurantException("음식점 XML 파싱 중 오류 발생", e);
+            throw new RestaurantException("음식점 XML 파싱 중 오류 발생", e);
         }
     }
 
@@ -102,12 +102,12 @@ public class RestaurantService {
 
             return restaurantHandler.getRestaurants();
         } catch (ParserConfigurationException | SAXException| IOException e) {
-            throw new RestraurantException("문자열 XML 파싱 중 오류 발생", e);
+            throw new RestaurantException("문자열 XML 파싱 중 오류 발생", e);
         }
     }
 
     public void testException() {
-        throw new RestraurantException("테스트용 강제 예외 발생!");
+        throw new RestaurantException("테스트용 강제 예외 발생!");
     }
 
 }

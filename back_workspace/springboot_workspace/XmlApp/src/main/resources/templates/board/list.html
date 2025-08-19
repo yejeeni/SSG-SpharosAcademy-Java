@@ -17,11 +17,16 @@
         </thead>
         <tbody>
         <tr th:each="board : ${boards}">
-            <td th:text="${board.boardId}"></td>
+            <td>
+                <a th:text="${board.boardId}" th:href="@{|/board/detail?boardId=${board.boardId}|}"></a>
+            </td>
             <td th:text="${board.title}"></td>
             <td th:text="${board.writer}"></td>
             <td th:text="${#dates.format(board.regdate, 'yyyy-MM-dd')}"></td>
             <td th:text="${board.hit}"></td>
+        </tr>
+        <tr th:colspan="5">
+            <button onclick="location.href='/board/registform';">등록</button>
         </tr>
         </tbody>
     </table>

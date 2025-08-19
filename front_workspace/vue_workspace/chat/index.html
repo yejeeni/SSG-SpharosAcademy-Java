@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- VUE 3.0 CDN -->
+    <script src="https://unpkg.com/vue@3.4.21/dist/vue.global.prod.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<style>
+    * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", sans-serif;
+}
+
+#app {
+  margin: 40px auto;
+  width: 320px;
+  min-height: 340px;
+  border: 1px solid #000;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 상단 버튼 영역 */
+#button_section {
+  width: 100%;
+  height: 56px;
+  border-bottom: 1px solid #000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+}
+
+/* 본문 영역 */
+#content_section {
+  width: 100%;
+  flex: 1; /* 남은 높이 꽉 채움 */
+  border-bottom: 1px solid #000;
+  display: flex;
+  align-items: stretch;
+  padding: 10px;
+}
+
+/* 채팅 입력 영역 */
+#chat_section {
+  width: 100%;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  gap: 8px;
+}
+
+/* 버튼 공통 */
+#submit, #access, #end {
+  min-width: 60px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 6px;
+  border: 1px solid #007bff;
+  background-color: #007bff;
+  color: #fff;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color .15s ease, transform .06s ease;
+}
+#submit:hover, #reset:hover, #end:hover {
+  background-color: #0056b3;
+}
+#submit:active, #reset:active, #end:active {
+  transform: translateY(1px);
+}
+
+/* 텍스트 영역 */
+#content {
+  width: 100%;
+  height: 300px;
+  resize: none;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 14px;
+  line-height: 1.4;
+  outline: none;
+}
+#content:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0,123,255,.15);
+}
+
+/* 채팅 인풋 */
+#chat {
+  flex: 1;
+  height: 40px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 0 14px;
+  font-size: 14px;
+  outline: none;
+}
+#chat:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0,123,255,.15);
+}
+
+/* 반응형 살짝 */
+@media (max-width: 360px) {
+  #app { width: 92vw; }
+  #button_section { gap: 6px; }
+  #submit, #reset, #end { min-width: 56px; }
+}
+
+</style>
+<body>
+    <div id="app">
+        <!-- header -->
+        <div id="button_section">
+            <button id="access" @click="connect()">접속</button>
+            <button id="submit" @click="sendMsg()">전송</button>
+            <button id="end" @click="disconnect()">종료</button>
+        </div>
+        <!-- body -->
+        <div id ="content_section">
+            <textarea name="content" id="content" ref="area" v-model="log"></textarea>
+        </div>
+        <div id ="chat_section">
+            <input type="text" name="chat" id="chat" v-model="text" placeholder="채팅을 입력하세요...">
+        </div>
+    </div>
+    <script>
+        const{createApp, reactive, ref} = Vue;
+        createApp({
+            setup(){
+                //websocket을 이용한 서버 접속(모든 브라우저에는 표준으로 웹 소켓이 지원된다.)
+                //따라서 별도의 라이브러리 설치가 필요없다.
+
+                let ws = null; //선택 객체를 담는 변수
+
+                // 바인딩 변수
+                let log = ref("");
+                let area = ref(null); // textarea 제어용
+                let text = ref(""); // input type=text
+
+                // 로그 기록
+                const appendLog = (msg) =>{
+                    log.value += msg+"\n"; // 바인딩 변수에 값을 대입하려면 .value로 접근하여 대입
+                }
+
+                //접속 메서드를 정의한다.
+                const connect =()=>{
+                    //웹 소켓의 접속이 일어나는 객체를 호출한다. 소켓을 호출 할 때에는 http 대신 ws를 사용한다.
+                    ws = new WebSocket("ws://localhost:7777/ws/echo"); 
+
+                    //소켓이 열리면 실행되는 이벤트 리스너를 등록해야한다.
+                    ws.onopen = function(event){
+                        appendLog("Open. 서버 접속 성공");
+                        area.value.style.backgroundColor = "skyblue";
+                    };
+
+                    // 서버의 메시지 청취
+                    ws.onmessage=(e)=>{
+                        appendLog(e.data);
+                    }
+                }
+
+                // 메시지 전송
+                const sendMsg=()=>{
+                    ws.send(text.value); // 메시지 전송
+                    text.value
+                    console.log("click");
+                }
+
+                // 접속 끊기
+                const disconnect=()=>{
+                    if (ws && ws.readyState == WebSocket.OPEN){
+                        // 1000: 정상 종료 코드
+                        ws.close(1000, "사용자 요청에 의한 접속 종료");
+                        appendLog("접속 종료");
+                    } else{
+                        appendLog("이미 서버에 연결되어 있지 않습니다.");
+                    }
+                    area.value.style.backgroundColor="";
+                }
+
+                return{
+                    connect, area, log, text, sendMsg, disconnect
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
