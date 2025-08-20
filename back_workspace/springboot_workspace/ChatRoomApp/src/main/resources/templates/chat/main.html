@@ -156,8 +156,13 @@
                             // 방 생성한 경우에만 페이지 이동
                             if (responseJson.responseType === "createRoom") {
                                 console.log("방 생성 완료, 페이지 이동");
-                                joinRoom();
+                                joinRoom(responseJson.currentRoomUUID);
                             }
+                        } else if (responseJson.responseType === "roomListUpdate"){ // 새로운 방이 생겼다는 정보를 받은 경우
+                            roomList.splice(0); // 기존 배열 삭제
+                            responseJson.roomList.forEach(room => {
+                                roomList.push(room);
+                            });
                         }
                     } catch (error) {
                         console.error("JSON 파싱 에러:", error);

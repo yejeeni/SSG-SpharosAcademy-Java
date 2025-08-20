@@ -3,6 +3,7 @@ package com.ssg.chatroomapp.model.chat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.ssg.chatroomapp.domain.Member;
 import com.ssg.chatroomapp.dto.Room;
 import com.ssg.chatroomapp.dto.RoomResponse;
@@ -32,6 +33,7 @@ public class ChatEndpoint {
     private static Set<Room> roomList = new HashSet<>(); // 클라이언트에 전달할 방 정보
 
     private static ObjectMapper objectMapper = new ObjectMapper();
+
 
     @OnOpen
     public void opOpen(Session session, EndpointConfig config) throws JsonProcessingException {
@@ -96,7 +98,9 @@ public class ChatEndpoint {
                 users.add(obj); // 방장을 참여자에 추가
                 room.setUsers(users);
 
-                roomList.add(room);
+                roomList.add(room); // 생성한 방 정보를 리스트에 저장
+
+                RoomManager.setRoomMaster(room.getUUID(), userId); // 방장 정보 저장
 
                 /**
                  * 클라이언트에 전송할 응답
@@ -107,18 +111,31 @@ public class ChatEndpoint {
                 roomResponse.setRoomList(roomList);
                 log.debug("방 생성 정보: {}", room.getUUID());
 
-                String responseJson = objectMapper.writeValueAsString(roomResponse);
+                // 전송할 데이터 확장
+                ObjectNode responseNode = objectMapper.valueToTree(roomResponse);
+                responseNode.put("currentRoomUUID", room.getUUID()); // 방 uuid 필드 추가
 
-                // 모든 연결된 클라이언트에게 전송
+                String responseJson = objectMapper.writeValueAsString(responseNode);
+                // 방 생성자에게 생성한 방을 전송
+                session.getAsyncRemote().sendText(responseJson);
+
+                // 다른 모든 클라이언트에게 방 목록 업데이트 전송
+                RoomResponse broadcastResponse = new RoomResponse();
+                broadcastResponse.setResponseType("roomListUpdate");
+                broadcastResponse.setMemberList(memberList);
+                broadcastResponse.setRoomList(roomList);
+
+                String broadcastJson = objectMapper.writeValueAsString(broadcastResponse);
                 for (Session userSession : userList) {
-                    if (userSession.isOpen()) {
+                    if (userSession.isOpen() && !userSession.equals(session)) { // 방 생성자를 제외한 모든 유저
                         try {
-                            userSession.getAsyncRemote().sendText(responseJson);
+                            userSession.getAsyncRemote().sendText(broadcastJson);
                         } catch (Exception e) {
                             log.error("메시지 전송 실패", e);
                         }
                     }
                 }
+
                 log.debug("방 생성 완료. 총 방 개수: {}", roomList.size());
             }
         } else if (requestType.equals("joinRoom")) {
