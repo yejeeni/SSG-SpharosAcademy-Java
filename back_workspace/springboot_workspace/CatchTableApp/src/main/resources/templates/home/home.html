@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <script type="text/javascript" th:src="'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${kakaoMapApiKey} + '&libraries=services'"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/home.css" />
+  <title>먹방곡곡</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <div id="app">
+    <!-- 메인 컨테이너 -->
+    <div class="main-container">
+      <!-- 왼쪽 아이콘 메뉴 -->
+      <div class="icon-menu">
+        <button class="menu-icon logo">
+          <i class="fas fa-utensils"></i>
+        </button>
+        <button class="menu-icon" title="검색">
+          <i class="fas fa-search"></i>
+        </button>
+        <button class="menu-icon" title="즐겨찾기">
+          <i class="fas fa-heart"></i>
+        </button>
+        <button class="menu-icon" title="설정">
+          <i class="fas fa-cog"></i>
+        </button>
+        <button class="menu-icon" title="정보">
+          <i class="fas fa-info-circle"></i>
+        </button>
+      </div>
+
+      <!-- 사이드바 -->
+      <div class="sidebar" :class="{ collapsed: sidebarCollapsed }" ref="sidebar">
+        <!-- 토글 버튼 -->
+        <button class="toggle-btn" @click="toggleSidebar">
+          <i :class="sidebarCollapsed ? 'fas fa-chevron-right' : 'fas fa-chevron-left'"></i>
+        </button>
+
+        <!-- 검색 섹션 -->
+        <div class="search-section">
+          <div class="search-container">
+            <input type="text" class="search-input" v-model="searchWord" placeholder="맛집을 검색해보세요" @keyup.enter="searchRestaurants">
+            <button class="search-btn" @click="searchRestaurants">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 결과 섹션 -->
+        <div class="results-section">
+          <div class="results-header">
+            맛집 목록 ({{ filteredRestaurants.length }}개)
+          </div>
+          <div>
+            <div v-for="(restaurant, index) in filteredRestaurants" 
+                 :key="index" 
+                 class="result-card"
+                 :class="{ active: selectedIndex === index }"
+                 @click="selectRestaurant(restaurant, index)">
+              <img class="card-image" :src="restaurant.mainImgThumb || 'https://via.placeholder.com/80x80?text=No+Image'" :alt="restaurant.mainTitle">
+              <div class="card-content">
+                <div class="card-title">{{ restaurant.mainTitle }}</div>
+                <div class="card-address">{{ restaurant.place }}</div>
+                <div class="card-meta">
+                  <span class="card-category">{{ restaurant.category || '기타' }}</span>
+                  <a :href="restaurant.url" class="card-link" target="_blank" @click.stop>
+                    상세보기 <i class="fas fa-external-link-alt"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div v-if="filteredRestaurants.length === 0" class="loading">
+              검색 결과가 없습니다.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 지도 영역 -->
+      <div class="map-container">
+        <!-- 지도 위 카테고리 -->
+        <div class="map-category-section" :style="{ left: sidebarCollapsed ? '80px' : '420px' }">
+          <button class="map-category-btn" 
+                  :class="{ active: selectedCategory === '전체' }"
+                  @click="filterByCategory('전체')">전체</button>
+          <button class="map-category-btn" 
+                  :class="{ active: selectedCategory === '한식' }"
+                  @click="filterByCategory('한식')">🍚 한식</button>
+          <button class="map-category-btn" 
+                  :class="{ active: selectedCategory === '중식' }"
+                  @click="filterByCategory('중식')">🥢 중식</button>
+          <button class="map-category-btn" 
+                  :class="{ active: selectedCategory === '일식' }"
+                  @click="filterByCategory('일식')">🍣 일식</button>
+          <button class="map-category-btn" 
+                  :class="{ active: selectedCategory === '양식' }"
+                  @click="filterByCategory('양식')">🍝 양식</button>
+          <button class="map-category-btn" 
+                  :class="{ active: selectedCategory === '분식' }"
+                  @click="filterByCategory('분식')">🍜 분식</button>
+          <button class="map-category-btn" 
+                  :class="{ active: selectedCategory === '패스트푸드' }"
+                  @click="filterByCategory('패스트푸드')">🍔 패스트푸드</button>
+          <button class="map-category-btn" 
+                  :class="{ active: selectedCategory === '치킨' }"
+                  @click="filterByCategory('치킨')">🍗 치킨</button>
+          <button class="map-category-btn" 
+                  :class="{ active: selectedCategory === '디저트' }"
+                  @click="filterByCategory('디저트')">🍰 디저트</button>
+          <button class="map-category-btn" 
+                  :class="{ active: selectedCategory === '기타' }"
+                  @click="filterByCategory('기타')">🍽️ 기타</button>
+        </div>
+
+        <!-- 카카오맵 -->
+        <div id="map"></div>
+
+        <!-- 상세 정보 패널 -->
+        <div class="info-panel" 
+             :class="{ show: showInfoPanel }"
+             :style="{ left: sidebarCollapsed ? '100px' : '440px' }">
+          <div class="info-panel-header">
+            <img class="info-panel-image" :src="selectedRestaurant?.mainImgThumb || 'https://via.placeholder.com/300x200?text=No+Image'" :alt="selectedRestaurant?.mainTitle">
+            <button class="info-panel-close" @click="closeInfoPanel">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="info-panel-body">
+            <h3 class="info-panel-title">{{ selectedRestaurant?.mainTitle }}</h3>
+            <p class="info-panel-address">{{ selectedRestaurant?.place }}</p>
+            <p class="info-panel-info">{{selectedRestaurant?.itemcntnts}}</p>
+            <a :href="selectedRestaurant?.url" class="info-panel-link" target="_blank">
+              <i class="fas fa-external-link-alt"></i>
+              상세보기
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="/js/home.js"></script>
+
+</body>
+
+</html>

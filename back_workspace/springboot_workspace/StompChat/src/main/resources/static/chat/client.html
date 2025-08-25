@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>STOMP Chat Client</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.8);
+            font-size: 1.1rem;
+        }
+
+        .login-section {
+            background: rgba(255,255,255,0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+            margin: 0 auto;
+            backdrop-filter: blur(10px);
+        }
+
+        .login-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .chat-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .user-info {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info .username {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 25px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            font-size: 12px;
+            padding: 8px 15px;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: white;
+            font-size: 12px;
+            padding: 8px 15px;
+        }
+
+        .section-title {
+            color: #333;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .user-list, .message-list, .room-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #e1e1e1;
+            border-radius: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+        }
+
+        .user-item {
+            background: white;
+            padding: 8px 12px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-item::before {
+            content: '👤';
+            font-size: 14px;
+        }
+
+        .message-item {
+            background: white;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 3px solid #667eea;
+        }
+
+        .message-sender {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 12px;
+            margin-bottom: 2px;
+        }
+
+        .message-content {
+            color: #333;
+            font-size: 14px;
+        }
+
+        .room-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #e1e1e1;
+        }
+
+        .room-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .room-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .room-count {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .room-users {
+            margin: 10px 0;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .room-user {
+            display: inline-block;
+            background: #e9ecef;
+            padding: 4px 8px;
+            margin: 2px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #495057;
+        }
+
+        .room-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        .online-indicator {
+            width: 8px;
+            height: 8px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* 스크롤바 스타일 */
+        .user-list::-webkit-scrollbar,
+        .message-list::-webkit-scrollbar,
+        .room-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .user-list::-webkit-scrollbar-track,
+        .message-list::-webkit-scrollbar-track,
+        .room-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .user-list::-webkit-scrollbar-thumb,
+        .message-list::-webkit-scrollbar-thumb,
+        .room-list::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        .user-list::-webkit-scrollbar-thumb:hover,
+        .message-list::-webkit-scrollbar-thumb:hover,
+        .room-list::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        @media (max-width: 768px) {
+            .chat-container {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .login-section {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="container">
+        <div class="header">
+            <h1>💬 WebSocket Chat</h1>
+            <p>실시간 채팅 서비스</p>
+        </div>
+
+        <!-- 로그인 섹션 -->
+        <div v-if="!connected" class="login-section">
+            <h2>채팅 시작하기</h2>
+            <div class="input-group">
+                <input type="text" v-model="username" placeholder="사용자명을 입력하세요" maxlength="20">
+                <button type="button" class="btn btn-primary" @click="connect()">접속</button>
+            </div>
+        </div>
+
+        <!-- 채팅 메인 섹션 -->
+        <div v-else>
+            <div class="user-info">
+                <div>
+                    <span class="online-indicator"></span>
+                    <span class="username">{{username}}님 접속중</span>
+                </div>
+                <button type="button" class="btn btn-danger" @click="disconnect()">접속종료</button>
+            </div>
+
+            <div class="chat-container">
+                <!-- 왼쪽 컬럼 -->
+                <div>
+                    <!-- 메시지 입력 -->
+                    <div class="card">
+                        <div class="section-title">💭 메시지 보내기</div>
+                        <div class="input-group">
+                            <input type="text" v-model="message" @keyup.enter="sendMessage()" placeholder="메시지를 입력하세요">
+                            <button type="button" class="btn btn-primary" @click="sendMessage()">전송</button>
+                        </div>
+                    </div>
+
+                    <!-- 접속자 목록 -->
+                    <div class="card">
+                        <div class="section-title">👥 접속자 ({{users.length}}명)</div>
+                        <div class="user-list">
+                            <div v-if="users.length === 0" class="empty-state">접속한 사용자가 없습니다</div>
+                            <div v-for="user in users" :key="user" class="user-item">
+                                {{user}}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 메시지 로그 -->
+                    <div class="card">
+                        <div class="section-title">💬 메시지 로그</div>
+                        <div class="message-list">
+                            <div v-if="messages.length === 0" class="empty-state">아직 메시지가 없습니다</div>
+                            <div v-for="msg in messages" :key="msg.id" class="message-item">
+                                <div class="message-sender">{{msg.sender}}</div>
+                                <div class="message-content">{{msg.content}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 오른쪽 컬럼 -->
+                <div>
+                    <!-- 방 만들기 -->
+                    <div class="card">
+                        <div class="section-title">🏠 새 방 만들기</div>
+                        <div class="input-group">
+                            <input type="text" v-model="roomName" placeholder="방 이름을 입력하세요" maxlength="30">
+                            <button type="button" class="btn btn-primary" @click="createRoom()">생성</button>
+                        </div>
+                    </div>
+
+                    <!-- 방 목록 -->
+                    <div class="card">
+                        <div class="section-title">🏘️ 방 목록 ({{rooms.length}}개)</div>
+                        <div class="room-list">
+                            <div v-if="rooms.length === 0" class="empty-state">생성된 방이 없습니다</div>
+                            <div v-for="room in rooms" :key="room.roomId" class="room-item">
+                                <div class="room-header">
+                                    <div class="room-name">{{room.roomName}}</div>
+                                    <div class="room-count">{{room.users ? room.users.length : 0}}명</div>
+                                </div>
+
+                                <div v-if="room.users && room.users.length > 0" class="room-users">
+                                    <span v-for="user in room.users" :key="user" class="room-user">{{user}}</span>
+                                </div>
+
+                                <div class="room-actions">
+                                    <button type="button" class="btn btn-success" @click="enterRoom(room.roomId)">참여하기</button>
+                                    <button type="button" class="btn btn-warning" @click="leaveRoom(room.roomId)">나가기</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const {createApp, ref} = Vue;
+
+    createApp({
+        setup(){
+            const username = ref(""); // 사용자명 바인딩 변수
+            const connected = ref(false); // 접속 여부 판단
+            const message = ref(""); // 입력중인 채팅 메시지
+            const users = ref([]); // 전체 접속자 목록
+            const messages = ref([]); // 채팅 메시지 목록
+            const roomName = ref(""); // 새로 만들 방 이름
+            const rooms = ref([]); // 방 목록
+
+            let stompClient = null; // STOMP 클라이언트 객체
+
+            /**
+             * 웹소켓 서버와 접속 시도
+             */
+            const connect = () => {
+                if(!username.value.trim()){
+                    alert("이름을 입력하세요");
+                    return;
+                }
+
+                const socket = new SockJS("http://localhost:8888/ws");
+                stompClient = Stomp.over(socket); // 웹 소켓 위에 스톰프 프로토콜 올리기
+
+                // 서버와 STOMP 연결 시도
+                stompClient.connect({}, () => {
+                    connected.value = true; // 화면 전환
+                    console.log('STOMP 연결 성공');
+
+                    // 원하는 채널 구독
+                    stompClient.subscribe("/topic/users", (msg) => {
+                        console.log("접속자 목록 업데이트:", msg.body);
+                        users.value = JSON.parse(msg.body);
+                    });
+
+                    stompClient.subscribe("/topic/messages", (msg) => {
+                        console.log("새 메시지:", msg.body);
+                        const newMessage = JSON.parse(msg.body);
+                        newMessage.id = Date.now(); // 고유 ID 추가
+                        messages.value.push(newMessage);
+                    });
+
+                    stompClient.subscribe("/topic/rooms", (msg) => {
+                        console.log("방 목록 업데이트:", msg.body);
+                        rooms.value = JSON.parse(msg.body);
+                    });
+
+                    // 서버에 접속 알림
+                    stompClient.send("/app/connect", {}, JSON.stringify({
+                        sender: username.value,
+                        type: "CONNECT"
+                    }));
+
+                    // 서버에 방 목록 요청
+                    stompClient.send("/app/room.list", {});
+
+                }, (error) => {
+                    console.error('STOMP 연결 실패:', error);
+                    alert('서버 연결에 실패했습니다.');
+                });
+            };
+
+            /**
+             * 채팅 메시지 보내기
+             */
+            const sendMessage = () => {
+                if(message.value.trim() && stompClient && stompClient.connected){
+                    stompClient.send("/app/chat.send", {}, JSON.stringify({
+                        sender: username.value,
+                        content: message.value,
+                        type: "MESSAGE"
+                    }));
+                    message.value = ""; // 입력값 초기화
+                }
+            };
+
+            /**
+             * 방만들기
+             */
+            const createRoom = () => {
+                if(roomName.value.trim() && stompClient && stompClient.connected){
+                    stompClient.send("/app/room.create", {}, JSON.stringify({
+                        sender: username.value,
+                        content: roomName.value,
+                        type: "CREATE_ROOM"
+                    }));
+                    roomName.value = ""; // 방이름 초기화
+                }
+            };
+
+            /**
+             * 방 참여하기
+             */
+            const enterRoom = (roomId) => {
+                if(stompClient && stompClient.connected){
+                    stompClient.send("/app/room.enter", {}, JSON.stringify({
+                        sender: username.value,
+                        roomId: roomId,
+                        type: "ENTER_ROOM"
+                    }));
+                }
+            };
+
+            /**
+             * 방 나가기
+             */
+            const leaveRoom = (roomId) => {
+                if(stompClient && stompClient.connected){
+                    stompClient.send("/app/room.leave", {}, JSON.stringify({
+                        sender: username.value,
+                        roomId: roomId,
+                        type: "LEAVE_ROOM"
+                    }));
+                }
+            };
+
+            /**
+             * 접속해제
+             */
+            const disconnect = () => {
+                if(stompClient && stompClient.connected){
+                    // 서버에 접속 해제 알림
+                    stompClient.send("/app/disconnect", {}, JSON.stringify({
+                        sender: username.value,
+                        type: "DISCONNECT"
+                    }));
+
+                    stompClient.disconnect(() => {
+                        console.log('STOMP 연결 해제');
+                        connected.value = false;
+
+                        let newUsers=[];
+                        for (let i=0; i<users.value.length; i++){
+                            if (users.value[i] !== username.value){
+                                newUsers.push(users.value[i]);
+                            }
+                        }
+                        users.value = newUsers;
+                        messages.value = [];
+                        rooms.value = [];
+                    });
+                }
+            };
+
+            return {
+                username,
+                connected,
+                connect,
+                message,
+                users,
+                messages,
+                roomName,
+                rooms,
+                sendMessage,
+                disconnect,
+                createRoom,
+                enterRoom,
+                leaveRoom,
+            };
+        }
+    }).mount("#app");
+</script>
+
+</body>
+</html>

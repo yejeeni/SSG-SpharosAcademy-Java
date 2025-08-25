@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spring WebSocket 기반 채팅</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        #app { max-width: 600px; margin: 20px auto; padding: 20px; font-family: Arial, sans-serif; }
+        .chat-container { border: 1px solid #ccc; height: 300px; overflow-y: auto; padding: 10px; margin: 10px 0; background: #fafafa; }
+        .message { margin: 5px 0; padding: 8px; background: #fff; border-radius: 5px; border-left: 3px solid #007bff; }
+        .system-message { border-left-color: #28a745; background: #f8f9fa; font-style: italic; }
+        .user-list { border: 1px solid #ddd; padding: 10px; margin: 10px 0; background: #f8f9fa; border-radius: 5px; }
+        .user-item { padding: 3px 0; }
+        input[type="text"] { padding: 8px; margin: 5px; border: 1px solid #ddd; border-radius: 3px; }
+        button { padding: 8px 15px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .disconnect-btn { background: #dc3545; }
+        .disconnect-btn:hover { background: #c82333; }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div v-if="!connected">
+        <h2>채팅방 입장</h2>
+        <input type="text" v-model="userName" placeholder="사용자명을 입력하세요" @keydown.enter="connect()">
+        <button type="button" @click="connect()">웹소켓 서버 접속</button>
+    </div>
+
+    <div v-else>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <p><b>{{userName}}님 접속 중</b></p>
+            <button type="button" @click="disconnect()" class="disconnect-btn">접속 종료</button>
+        </div>
+
+        <!-- 채팅 메시지 영역 -->
+        <div class="chat-container" ref="chatContainer">
+            <div v-for="msg in messages" :key="msg.id"
+                 :class="['message', msg.sender === '시스템' ? 'system-message' : '']">
+                <strong>{{msg.sender}}:</strong> {{msg.content}}
+                <small style="color: #666; float: right;">({{msg.timestamp}})</small>
+            </div>
+            <div v-if="messages.length === 0" style="color: #666; text-align: center; padding: 20px;">
+                아직 메시지가 없습니다.
+            </div>
+        </div>
+
+        <!-- 메시지 입력 -->
+        <div style="display: flex; gap: 10px;">
+            <input
+                    type="text"
+                    v-model="message"
+                    @keydown.enter="sendMessage()"
+                    placeholder="메시지를 입력하세요..."
+                    style="flex: 1;">
+            <button type="button" @click="sendMessage()">전송</button>
+        </div>
+
+        <!-- 접속자 목록 -->
+        <div class="user-list">
+            <h3>총 접속자 ({{users.length}}명)</h3>
+            <div v-for="user in users" :key="user" class="user-item">
+                🟢 {{user}}
+            </div>
+            <div v-if="users.length === 0" style="color: #666; font-style: italic;">
+                접속자가 없습니다.
+            </div>
+        </div>
+
+        <div>
+            <input type="text" placeholder="방 이름 입력">
+            <button type="button" @click="createRoom()">방 생성</button>
+        </div>
+        <h3>방 목록</h3>
+        <ul>
+            <li v-for="room in rooms"></li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    const {createApp, ref, nextTick} = Vue;
+
+    createApp({
+        setup(){
+            let socket = null;
+
+            // 바인딩 변수
+            const connected = ref(false);
+            const userName = ref("");
+            const users = ref([]);
+            const message = ref("");
+            const messages = ref([]);
+            const chatContainer = ref(null);
+            const rooms = ref(null);
+
+            /**
+             * 채팅 컨테이너를 맨 아래로 스크롤
+             */
+            const scrollToBottom = () => {
+                nextTick(() => {
+                    if (chatContainer.value) {
+                        chatContainer.value.scrollTop = chatContainer.value.scrollHeight;
+                    }
+                });
+            }
+
+            /**
+             * 메시지를 messages 배열에 추가
+             */
+            const addMessage = (sender, content, isSystem = false) => {
+                messages.value.push({
+                    id: Date.now() + Math.random(),
+                    sender: isSystem ? "시스템" : sender,
+                    content: content,
+                    timestamp: new Date().toLocaleTimeString()
+                });
+                scrollToBottom();
+            }
+
+            /**
+             * 페이로드를 JSON으로 변환하여 전송
+             */
+            const send = (payload) => {
+                if (socket && socket.readyState === WebSocket.OPEN) {
+                    console.log("전송:", payload);
+                    socket.send(JSON.stringify(payload));
+                }
+            }
+
+            /**
+             * 서버와 연결하는 메서드
+             */
+            const connect = () => {
+                if (!userName.value.trim()) {
+                    alert("이름을 입력하세요");
+                    return;
+                }
+
+                // 서버와 웹소켓 연결 시도
+                socket = new WebSocket("ws://localhost:8888/ws");
+
+                // 연결 성공
+                socket.onopen = () => {
+                    connected.value = true;
+                    console.log("웹소켓 연결 성공");
+
+                    // 서버에 접속 알림
+                    send({
+                        type: "CONNECT",
+                        sender: userName.value
+                    });
+                }
+
+                // 서버로부터 메시지를 받을 때
+                socket.onmessage = (event) => {
+                    console.log("서버가 보낸 메시지:", event.data);
+
+                    try {
+                        const json = JSON.parse(event.data);
+                        console.log("파싱된 메시지:", json);
+
+                        // 사용자 목록 업데이트
+                        if (json.destination === "/users") {
+                            users.value = json.body || [];
+                            console.log("사용자 목록 업데이트:", users.value);
+                        }
+                        // 채팅 메시지 처리
+                        else if (json.destination === "/messages") {
+                            const messageData = json.body;
+                            if (messageData.type === "SYSTEM") {
+                                addMessage("", messageData.content, true);
+                            } else {
+                                addMessage(messageData.sender, messageData.content, false);
+                            }
+                        }
+                    } catch (error) {
+                        console.error("메시지 파싱 오류:", error);
+                    }
+                }
+
+                /**
+                 * 방 생성
+                 */
+                const createRoom=()=>{
+                    if (roomName.value.trim()){
+                        send({
+                            type:"CREATE_ROOM",
+                            sender:userName.value,
+                            content:roomName.value
+                        });
+                    }
+                }
+
+                // 연결 종료
+                socket.onclose = (event) => {
+                    console.log("웹소켓 연결 종료:", event);
+                    connected.value = false;
+                    users.value = [];
+
+                    if (event.code !== 1000) { // 정상 종료가 아닌 경우
+                        addMessage("", "서버와의 연결이 끊어졌습니다.", true);
+                    }
+                }
+
+                // 오류 발생
+                socket.onerror = (error) => {
+                    console.error("웹소켓 오류:", error);
+                    alert("서버 연결에 실패했습니다.");
+                }
+            }
+
+            /**
+             * 메시지를 전송
+             */
+            const sendMessage = () => {
+                if (message.value.trim()) {
+                    send({
+                        type: "MESSAGE",
+                        sender: userName.value,
+                        content: message.value
+                    });
+                    message.value = "";
+                }
+            }
+
+            /**
+             * 서버와 연결을 해제하는 메서드
+             */
+            const disconnect = () => {
+                if (socket && socket.readyState === WebSocket.OPEN) {
+                    // 서버에 퇴장 알림
+                    send({
+                        type: "DISCONNECT",
+                        sender: userName.value
+                    });
+
+                    // 종료
+                    setTimeout(() => {
+                        if (socket) {
+                            socket.close(1000, "사용자가 접속을 종료했습니다");
+                        }
+                    }, 100);
+                } else {
+                    connected.value = false;
+                    users.value = [];
+                }
+            }
+
+            return {
+                connected,
+                userName,
+                users,
+                rooms,
+                message,
+                messages,
+                chatContainer,
+                connect,
+                createRoom,
+                sendMessage,
+                disconnect
+            }
+        }
+    }).mount("#app");
+</script>
+</body>
+</html>
