@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+	<script type="text/javascript">
+		/*
+		cookie: 브라우저에 저장되는 작은 규모의 데이터.	4kb의 용량을 가짐.
+				HTTP 요청 시 무조건 함께 전달되므로, 너무 많은 쿠키를 저장할 경우 네트워크의 데이터량 증가
+				
+				- 세션 쿠키: 브라우저의 메모리에 생성. 세션이 유지될 때까지 생존
+				- 영속 쿠키: 브라우저가 사용하는 디스크의 스토리지에 저장. 유효기간을 지정해줄 수 있음
+		*/
+		
+		// 쿠키 생성 함수
+		// 쿠키명, 쿠키값, 유효기간(분)
+		function setCookie(name, value, min){
+			let date = new Date(); // 현재 날짜
+			date.setTime(date.getTime()+(1000*60*min));
+			let limit = date.toUTCString(); // 쿠키의 유효시간은 UTC 문자열 형식으로 표현
+			
+			document.cookie = name + "=" + encodeURIComponent(value) + "; expires=" + limit+"; path=/"; // 값은 인코딩해야 함
+		}
+	</script>
+</head>
+<body>
+	<a href="/jwtApp/member/request.jsp">링크</a>
+</body>
+</html>

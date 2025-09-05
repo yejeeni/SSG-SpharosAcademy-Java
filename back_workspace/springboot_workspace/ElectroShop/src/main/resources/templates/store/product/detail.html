@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AdminLTE 3 | Dashboard</title>
+
+  <th:block th:replace="~{store/fragments/head_link :: head_link}"></th:block>
+  </head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+  <!-- Preloader -->
+  <th:block th:replace="~{store/fragments/preloader :: preloader}"></th:block>
+  <!-- Navbar -->
+  <th:block th:replace="~{store/fragments/navbar :: navbar}"></th:block>
+  <!-- /.navbar -->
+
+  <!-- Main Sidebar Container -->
+  <th:block th:replace="~{store/fragments/sidebar :: sidebar}"></th:block>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div id="app">
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Dashboard</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Dashboard v1</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <!--등록폼 시작-->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title" v-if="isOnAir">Live On</h3>
+                <h3 class="card-title" v-else="isOnAir">Live Off</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form id="form1">
+                <input type="hidden" name="store.storeId" th:value="${product.store.storeId}">
+                <input type="hidden" id="product_id" th:value="${product.productId}">
+
+                <div class="card-body">
+                  <div class="form-group">
+                    <input type="text" class="form-control" name="product_name" th:value="${product.productName}">
+                  </div>
+                  <div class="form-group">
+                    <input type="number" class="form-control" name="price" th:value="${product.price}">
+                  </div>
+                  <div class="form-group">
+                    <input type="text" class="form-control" name="brand" th:value="${product.brand}">
+                  </div>
+                </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                  <button type="button" id="bt_regist" class="btn btn-primary">수정</button>
+                  <button type="button" id="bt_liveon" class="btn btn-warning" @click="connect()">라이브 시작</button>
+                  <button type="button" id="bt_liveoff" class="btn btn-warning">라이브 종료</button>
+                </div>
+              </form>
+            </div>
+            <!--등록폼 끝-->
+          </div>
+        </div>
+
+        <div class="row" v-if="isOnAir">
+          <div class="col-md-3">
+            <!--채팅 참여자 목록 시작-->
+            <textarea class="form-control" style="height: 300px">{{users.join("\n")}}</textarea>
+            <!--채팅 참여자 목록 끝-->
+          </div>
+          <div class="col-md-9">
+            <!--등록폼 시작-->
+            <div class="card card-primary">
+              <!-- /.card-header -->
+              <!-- form start -->
+              <div class="card-body">
+                <div class="form-group">
+                  <input type="hidden" id="user_id" th:value="${session.store.businessId}">
+
+                  <input type="text" class="form-control" v-model="message" @keyup.enter="sendMessage()" placeholder="채팅 메시지..">
+                </div>
+                <div class="form-group">
+                  <textarea class="form-control" style="height:250px">{{messages.join()}}</textarea>
+                </div>
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer">
+                <button type="button" id="bt_send" class="btn btn-primary">메시지 전송</button>
+              </div>
+
+            </div>
+            <!--등록폼 끝-->
+          </div>
+        </div>
+
+
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  </div>
+  <!-- /.content-wrapper -->
+
+  <footer class="main-footer">
+    <th:block th:replace="~{store/fragments/footer :: footer}"></th:block>
+  </footer>
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
+</div>
+<!-- ./wrapper -->
+<th:block th:replace="~{store/fragments/footer_link :: footer_link}"></th:block>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script>
+  const {createApp, ref} = Vue;
+
+  createApp({
+    setup(){
+      const isOnAir=ref(false); //방송중인지 여부 기준 변수
+      const users=ref([]);//채팅방에 참여한 참여자목록
+      const messages=ref([]); //채팅 로그
+      const message=ref([]);
+
+      //웹소켓 서버 접속
+      let stompClient=null;
+
+      const connect=()=>{
+        const webSocket=new WebSocket("ws://localhost:9999/ws");
+        stompClient = Stomp.over(webSocket);
+
+        //STOMP와 서버 연결
+        stompClient.connect({}, ()=>{
+          //접속이 성공되면 할 작업들...
+          isOnAir.value=true;
+
+          //원하는 구독 요청
+          stompClient.subscribe("/topic/users", (msg)=>{
+            console.log("서버가 보낸 방 참여자는 ",msg.body);
+            users.value=JSON.parse(msg.body);
+          });
+
+          //서버의 메시지 구독 요청
+          stompClient.subscribe("/topic/messages", (msg)=>{
+            let obj=JSON.parse(msg.body);
+            messages.value.push(obj.sender+":"+obj.content);
+          });
+
+
+          //접속했음을 알리고(방송시작 알림)
+          stompClient.send("/app/connect",{},JSON.stringify({
+            senderType:"store",
+            content:$("#product_id").val()
+          }));
+
+        });
+      }
+
+      const sendMessage = () => {
+        stompClient.send("/app/chat.send",{},JSON.stringify({
+          sender:$("#user_id").val(),
+          content:message.value
+        }));
+      }
+
+      return {
+        isOnAir,users,messages, message,
+        connect, sendMessage
+      }
+    }
+  }).mount("#app");
+
+</script>
+</body>
+</html>

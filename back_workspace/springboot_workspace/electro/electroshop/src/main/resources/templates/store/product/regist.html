@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AdminLTE 3 | Dashboard</title>
+
+  <th:block th:replace="~{store/fragments/head_link :: head_link}"></th:block>
+  </head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+  <!-- Preloader -->
+  <th:block th:replace="~{store/fragments/preloader :: preloader}"></th:block>
+  <!-- Navbar -->
+  <th:block th:replace="~{store/fragments/navbar :: navbar}"></th:block>
+  <!-- /.navbar -->
+
+  <!-- Main Sidebar Container -->
+  <th:block th:replace="~{store/fragments/sidebar :: sidebar}"></th:block>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Dashboard</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Dashboard v1</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+          <!--등록폼 시작-->
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">Quick Example</h3>
+            </div>
+            <!-- /.card-header -->
+            <!-- form start -->
+            <form id="form1">
+              <input type="hidden" class="form-control" name="store.storeId" th:value="${session.store.storeId}">
+
+              <div class="card-body">
+                <div class="form-group">
+                  <input type="text" class="form-control" name="product_name" placeholder="상품명 입력">
+                </div>
+                <div class="form-group">
+                  <input type="number" class="form-control" name="price" placeholder="가격 입력">
+                </div>
+                <div class="form-group">
+                  <input type="text" class="form-control" name="brand" placeholder="브랜드 입력">
+                </div>
+              </div>
+              <!-- /.card-body -->
+
+              <div class="card-footer">
+                <button type="button" id="bt_regist" class="btn btn-primary">등록</button>
+                <button type="button" id="bt_list" class="btn btn-primary">목록</button>
+              </div>
+            </form>
+          </div>
+          <!--등록폼 끝-->
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+  <footer class="main-footer">
+    <th:block th:replace="~{store/fragments/footer :: footer}"></th:block>
+  </footer>
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
+</div>
+<!-- ./wrapper -->
+<th:block th:replace="~{store/fragments/footer_link :: footer_link}"></th:block>
+<script>
+  function regist(){
+
+    $.ajax({
+      url:"/store/product/regist",
+      method:"POST",
+      data:$("#form1").serialize(),
+      success:function(data){
+        console.log(data);
+        location.href="/store/product/list";
+      }
+    });
+  }
+
+  $(()=>{
+    $("#bt_regist").click(()=>{
+      regist();
+    });
+
+    $("#bt_list").click(()=>{
+      location.href="/store/product/listbystore";
+    });
+
+  });
+</script>
+</body>
+</html>

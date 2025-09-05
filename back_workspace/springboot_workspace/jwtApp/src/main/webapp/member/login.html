@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script	src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+</head>
+<body>
+	<form id="loginForm">
+		<input type="text" placeholder="아이디 입력" name="username"> 
+		<input type="password" placeholder="비밀번호 입력" name="password">
+		<button type="button" id="bt_login">로그인</button>
+		<button type="button" id="bt_access">회원 전용 접근 경로</button>
+	</form>
+	
+	<script type="text/javascript">
+		// 비동기 방식으로 로그인 요청
+		$("#bt_login").click(()=>{
+			$.ajax({
+				url:"/jwtApp/member/login",
+				method:"post",
+				data: $("#loginForm").serialize(),
+				success: function(result){
+					console.log(result);
+					
+					// 브라우저가 데이터 저장 시 사용하는 스토리지 저장소에 토큰을 저장
+					// 로컬 스토리지는 브라우저에서만 접근 하능하며, 브라우저를 닫아도 사라지지 않는다. 사용자가 직접 삭제하거나 javascript에서 삭제해주지 않는 한 영구 유지
+					localStorage.setItem();
+					
+				},
+				error: function(xhr){
+					console.log("login fail", xhr.responseText);
+				}
+			});
+		});
+		
+		$("#bt_access").click(()=>{
+			const token = localStorage.getItem("accessToken");
+			alert("토큰 : "+token);
+			$.ajax({
+				url:"/jwtApp/api/protected",
+				type:"get",
+				headers:{
+					"Authorization": "Bearer "+token
+				},
+				success: function(result){
+					console.log("api 접근");
+					
+				},
+				error: function(xhr){
+					console.log("api 접근 fail");
+				}
+			});
+		});
+		
+		$("#bt_access").click(()=>{
+			
+		});
+	</script>
+</body>
+</html>

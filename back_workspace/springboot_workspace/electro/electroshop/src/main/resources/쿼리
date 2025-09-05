@@ -1,0 +1,28 @@
+create table admin(
+admin_id int primary key auto_increment
+, secure_id varchar(20)
+, password varchar(64)
+, name varchar(20)
+);
+create table store(
+    store_id int primary key auto_increment
+, business_id varchar(20)
+, password varchar(64)
+, store_name varchar(20)
+);
+create table member(
+    member_id int primary key autu_increment
+    , id varchar(20)
+    , name varhcar(20)
+    , password varchar(64)
+);
+
+create table product(
+    product_id int primary key auto_increment
+    , product_name varchar(20)
+    , price int default 0
+    , brand varchar(20)
+    , store_id int
+    , constraint fk_store_prduct foreign key(store_id)
+        references store(store_id)
+);

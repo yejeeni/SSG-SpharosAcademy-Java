@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- BREADCRUMB -->
+<div id="breadcrumb" class="section" th:fragment="breadcrumb(pageTitle, breadcrumbItems)">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="breadcrumb-header" th:text="${pageTitle} ?: 'Regular Page'">Regular Page</h3>
+                <ul class="breadcrumb-tree">
+                    <li><a href="/">Home</a></li>
+                    <!-- 동적 breadcrumb 아이템들 -->
+                    <li th:each="item, iterStat : ${breadcrumbItems}"
+                        th:class="${iterStat.last} ? 'active' : ''">
+                        <a th:if="${!iterStat.last}" th:href="${item.url}" th:text="${item.name}"></a>
+                        <span th:if="${iterStat.last}" th:text="${item.name}"></span>
+                    </li>
+                    <!-- 기본 breadcrumb (breadcrumbItems가 없을 때) -->
+                    <li th:if="${breadcrumbItems == null}" class="active">Blank</li>
+                </ul>
+            </div>
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /BREADCRUMB -->
+</body>
+</html>
